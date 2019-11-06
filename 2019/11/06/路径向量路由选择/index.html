@@ -8,20 +8,20 @@
   <link rel="dns-prefetch" href="http://Charles-xcz.github.io.git">
   <title>Charles_Blog</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <meta name="description" content="距离向量路由选择​    距离向量路由选择是通过对Bellman-Ford算法进行适当修改，找到任意两结点之间的最短路径。 ​    先介绍一下Bellman-Ford算法： 1 Bellman-Ford算法​    这个算法基于这样一个事实，如果结点 i 的所有邻站都知道到结点的最短距离，那么求结点 i 和结点 j 之间的最短距离就可以用结点 i 到每个邻站之间的距离分别加上该邻站到结点j的最短">
+  <meta name="description" content="距离向量路由选择​    距离向量路由选择是通过对Bellman-Ford算法进行适当修改，找到任意两结点之间的最短路径。 ​    先介绍一下Bellman-Ford算法： 1 Bellman-Ford算法​    这个算法基于这样一个事实，如果结点 i 的所有邻站都知道到结点的最短距离，那么求结点 i 和结点 j 之间的最短距离就可以用结点 i 到每个邻站之间的距离分别加上该邻站到结点j的最">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Charles_Blog">
 <meta property="og:url" content="http://Charles-xcz.github.io.git/2019/11/06/路径向量路由选择/index.html">
 <meta property="og:site_name" content="Charles_Blog">
-<meta property="og:description" content="距离向量路由选择​    距离向量路由选择是通过对Bellman-Ford算法进行适当修改，找到任意两结点之间的最短路径。 ​    先介绍一下Bellman-Ford算法： 1 Bellman-Ford算法​    这个算法基于这样一个事实，如果结点 i 的所有邻站都知道到结点的最短距离，那么求结点 i 和结点 j 之间的最短距离就可以用结点 i 到每个邻站之间的距离分别加上该邻站到结点j的最短">
+<meta property="og:description" content="距离向量路由选择​    距离向量路由选择是通过对Bellman-Ford算法进行适当修改，找到任意两结点之间的最短路径。 ​    先介绍一下Bellman-Ford算法： 1 Bellman-Ford算法​    这个算法基于这样一个事实，如果结点 i 的所有邻站都知道到结点的最短距离，那么求结点 i 和结点 j 之间的最短距离就可以用结点 i 到每个邻站之间的距离分别加上该邻站到结点j的最">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="d:%5CDevelop%5Cblog%5Cblog1%5Csource%5Cimg%5C1-1.png">
 <meta property="og:image" content="d:%5CDevelop%5Cblog%5Cblog1%5Csource%5Cimg%5C1-2.png">
 <meta property="og:image" content="d:%5CDevelop%5Cblog%5Cblog1%5Csource%5Cimg%5C1-3.png">
-<meta property="og:updated_time" content="2019-11-06T14:07:56.296Z">
+<meta property="og:updated_time" content="2019-11-06T14:27:43.454Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Charles_Blog">
-<meta name="twitter:description" content="距离向量路由选择​    距离向量路由选择是通过对Bellman-Ford算法进行适当修改，找到任意两结点之间的最短路径。 ​    先介绍一下Bellman-Ford算法： 1 Bellman-Ford算法​    这个算法基于这样一个事实，如果结点 i 的所有邻站都知道到结点的最短距离，那么求结点 i 和结点 j 之间的最短距离就可以用结点 i 到每个邻站之间的距离分别加上该邻站到结点j的最短">
+<meta name="twitter:description" content="距离向量路由选择​    距离向量路由选择是通过对Bellman-Ford算法进行适当修改，找到任意两结点之间的最短路径。 ​    先介绍一下Bellman-Ford算法： 1 Bellman-Ford算法​    这个算法基于这样一个事实，如果结点 i 的所有邻站都知道到结点的最短距离，那么求结点 i 和结点 j 之间的最短距离就可以用结点 i 到每个邻站之间的距离分别加上该邻站到结点j的最">
 <meta name="twitter:image" content="d:%5CDevelop%5Cblog%5Cblog1%5Csource%5Cimg%5C1-1.png">
   
     <link rel="alternative" href="/atom.xml" title="Charles_Blog" type="application/atom+xml">
@@ -163,7 +163,8 @@
     
     <div class="article-entry" itemprop="articleBody">
       
-        <h1 id="距离向量路由选择"><a href="#距离向量路由选择" class="headerlink" title="距离向量路由选择"></a>距离向量路由选择</h1><p>​    <strong>距离向量路由选择是通过对Bellman-Ford算法进行适当修改，找到任意两结点之间的最短路径。</strong></p>
+        <hr>
+<h1 id="距离向量路由选择"><a href="#距离向量路由选择" class="headerlink" title="距离向量路由选择"></a>距离向量路由选择</h1><p>​    <strong>距离向量路由选择是通过对Bellman-Ford算法进行适当修改，找到任意两结点之间的最短路径。</strong></p>
 <p>​    <strong>先介绍一下Bellman-Ford算法：</strong></p>
 <h3 id="1-Bellman-Ford算法"><a href="#1-Bellman-Ford算法" class="headerlink" title="1 Bellman-Ford算法"></a>1 Bellman-Ford算法</h3><p>​    这个算法基于这样一个事实，如果结点 i 的所有邻站都知道到结点的最短距离，那么求结点 i 和结点 j 之间的最短距离就可以用结点 i 到每个邻站之间的距离分别加上该邻站到结点j的最短距离，然后再从得数中选择最小的一个。</p>
 <p><img src="D:%5CDevelop%5Cblog%5Cblog1%5Csource%5Cimg%5C1-1.png" alt="1-1"></p>
@@ -275,16 +276,6 @@
 </article>
 
   
-<nav id="article-nav">
-  
-  
-    <a href="/2019/09/29/hello-world/" id="article-nav-older" class="article-nav-link-wrap">
-      <div class="article-nav-title">Hello World</div>
-      <i class="icon-circle-right"></i>
-    </a>
-  
-</nav>
-
 
 <aside class="wrap-side-operation">
     <div class="mod-side-operation">
