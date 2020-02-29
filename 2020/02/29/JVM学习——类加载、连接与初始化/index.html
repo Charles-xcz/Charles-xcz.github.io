@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.9.0">
+      <script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content>
+    <meta name="description" content>
+    
+    <title>
+          Charles
+    </title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/style/style.css">
+  </head>
+  <body>
+    <canvas id="pagemap"></canvas>
+    
+    <div id="post-toc" class="animated hiddenToc hide">
+      <span class="title">Toc</span>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#JVM学习——类加载、连接与初始化"><span class="toc-text">JVM学习——类加载、连接与初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Java虚拟机与程序的生命周期"><span class="toc-text">1. Java虚拟机与程序的生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-加载"><span class="toc-text">2. 加载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-连接"><span class="toc-text">3. 连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-初始化"><span class="toc-text">4. 初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-类的实例化"><span class="toc-text">5. 类的实例化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Some-Cases"><span class="toc-text">Some Cases</span></a></li></ol>
+    </div>
+    
+    <div id="fixed-menu-wrap">
+      <span class="iconfont icon-sousuo search-box menu-reset"></span>
+      <span class="icon-toc menu-reset">Toc</span>
+      <span class="iconfont icon-arrowup menu-reset"></span>
+    </div>
+    <div id="fixed-menu">
+      <span class="iconfont icon-menu-"></span>
+    </div>
+    <div id="progress">
+      <div class="line"></div>
+    </div>
+    <div id="search-shade" class="animated hiddenSearch hide">
+      <div class="input-wrap">
+        <span class="iconfont icon-sousuo search-box"></span>
+        <input type="text" placeholder="Search">
+        <span class="iconfont icon-close"></span>
+      </div>
+      <div class="search-result">
+        <div class="meta">
+          <span><b id="result-count">0</b> results found</span>
+          <img src="/images/logo.jpeg">
+        </div>
+        <ul id="result-box"></ul>
+      </div>
+    </div>
+    <div id="menu-mask" class="animated hideMenuMask hide">
+      <span class="iconfont icon-close"></span>
+      <div class="nav">
+        
+        <a href="/" class>
+          Home
+        </a>
+        
+        <a href="/archives" class>
+          Archives
+        </a>
+        
+        <a href="/categories" class>
+          Categories
+        </a>
+        
+        <a href="/tags" class>
+          Tags
+        </a>
+        
+        <a href="/about" class>
+          About
+        </a>
+        
+      </div>
+    </div>
+    <div id="header">
+      <div class="intro">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <div class="author">Charles</div>
+      </div>
+      <div class="nav">
+        <span class="iconfont icon-menu menu-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+    </div>
+    <div id="side" class="animated bounceInLeft">
+      <div class="shrink">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <span class="iconfont icon-menu toggle-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+      <div class="magnify">
+        <div class="about">
+          <div class="author">Charles</div>
+          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        </div>
+
+        <div class="nav">
+          
+          <a href="/" class>
+            Home
+          </a>
+          
+          <a href="/archives" class>
+            Archives
+          </a>
+          
+          <a href="/categories" class>
+            Categories
+          </a>
+          
+          <a href="/tags" class>
+            Tags
+          </a>
+          
+          <a href="/about" class>
+            About
+          </a>
+          
+          <a href="#" class="search-box">
+            <span class="iconfont icon-sousuo"></span>
+          </a>
+        </div>
+        <div class="bottom">
+          <div class="follow">
+            
+            <a href="https://github.com/Charles-xcz" target="_block">
+              <span class="iconfont icon-github"></span>
+            </a>
+             
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="container">
+      <div class="main animated bounceInRight delay-0.7s">
+        <article class="post-entry">
+    <div class="header">
+      
+      <div class="title"></div>
+      <div class="meta">
+        <span class="item">
+          <span class="iconfont icon-time-circle"></span>
+          <span>2020/02/29</span>
+        </span>
+
+        
+          <span class="item leancloud-visitors" id="/2020/02/29/JVM学习——类加载、连接与初始化/" data-flag-title>
+            <span class="iconfont icon-eye1"></span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+
+         
+        <span class="item">
+          <span class="iconfont icon-folder"></span>
+          <span>
+              
+                
+                  <a href="/categories/java">java</a>
+                
+              
+          </span>
+        </span>
+        
+        
+         
+          <span class="item">
+            <span class="iconfont icon-tag1"></span>
+            <span>
+                
+                  
+                    <a href="/tags/JVM">JVM</a>
+                  
+                
+            </span>
+          </span>
+         
+      </div>
+      <div>
+      </div>
+    </div>
+    <h2 id="JVM学习——类加载、连接与初始化">JVM学习——类加载、连接与初始化<a class="post-anchor" href="#JVM学习——类加载、连接与初始化"></a></h2><ul>
+<li>在Java代码中，类型的<strong>加载</strong>、<strong>连接</strong>与<strong>初始化</strong>过程都是在程序<strong>运行期间</strong>完成的</li>
+<li>提供了更大的灵活性，增加了更多的可能性</li>
+</ul>
+<h2 id="1-Java虚拟机与程序的生命周期">1. Java虚拟机与程序的生命周期<a class="post-anchor" href="#1-Java虚拟机与程序的生命周期"></a></h2><ul>
+<li>如下几种情况下，Java虚拟机将结束生命周期<ul>
+<li>执行了System.exit()方法</li>
+<li>程序正常执行结束</li>
+<li>程序在执行过程中遇到了异常或错误而异常终止</li>
+<li>由于操作系统出现错误而导致Java虚拟机进程终止</li>
+</ul>
+</li>
+</ul>
+<a href="https://i.loli.net/2020/02/29/jEVOpJHzg3CcaFs.png" data-caption="image-20200220164745398" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/jEVOpJHzg3CcaFs.png" alt="image-20200220164745398"></a>
+
+<a href="https://i.loli.net/2020/02/29/zA3guopQn4RKJSX.png" data-caption="image-20200220170243034" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/zA3guopQn4RKJSX.png" alt="image-20200220170243034"></a>
+
+<h2 id="2-加载">2. 加载<a class="post-anchor" href="#2-加载"></a></h2><p>​    查找并加载类的二进制数据，就是将二进制形式的Java类型读入Java虚拟机中。</p>
+<p>​    类的加载指的是将类的.class文件中的二进制数据读入到内存中，将其放在运行时数据区的方法区内。然后在内存中创建一个java.lang.Class对象（规范并未说明Class对象位于哪里，HotSpot虚拟机将其放在了方法区中）用来封装类在方法区内的数据结构。</p>
+<p><strong>加载.class文件的方式</strong></p>
+<ul>
+<li>从本地系统中直接加载</li>
+<li>通过网络下载.class文件</li>
+<li>从zip，jar等归档文件中加载.class文件</li>
+<li>从专有数据库中提取.class文件</li>
+<li>将Java源文件动态编译为.class文件</li>
+</ul>
+<h2 id="3-连接">3. 连接<a class="post-anchor" href="#3-连接"></a></h2><p>​    类被加载后，就进入连接阶段。分为<strong>验证，准备，解析</strong>三个阶段</p>
+<p>​    连接就是将已经读到内存中的类的二进制数据合并到虚拟机的运行环境中去。</p>
+<p>​    <strong>验证：</strong>确保被加载类的正确性</p>
+<p>​    类验证的内容</p>
+<ul>
+<li>类文件的结构检查</li>
+<li>语义检查</li>
+<li>字节码验证</li>
+<li>二进制兼容性的验证</li>
+</ul>
+<p>​    <strong>准备：</strong>Java虚拟机为类的静态变量分配内存，并将其<strong>初始化为默认值</strong></p>
+<p>​    <strong>解析：</strong>把类中的符号引用（间接）转换为直接引用</p>
+<h2 id="4-初始化">4. 初始化<a class="post-anchor" href="#4-初始化"></a></h2><p>​    为类的<strong>静态变量</strong>赋予正确的初始值</p>
+<p>​    静态变量的声明语句，以及静态代码块都被看做类的初始化语句。</p>
+<p>​    Java虚拟机会按照初始化语句在类文件中的先后顺序依次执行它们。</p>
+<p>​    <strong>类初始化步骤</strong></p>
+<ul>
+<li>假如这个类还没有被加载和连接，那就先进行加载和连接</li>
+<li>假如类存在直接父类，并且这个父类还没有被初始化，那就先初始化直接父类</li>
+<li>假如类中存在初始化语句，那就依次执行这些初始化语句</li>
+</ul>
+<p>​    <strong>类初始化的时机</strong></p>
+<p>​        Java对类的使用方式可分为两种</p>
+<ul>
+<li><strong>主动使用</strong></li>
+<li>被动使用</li>
+</ul>
+<p>​    所有的Java虚拟机实现必须要在每个类或接口被Java程序<strong>”首次主动使用“</strong>时才初始化它们</p>
+<p>​        <strong>主动使用（七种，重要）</strong></p>
+<ul>
+<li>创建类的实例（new一个实例）</li>
+<li>访问某个类或接口的静态变量，或者对该静态变量赋值</li>
+<li>调用类的静态方法</li>
+<li>反射（如Class.forName(“com.test.Test”)）</li>
+<li>初始化该类的子类</li>
+<li>Java虚拟机启动时被标明为启动类的类（包含main（）方法的类）</li>
+<li>JDK1.7开始提供的动态语言支持</li>
+</ul>
+<p>​    除了上述七种情况，其他情况都认为是对类的被动使用，因此都不会导致类的初始化</p>
+<p>​    当Java虚拟机初始化一个类时，要求它的所有父类都已经被初始化，但这条规则不适用于接口。</p>
+<ul>
+<li>在初始化一个类时，并不会先初始化它所实现的接口</li>
+<li>在初始化一个接口时，并不会先初始化它的父接口</li>
+</ul>
+<p>​    因此，一个父接口并不会因为它的子接口或者实现类的初始化而初始化。只有当程序首次使用特定接口的静态变量时，才会导致该接口的初始化。</p>
+<p>​    只有当程序访问的静态变量或静态方法确实在当前类或当前接口中定义时，才可以认为是对类或接口的主动使</p>
+<h2 id="5-类的实例化">5. 类的实例化<a class="post-anchor" href="#5-类的实例化"></a></h2><ul>
+<li>为新的对象分配内存</li>
+<li>为实例变量赋默认值</li>
+<li>为实例变量赋正确的初始值</li>
+<li>Java编译器为它编译的每一个类都至少生成一个实例初始化方法，在Java的class文件中，这个实例初始化方法被称为“<init>”。针对源代码中每一个类的构造方法，Java编译器都产生一个<init>方法。</init></init></li>
+</ul>
+<h2 id="Some-Cases">Some Cases<a class="post-anchor" href="#Some-Cases"></a></h2><pre><code class="hljs java"><span class="hljs-comment">/**
+ * 类的初始化
+ * 虚拟机参数 -XX:+&lt;option&gt; 表示开启 &lt;option&gt; 选项
+ *           -XX:-&lt;option&gt; 表示关闭 &lt;option&gt; 选项
+ *           -XX:&lt;option&gt;=&lt;value&gt; 表示给 &lt;option&gt; 选项赋值
+ * -XX:+TraceClassLoading 用于追踪类的加载信息并打印出来
+ * -XX:+TraceClassUnLoading 用于追踪类的卸载信息并打印出来
+ *
+ * <span class="hljs-doctag">@author</span> charles
+ * <span class="hljs-doctag">@date</span> 2020/2/19 10:40
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyTest1</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        <span class="hljs-comment">/*
+        对于静态字段来说,只有直接定义了该字段的类才会被初始化
+        str是在MyParent1中被定义,所以 MyChild1.str是对类 MyParent1 的主动使用,
+        所以类 MyParent1 会被初始化
+         */</span>
+        System.out.println(MyChild1.str);
+        <span class="hljs-comment">/*
+        str2 是在 MyChild1 中被定义,所以类 MyChild1 会被初始化
+        初始化一个类的子类时,父类也会被初始化(主动使用)
+         */</span>
+        System.out.println(MyChild1.str2);
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyParent1</span> </span>&#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String str = <span class="hljs-string">"hello world"</span>;
+
+    <span class="hljs-keyword">static</span> &#123;
+        System.out.println(<span class="hljs-string">"MyParent1 static block"</span>);
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyChild1</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">MyParent1</span> </span>&#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> String str2 = <span class="hljs-string">"welcome"</span>;
+
+    <span class="hljs-keyword">static</span> &#123;
+        System.out.println(<span class="hljs-string">"MyChild1 static block"</span>);
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs java">/**
+ * 定义常量的类的初始化:
+ * 常量在编译阶段会存入到调用这个常量的方法的类的常量池中,
+ * 本质上调用类并没有直接引用到定义常量的类,因此并不会触发定义常量类的初始化
+ * 反编译 javap -c com.charles.jvm.classloader.MyTest2
+ * 助记符:
+ *    ldc:表示将int,float或是String类型的常量值从常量池中推送至栈顶
+ *    bipush:表示将单字节(-128~127)的常量值从常量池中推送至栈顶
+ *    sipush:表示将短整型(-32768~32767)的常量值从常量池中推送至栈顶
+ *    iconst_i:i属于(-1~5)表示将int型的数字i从常量池中推送至栈顶
+ *
+ * @author charles
+ * @date 2020/2/19 11:21
+ */
+public class MyTest2 &#123;
+    public static void main(String[] args) &#123;
+        /*
+        这里常量 MyParent2.STR 存放到了类 MyTest2 的常量池中,
+        之后 MyTest2 与 MyParent2 就没有任何关联了
+        甚至,我们可以将 MyParent2 的class文件删除
+         */
+        System.out.println(MyParent2.STR);
+    &#125;
+&#125;
+
+class MyParent2 &#123;
+    public static final String STR = "hello world";
+
+    static &#123;
+        System.out.println("MyParent2 static block!");
+    &#125;
+&#125;
+
+
+//反编译结果如下
+D:\Develop\Java\JavaProject\JVMStudy\build\classes\java\main&gt;javap -c com.charles.jvm.classloader.MyTest2
+Compiled from "MyTest2.java"
+public class com.charles.jvm.classloader.MyTest2 &#123;
+  public com.charles.jvm.classloader.MyTest2();
+    Code:
+       0: aload_0
+       1: invokespecial #1                  // Method java/lang/Object."&lt;init&gt;":()V
+       4: return
+
+  public static void main(java.lang.String[]);
+    Code:
+       0: getstatic     #2                  // Field java/lang/System.out:Ljava/io/PrintStream;
+       3: ldc           #4                  // String hello world
+       5: invokevirtual #5                  // Method java/io/PrintStream.println:(Ljava/lang/String;)V
+       8: return
+&#125;</code></pre>
+
+<pre><code class="hljs java"><span class="hljs-comment">/**
+ * 当一个常量的值并非编译期间可以确定的,那么其值就不会被放到调用类的常量池中
+ * 这时在程序运行时,会导致主动使用这个常量所在类,显然会导致这个类被初始化
+ *
+ * <span class="hljs-doctag">@author</span> charles
+ * <span class="hljs-doctag">@date</span> 2020/2/20 10:24
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyTest3</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        System.out.println(MyParent3.STRING);
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyParent3</span> </span>&#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String STRING = UUID.randomUUID().toString();
+
+    <span class="hljs-keyword">static</span> &#123;
+        System.out.println(<span class="hljs-string">"MyParent3 static block"</span>);
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs java"><span class="hljs-comment">/**
+ * 创建类的实例,主动使用
+ * 对于数组实例来说,其类型是由JVM在运行期间动态生成的,
+ * 表示为[Lcom.charles.jvm.classloader.MyParent4这种形式
+ * 动态生成的类型其父类就是Object
+ * 对于数组来说,JavaDoc经常将构成数组的元素为Component,实际上就是将数组降低一个维度后的类型
+ * 助记符:
+ *      anewarray:表示创建一个引用类型的数组,并将其引用值压入栈顶
+ *      newarray:表示创建一个指定的原始类型的数组,并将其引用值压入栈顶
+ *
+ * <span class="hljs-doctag">@author</span> charles
+ * <span class="hljs-doctag">@date</span> 2020/2/20 10:33
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyTest4</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        <span class="hljs-comment">/*
+        首次主动使用才会初始化
+         */</span>
+        MyParent4 p1 = <span class="hljs-keyword">new</span> MyParent4();
+        MyParent4 p2 = <span class="hljs-keyword">new</span> MyParent4();
+        <span class="hljs-comment">/*
+        类的数组的实例,不是对类的主动使用
+         */</span>
+        MyParent4[] parent4s = <span class="hljs-keyword">new</span> MyParent4[<span class="hljs-number">2</span>];
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyParent4</span> </span>&#123;
+    <span class="hljs-keyword">static</span> &#123;
+        System.out.println(<span class="hljs-string">"MyParent4 static block"</span>);
+    &#125;
+&#125;</code></pre>
+
+<pre><code class="hljs java"><span class="hljs-comment">/**
+ * 当一个接口在初始化时,并不都要求其父接口完成初始化
+ * 只有当真正使用到父接口的时候(如引用到接中的常量时),才会初始化
+ *
+ * <span class="hljs-doctag">@author</span> charles
+ * <span class="hljs-doctag">@date</span> 2020/2/20 11:00
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyTest5</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        System.out.println(MyChild5.B);
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">MyParent5</span> </span>&#123;
+    <span class="hljs-comment">/**
+     * 接口中的属性,默认为public static final
+     */</span>
+    <span class="hljs-keyword">int</span> A = <span class="hljs-number">5</span>;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">interface</span> <span class="hljs-title">MyChild5</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">MyParent5</span> </span>&#123;
+    <span class="hljs-keyword">int</span> B = <span class="hljs-keyword">new</span> Random().nextInt();
+&#125;</code></pre>
+
+<pre><code class="hljs java"><span class="hljs-comment">/**
+ * <span class="hljs-doctag">@author</span> charles
+ * <span class="hljs-doctag">@date</span> 2020/2/20 11:31
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyTest6</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        <span class="hljs-comment">/*
+        调用了类Singleton中的静态方法,为主动使用,类Singleton被初始化
+         */</span>
+        Singleton singleton = Singleton.getInstance();
+        System.out.println(<span class="hljs-string">"counter1:"</span> + Singleton.counter1);
+        System.out.println(<span class="hljs-string">"counter2:"</span> + Singleton.counter2);
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Singleton</span> </span>&#123;
+    <span class="hljs-comment">/**
+     * 初始化counter1为1
+     */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> counter1 = <span class="hljs-number">1</span>;
+    <span class="hljs-comment">/**
+     * 按顺序进行初始化,构造函数执行后,counter1=4,counter2=3
+     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> Singleton singleton = <span class="hljs-keyword">new</span> Singleton();
+    <span class="hljs-comment">/**
+     * 然后counter2又被赋值为0
+     */</span>
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">int</span> counter2 = <span class="hljs-number">8</span>;
+
+    <span class="hljs-function"><span class="hljs-keyword">private</span> <span class="hljs-title">Singleton</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-comment">/*
+        counter1在前面已经被初始化为1,所以counter1=1+3
+         */</span>
+        counter1 += <span class="hljs-number">3</span>;
+        <span class="hljs-comment">/*
+        准备阶段的意义
+        因为准备阶段,整型的默认值为0
+        所以counter2=0+3
+         */</span>
+        counter2 += <span class="hljs-number">3</span>;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> Singleton <span class="hljs-title">getInstance</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">return</span> singleton;
+    &#125;
+&#125;</code></pre>
+
+
+
+  
+  <div class="post-guide">
+    <div class="item left">
+        
+    </div>
+    <div class="item right">
+        
+          <a href="/2019/11/06/路径向量路由选择/"></a>
+        
+    </div>
+  </div>
+
+  
+
+  <div class="post-copyright">
+    <div class="auth">
+      本文作者：<a href="http://Charles-xcz.github.io">Charles</a>
+    </div>
+    <div class="link">
+      永久链接：<a href="http://Charles-xcz.github.io/2020/02/29/JVM学习——类加载、连接与初始化/">http://Charles-xcz.github.io/2020/02/29/JVM学习——类加载、连接与初始化/</a>
+    </div>
+    <div class="declare">
+      版权声明：本文首发于<a href="http://Charles-xcz.github.io">Charles</a>的博客，转载请注明出处！
+    </div>
+  </div>
+
+  <div id="comment"></div>
+
+  
+  
+</article>
+        <footer>
+          <div class="copyright">
+            ©2020
+            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a> |
+            <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a>
+          </div>
+          
+        </footer>
+      </div>
+    </div>
+  </body>
+  
+</html>
+<script type="text/javascript">
+                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"\",\"API_KEY\":\"\"},\"service_worker\":{\"open\":false},\"baidu_tongji\":{\"site_from\":\"2020/2/28\",\"site_id\":\"\",\"access_token\":\"xxxxx\"}}")
+                </script> <script type="text/javascript">window.addEventListener('load', function() {
+    
+    window.loadJs = function(d, m, a) {
+      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
+      var b = document.createElement('script')
+      b.defer = true
+      b.setAttribute('type', 'text/javascript')
+      b.setAttribute('charset', 'UTF-8')
+      b.setAttribute('async', 'true')
+      b.setAttribute('src', d)
+      m && b.setAttribute('data-main', '/scripts/app-built')
+      if (typeof a === 'function') {
+        if (window.attachEvent) {
+          b.onreadystatechange = function() {
+            var e = b.readyState
+            if (e === 'loaded' || e === 'complete') {
+              b.onreadystatechange = null
+              a()
+            }
+          }
+        } else {
+          b.onload = a
+        }
+      }
+      c.appendChild(b)
+    }
+    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
+  })</script> <script type="text/javascript">
+                  ;(function() {
+                    var bp = document.createElement('script')
+                    var curProtocol = window.location.protocol.split(':')[0]
+                    if (curProtocol === 'https') {
+                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+                    } else {
+                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+                    }
+                    var s = document.getElementsByTagName('script')[0]
+                    s.parentNode.insertBefore(bp, s)
+                  })()
+                </script> 
