@@ -16,7 +16,7 @@
     <meta name="description" content>
     
     <title>
-      about me - Charles
+      模式匹配—&gt;KMP算法 - Charles
     </title>
     <link rel="manifest" href="/manifest.json">
     <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
@@ -25,6 +25,11 @@
 </head>
   <body>
     <canvas id="pagemap"></canvas>
+    
+    <div id="post-toc" class="animated hiddenToc hide">
+      <span class="title">Toc</span>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#KMP算法"><span class="toc-text">KMP算法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-KMP"><span class="toc-text">1 KMP</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-KMP算法思想总结"><span class="toc-text">2 KMP算法思想总结</span></a></li></ol></li></ol>
+    </div>
     
     <div id="fixed-menu-wrap">
       <span class="iconfont icon-sousuo search-box menu-reset"></span>
@@ -71,7 +76,7 @@
           Tags
         </a>
         
-        <a href="/about" class="current">
+        <a href="/about" class>
           About
         </a>
         
@@ -121,7 +126,7 @@
             Tags
           </a>
           
-          <a href="/about" class="current">
+          <a href="/about" class>
             About
           </a>
           
@@ -149,7 +154,7 @@
         <article class="post-entry">
     <div class="header">
       
-      <div class="title">about me</div>
+      <div class="title">模式匹配—>KMP算法</div>
       <div class="meta">
         <span class="item">
           <span class="iconfont icon-time-circle"></span>
@@ -157,15 +162,94 @@
         </span>
 
         
+          <span class="item leancloud-visitors" id="/2020/02/29/模式匹配——KMP算法/" data-flag-title="模式匹配—>KMP算法">
+            <span class="iconfont icon-eye1"></span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
 
+         
+        <span class="item">
+          <span class="iconfont icon-folder"></span>
+          <span>
+              
+                
+                  <a href="/categories/数据结构与算法">数据结构与算法</a>
+                
+              
+          </span>
+        </span>
         
         
-        
+         
+          <span class="item">
+            <span class="iconfont icon-tag1"></span>
+            <span>
+                
+                  
+                    <a href="/tags/算法">算法</a>
+                  
+                
+                  
+                    <a href="/tags/kmp">kmp</a>
+                  
+                
+            </span>
+          </span>
+         
       </div>
       <div>
       </div>
     </div>
-    <h4 id="Email：fengling-xcz-gmail-com"><a href="#Email：fengling-xcz-gmail-com" class="headerlink" title="Email：fengling.xcz@gmail.com"></a>Email：<a href="mailto:fengling.xcz@gmail.com" target="_blank" rel="noopener">fengling.xcz@gmail.com</a></h4>
+    <h3 id="引言">引言<a class="post-anchor" href="#引言"></a></h3><p>​    场景：在字符串：“fffffab cfe defe” 中查找字符串 “ff”。</p>
+<p>​    被查找的字符串称之为：主串或目标串T ;</p>
+<p>​    想要查找的字符串”ff”称之为：字串或模式串P。</p>
+<p>​    朴素的模式匹配在匹配过程中需要进行回溯，因而会发生多次重复比较，匹配效率低。故而，需要对字符串查找算法进行优化。</p>
+<p>​    字符串查找算法中，最著名的算法之一：KMP算 法（Knuth-Morris-Pratt)</p>
+<p>​    它是精确字符串匹配算法（区别于模糊匹配）。 </p>
+<p>​    – 目标字符串中无需进行回溯。（比朴素的模式匹配算法快）<br>​    – 模式字符串的移动方向：从目标字符串的第一个字符 开始，朝目标字符串的尾部方向移动搜索匹配子串。</p>
+<h3 id="KMP算法">KMP算法<a class="post-anchor" href="#KMP算法"></a></h3><h4 id="1-KMP">1 KMP<a class="post-anchor" href="#1-KMP"></a></h4><p>​    注意：为了方便，KMP算法中，数组下标一般从1开始。</p>
+<p>​    KMP算法的设计初衷： 希望能在匹配过程中，目标串T中的字符匹配是一直向右前进的，而不会出现向左的回溯。</p>
+<p>下面看两个例子</p>
+<p>例1：当模式串中无重复时</p>
+<p><a href="https://i.loli.net/2020/02/29/PrOkUFaK25ZwzS9.png" data-caption="eg1" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/PrOkUFaK25ZwzS9.png" alt="eg1"></a></p>
+<p>因为模式串中无重复，因为T[1]=P[1]，T[2]=P[2]，显然T[2]!=P[1]。即第二轮比较多余</p>
+<p>同理，2，3，4，5轮的匹配都是多余的。</p>
+<p>例2：模式串P中有重复</p>
+<p><a href="https://i.loli.net/2020/02/29/W6elKXYC3Txr4Pt.png" data-caption="eg2" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/W6elKXYC3Txr4Pt.png" alt="eg2"></a></p>
+<p>从图上可以看出2，3，4，5轮，目标串匹配字符i的回溯都是多余的。我们可以直接从1跳到6。</p>
+<p>why？？为什么可以跳？怎么跳？</p>
+<p><strong>注意观察模式串字符的规律：这里我们要利用模式串P自身的重复。</strong></p>
+<p>下面继续放一些示例：</p>
+<p><strong>关注：  匹配失败，是否发生在P的第一个字符处？</strong> </p>
+<p>​         <strong>P中是否有重复模式？</strong></p>
+<p><a href="https://i.loli.net/2020/02/29/S9eZfzLmbuGoUaX.png" data-caption="eg3" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/S9eZfzLmbuGoUaX.png" alt="eg3"></a></p>
+<p><a href="https://i.loli.net/2020/02/29/zjtaPq64KhMbOLp.png" data-caption="eg4" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/zjtaPq64KhMbOLp.png" alt="eg4"></a></p>
+<p><a href="https://i.loli.net/2020/02/29/JGTR14pblvykrhZ.png" data-caption="eg5" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/JGTR14pblvykrhZ.png" alt="eg5"></a></p>
+<p>分析总结：</p>
+<p>​    前两种情况容易得出： </p>
+<p>​     若当前轮匹配在与P[1]比较就失败，那么 下一轮应该是比较T[i+1]和P[1]</p>
+<p>​     若P中在当前轮成功匹配的子串的后缀与子串的前缀无重复模式，那么下一轮应该是比较T[i]和P[1] </p>
+<p>​     第三种情况：</p>
+<p>​    若P中在当前轮成功匹配的子串的后缀与子串的前缀有重复模式，那么下一轮应该是比较T[i]和P[next[j]] </p>
+<p>​    next[j]:在模式串P的下标 j 处失配后，下一轮比较的模式串P的下标，用next数组记录模式串P每个位置失配后下一轮应该比较的位置。</p>
+<p>   <strong>那么next[j] = ？</strong></p>
+<p>在上图 Case1 中，P中无重复模式，下轮比较T[i]和P[1]，下轮比较的模式串下标为1，即next[j]=1;</p>
+<p>​            Case2中，P[1]就失配，下轮比较T[i+1]和P[1]，我们用next[j]=0来表示这种情况，代表着在模式串P开头处即失配，目标串下标i向后移动一位。我们把下标为0来代表这种情况，这也是为什么KMP算法下标从1开始计算的原因。</p>
+<p>​            Case3和Case4: 在P[j]处失配，设存在k|1&lt;k&lt;j 使得”P[1]…..P[k-1]“=”P[j-k+1]….P[j-1]” 即模式串P的前k-1位子串与从P[j]处往前k-1位子串相同，即P中在当前轮成功匹配的子串的后缀与子串的前缀有重复模式，则下轮比较从k开始，next[j]=k。</p>
+<p>所以：<a href="https://i.loli.net/2020/02/29/uT4M6WCriZvfBLx.png" data-caption="eg6" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/uT4M6WCriZvfBLx.png" alt="eg6"></a></p>
+<h4 id="2-KMP算法思想总结">2 KMP算法思想总结<a class="post-anchor" href="#2-KMP算法思想总结"></a></h4><ol>
+<li><p>将模式串P自身的重复规律保存到next数组中</p>
+<ol start="2">
+<li>匹配过程：若某轮匹配失败，则利用next数组分 别计算下一轮匹配时目标串和模式串的开始位置若是T[i]≠P[j]导致当前轮的匹配失败，则按照下列规则 开始下一轮匹配：<ol>
+<li>若next[j] ≠ 0，则将T[i..]与P[next[j]..]匹配；</li>
+<li>若next[j]==0，则将T[(i+1)..]与P[1..]匹配。</li>
+</ol>
+</li>
+</ol>
+</li>
+</ol>
+
 
   
   <div class="post-guide">
@@ -173,6 +257,8 @@
         
     </div>
     <div class="item right">
+        
+          <a href="/2020/02/29/聊聊红黑树/">什么是红黑树？</a>
         
     </div>
   </div>
@@ -184,7 +270,7 @@
       本文作者：<a href="http://Charles-xcz.github.io">Charles</a>
     </div>
     <div class="link">
-      永久链接：<a href="http://Charles-xcz.github.io/about/index.html">http://Charles-xcz.github.io/about/index.html</a>
+      永久链接：<a href="http://Charles-xcz.github.io/2020/02/29/模式匹配——KMP算法/">http://Charles-xcz.github.io/2020/02/29/模式匹配——KMP算法/</a>
     </div>
     <div class="declare">
       版权声明：本文首发于<a href="http://Charles-xcz.github.io">Charles</a>的博客，转载请注明出处！
