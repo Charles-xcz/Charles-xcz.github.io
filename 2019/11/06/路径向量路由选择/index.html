@@ -16,10 +16,10 @@
     <meta name="description" content>
     
     <title>
-          Charles
+      距离向量路由选择 - Charles
     </title>
     <link rel="manifest" href="/manifest.json">
-    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
     <link rel="stylesheet" href="/style/style.css">
   </head>
   <body>
@@ -27,7 +27,7 @@
     
     <div id="post-toc" class="animated hiddenToc hide">
       <span class="title">Toc</span>
-      <ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#距离向量路由选择"><span class="toc-text">距离向量路由选择</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Bellman-Ford算法"><span class="toc-text">1 Bellman-Ford算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-距离向量路由选择算法"><span class="toc-text">2 距离向量路由选择算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-计数到无穷大"><span class="toc-text">3 计数到无穷大</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#二结点循环问题"><span class="toc-text">二结点循环问题:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三结点不稳定性"><span class="toc-text">三结点不稳定性</span></a></li></ol></li></ol></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Bellman-Ford算法"><span class="toc-text">1 Bellman-Ford算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-距离向量路由选择算法"><span class="toc-text">2 距离向量路由选择算法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-计数到无穷大"><span class="toc-text">3 计数到无穷大</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#二结点循环问题"><span class="toc-text">二结点循环问题:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三结点不稳定性"><span class="toc-text">三结点不稳定性</span></a></li></ol></li></ol>
     </div>
     
     <div id="fixed-menu-wrap">
@@ -149,7 +149,7 @@
         <article class="post-entry">
     <div class="header">
       
-      <div class="title"></div>
+      <div class="title">距离向量路由选择</div>
       <div class="meta">
         <span class="item">
           <span class="iconfont icon-time-circle"></span>
@@ -157,21 +157,42 @@
         </span>
 
         
-          <span class="item leancloud-visitors" id="/2019/11/06/路径向量路由选择/" data-flag-title>
+          <span class="item leancloud-visitors" id="/2019/11/06/路径向量路由选择/" data-flag-title="距离向量路由选择">
             <span class="iconfont icon-eye1"></span>
             <span class="leancloud-visitors-count"></span>
           </span>
         
 
+         
+        <span class="item">
+          <span class="iconfont icon-folder"></span>
+          <span>
+              
+                
+                  <a href="/categories/计算机基础">计算机基础</a>
+                
+              
+          </span>
+        </span>
         
         
-        
+         
+          <span class="item">
+            <span class="iconfont icon-tag1"></span>
+            <span>
+                
+                  
+                    <a href="/tags/网络">网络</a>
+                  
+                
+            </span>
+          </span>
+         
       </div>
       <div>
       </div>
     </div>
-    <hr>
-<h1 id="距离向量路由选择">距离向量路由选择<a class="post-anchor" href="#距离向量路由选择"></a></h1><p>​    <strong>距离向量路由选择是通过对Bellman-Ford算法进行适当修改，找到任意两结点之间的最短路径。</strong></p>
+    <p>​    <strong>距离向量路由选择是通过对Bellman-Ford算法进行适当修改，找到任意两结点之间的最短路径。</strong></p>
 <p>​    <strong>先介绍一下Bellman-Ford算法：</strong></p>
 <h3 id="1-Bellman-Ford算法">1 Bellman-Ford算法<a class="post-anchor" href="#1-Bellman-Ford算法"></a></h3><p>​    这个算法基于这样一个事实，如果结点 i 的所有邻站都知道到结点的最短距离，那么求结点 i 和结点 j 之间的最短距离就可以用结点 i 到每个邻站之间的距离分别加上该邻站到结点j的最短距离，然后再从得数中选择最小的一个。</p>
 <p><a href="https://img-blog.csdnimg.cn/20191106214851612.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTc5NzUyMg==,size_16,color_FFFFFF,t_70" data-caption="1-1" data-fancybox="images"><img src="https://img-blog.csdnimg.cn/20191106214851612.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTc5NzUyMg==,size_16,color_FFFFFF,t_70" alt="1-1"></a></p>
@@ -198,7 +219,7 @@
   <div class="post-guide">
     <div class="item left">
         
-          <a href="/2020/02/29/JVM学习——类加载、连接与初始化/"></a>
+          <a href="/2020/02/29/JVM学习(1)——类加载、连接与初始化/">JVM学习(1)——类加载、连接与初始化</a>
         
     </div>
     <div class="item right">
@@ -228,8 +249,8 @@
         <footer>
           <div class="copyright">
             ©2020
-            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a> |
-            <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a>
+            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a>
+            <!-- <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a> -->
           </div>
           
         </footer>
@@ -239,7 +260,7 @@
   
 </html>
 <script type="text/javascript">
-                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"\",\"API_KEY\":\"\"},\"service_worker\":{\"open\":false},\"baidu_tongji\":{\"site_from\":\"2020/2/28\",\"site_id\":\"\",\"access_token\":\"xxxxx\"}}")
+                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"\",\"API_KEY\":\"\"},\"service_worker\":{\"open\":false}}")
                 </script> <script type="text/javascript">window.addEventListener('load', function() {
     
     window.loadJs = function(d, m, a) {

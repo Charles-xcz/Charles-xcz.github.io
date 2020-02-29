@@ -16,10 +16,10 @@
     <meta name="description" content>
     
     <title>
-          Charles
+      JVM学习(1)——类加载、连接与初始化 - Charles
     </title>
     <link rel="manifest" href="/manifest.json">
-    <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon">
+    <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
     <link rel="stylesheet" href="/style/style.css">
   </head>
   <body>
@@ -27,7 +27,7 @@
     
     <div id="post-toc" class="animated hiddenToc hide">
       <span class="title">Toc</span>
-      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#JVM学习——类加载、连接与初始化"><span class="toc-text">JVM学习——类加载、连接与初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Java虚拟机与程序的生命周期"><span class="toc-text">1. Java虚拟机与程序的生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-加载"><span class="toc-text">2. 加载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-连接"><span class="toc-text">3. 连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-初始化"><span class="toc-text">4. 初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-类的实例化"><span class="toc-text">5. 类的实例化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Some-Cases"><span class="toc-text">Some Cases</span></a></li></ol>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-Java虚拟机与程序的生命周期"><span class="toc-text">1. Java虚拟机与程序的生命周期</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-加载"><span class="toc-text">2. 加载</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-连接"><span class="toc-text">3. 连接</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-初始化"><span class="toc-text">4. 初始化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-类的实例化"><span class="toc-text">5. 类的实例化</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Some-Cases"><span class="toc-text">Some Cases</span></a></li></ol>
     </div>
     
     <div id="fixed-menu-wrap">
@@ -149,7 +149,7 @@
         <article class="post-entry">
     <div class="header">
       
-      <div class="title"></div>
+      <div class="title">JVM学习(1)——类加载、连接与初始化</div>
       <div class="meta">
         <span class="item">
           <span class="iconfont icon-time-circle"></span>
@@ -157,7 +157,7 @@
         </span>
 
         
-          <span class="item leancloud-visitors" id="/2020/02/29/JVM学习——类加载、连接与初始化/" data-flag-title>
+          <span class="item leancloud-visitors" id="/2020/02/29/JVM学习(1)——类加载、连接与初始化/" data-flag-title="JVM学习(1)——类加载、连接与初始化">
             <span class="iconfont icon-eye1"></span>
             <span class="leancloud-visitors-count"></span>
           </span>
@@ -192,10 +192,9 @@
       <div>
       </div>
     </div>
-    <h2 id="JVM学习——类加载、连接与初始化">JVM学习——类加载、连接与初始化<a class="post-anchor" href="#JVM学习——类加载、连接与初始化"></a></h2><ul>
-<li>在Java代码中，类型的<strong>加载</strong>、<strong>连接</strong>与<strong>初始化</strong>过程都是在程序<strong>运行期间</strong>完成的</li>
-<li>提供了更大的灵活性，增加了更多的可能性</li>
-</ul>
+    <blockquote>
+<p>在Java代码中，类型的<strong>加载</strong>、<strong>连接</strong>与<strong>初始化</strong>过程都是在程序<strong>运行期间</strong>完成的。这提供了更大的灵活性，增加了更多的可能性</p>
+</blockquote>
 <h2 id="1-Java虚拟机与程序的生命周期">1. Java虚拟机与程序的生命周期<a class="post-anchor" href="#1-Java虚拟机与程序的生命周期"></a></h2><ul>
 <li>如下几种情况下，Java虚拟机将结束生命周期<ul>
 <li>执行了System.exit()方法</li>
@@ -205,9 +204,11 @@
 </ul>
 </li>
 </ul>
+<figure class="half">
 <a href="https://i.loli.net/2020/02/29/jEVOpJHzg3CcaFs.png" data-caption="image-20200220164745398" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/jEVOpJHzg3CcaFs.png" alt="image-20200220164745398"></a>
-
 <a href="https://i.loli.net/2020/02/29/zA3guopQn4RKJSX.png" data-caption="image-20200220170243034" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/zA3guopQn4RKJSX.png" alt="image-20200220170243034"></a>
+</figure>
+
 
 <h2 id="2-加载">2. 加载<a class="post-anchor" href="#2-加载"></a></h2><p>​    查找并加载类的二进制数据，就是将二进制形式的Java类型读入Java虚拟机中。</p>
 <p>​    类的加载指的是将类的.class文件中的二进制数据读入到内存中，将其放在运行时数据区的方法区内。然后在内存中创建一个java.lang.Class对象（规范并未说明Class对象位于哪里，HotSpot虚拟机将其放在了方法区中）用来封装类在方法区内的数据结构。</p>
@@ -500,7 +501,7 @@ public class com.charles.jvm.classloader.MyTest2 &#123;
     </div>
     <div class="item right">
         
-          <a href="/2019/11/06/路径向量路由选择/"></a>
+          <a href="/2019/11/06/路径向量路由选择/">距离向量路由选择</a>
         
     </div>
   </div>
@@ -512,7 +513,7 @@ public class com.charles.jvm.classloader.MyTest2 &#123;
       本文作者：<a href="http://Charles-xcz.github.io">Charles</a>
     </div>
     <div class="link">
-      永久链接：<a href="http://Charles-xcz.github.io/2020/02/29/JVM学习——类加载、连接与初始化/">http://Charles-xcz.github.io/2020/02/29/JVM学习——类加载、连接与初始化/</a>
+      永久链接：<a href="http://Charles-xcz.github.io/2020/02/29/JVM学习(1)——类加载、连接与初始化/">http://Charles-xcz.github.io/2020/02/29/JVM学习(1)——类加载、连接与初始化/</a>
     </div>
     <div class="declare">
       版权声明：本文首发于<a href="http://Charles-xcz.github.io">Charles</a>的博客，转载请注明出处！
@@ -527,8 +528,8 @@ public class com.charles.jvm.classloader.MyTest2 &#123;
         <footer>
           <div class="copyright">
             ©2020
-            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a> |
-            <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a>
+            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a>
+            <!-- <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a> -->
           </div>
           
         </footer>
@@ -538,7 +539,7 @@ public class com.charles.jvm.classloader.MyTest2 &#123;
   
 </html>
 <script type="text/javascript">
-                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"\",\"API_KEY\":\"\"},\"service_worker\":{\"open\":false},\"baidu_tongji\":{\"site_from\":\"2020/2/28\",\"site_id\":\"\",\"access_token\":\"xxxxx\"}}")
+                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"\",\"API_KEY\":\"\"},\"service_worker\":{\"open\":false}}")
                 </script> <script type="text/javascript">window.addEventListener('load', function() {
     
     window.loadJs = function(d, m, a) {
