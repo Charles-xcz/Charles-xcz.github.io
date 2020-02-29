@@ -154,6 +154,10 @@
         <article class="post-entry">
     <div class="header">
       
+        <div class="top">
+          <div class="iconfont icon-zuirehotxiankuang animated infinite heartBeat"></div>
+        </div>
+      
       <div class="title">JVM学习(1)——类加载、连接与初始化</div>
       <div class="meta">
         <span class="item">
@@ -320,7 +324,7 @@
     &#125;
 &#125;</code></pre>
 
-<pre><code class="hljs java">/**
+<pre><code class="hljs java"><span class="hljs-comment">/**
  * 定义常量的类的初始化:
  * 常量在编译阶段会存入到调用这个常量的方法的类的常量池中,
  * 本质上调用类并没有直接引用到定义常量的类,因此并不会触发定义常量类的初始化
@@ -331,30 +335,29 @@
  *    sipush:表示将短整型(-32768~32767)的常量值从常量池中推送至栈顶
  *    iconst_i:i属于(-1~5)表示将int型的数字i从常量池中推送至栈顶
  *
- * @author charles
- * @date 2020/2/19 11:21
- */
-public class MyTest2 &#123;
-    public static void main(String[] args) &#123;
-        /*
+ * <span class="hljs-doctag">@author</span> charles
+ * <span class="hljs-doctag">@date</span> 2020/2/19 11:21
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyTest2</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        <span class="hljs-comment">/*
         这里常量 MyParent2.STR 存放到了类 MyTest2 的常量池中,
         之后 MyTest2 与 MyParent2 就没有任何关联了
         甚至,我们可以将 MyParent2 的class文件删除
-         */
+         */</span>
         System.out.println(MyParent2.STR);
     &#125;
 &#125;
 
-class MyParent2 &#123;
-    public static final String STR = "hello world";
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyParent2</span> </span>&#123;
+    <span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> String STR = <span class="hljs-string">"hello world"</span>;
 
-    static &#123;
-        System.out.println("MyParent2 static block!");
+    <span class="hljs-keyword">static</span> &#123;
+        System.out.println(<span class="hljs-string">"MyParent2 static block!"</span>);
     &#125;
-&#125;
+&#125;</code></pre>
 
-
-//反编译结果如下
+<pre><code class="hljs shell">//反编译结果如下
 D:\Develop\Java\JavaProject\JVMStudy\build\classes\java\main&gt;javap -c com.charles.jvm.classloader.MyTest2
 Compiled from "MyTest2.java"
 public class com.charles.jvm.classloader.MyTest2 &#123;
@@ -499,6 +502,26 @@ public class com.charles.jvm.classloader.MyTest2 &#123;
 
 
 
+  
+    <div class="post-reward">
+    <div id="reward-button">打赏</div>
+      <div id="qr">
+        <div class="wrap">
+            
+            <div class="bg-wrap">
+              <a href="/images/alipay.jpg" target="_block" class="bg" style="background-image:url('/images/alipay.jpg')"></a>
+              支付宝
+            </div>
+            
+            
+            <div class="bg-wrap">
+                <a href="/images/weixinpay.png" target="_block" class="bg" style="background-image:url('/images/weixinpay.png')"></a>
+              微信
+            </div>
+            
+        </div>
+      </div>
+    </div>
   
   <div class="post-guide">
     <div class="item left">
