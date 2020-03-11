@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.9.0">
+      <script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content>
+    <meta name="description" content>
+    
+    <title>
+      多线程——线程池 - Charles
+    </title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/style/style.css">
+  <link rel="alternate" href="/atom.xml" title="Charles" type="application/atom+xml">
+</head>
+  <body>
+    <canvas id="pagemap"></canvas>
+    
+    <div id="post-toc" class="animated hiddenToc hide">
+      <span class="title">Toc</span>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-创建线程的3种方法"><span class="toc-text">1. 创建线程的3种方法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-使用线程池优势"><span class="toc-text">2. 使用线程池优势</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-线程池的实现"><span class="toc-text">3. 线程池的实现</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-线程池七大参数"><span class="toc-text">4. 线程池七大参数</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-线程池底层原理"><span class="toc-text">5. 线程池底层原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-拒绝策略"><span class="toc-text">6. 拒绝策略</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-手写线程池"><span class="toc-text">7. 手写线程池</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-线程数量考虑"><span class="toc-text">8. 线程数量考虑</span></a></li></ol>
+    </div>
+    
+    <div id="fixed-menu-wrap">
+      <span class="iconfont icon-sousuo search-box menu-reset"></span>
+      <span class="icon-toc menu-reset">Toc</span>
+      <span class="iconfont icon-arrowup menu-reset"></span>
+    </div>
+    <div id="fixed-menu">
+      <span class="iconfont icon-menu-"></span>
+    </div>
+    <div id="progress">
+      <div class="line"></div>
+    </div>
+    <div id="search-shade" class="animated hiddenSearch hide">
+      <div class="input-wrap">
+        <span class="iconfont icon-sousuo search-box"></span>
+        <input type="text" placeholder="Search">
+        <span class="iconfont icon-close"></span>
+      </div>
+      <div class="search-result">
+        <div class="meta">
+          <span><b id="result-count">0</b> results found</span>
+          <img src="/images/logo.jpeg">
+        </div>
+        <ul id="result-box"></ul>
+      </div>
+    </div>
+    <div id="menu-mask" class="animated hideMenuMask hide">
+      <span class="iconfont icon-close"></span>
+      <div class="nav">
+        
+        <a href="/" class>
+          Home
+        </a>
+        
+        <a href="/archives" class>
+          Archives
+        </a>
+        
+        <a href="/categories" class>
+          Categories
+        </a>
+        
+        <a href="/tags" class>
+          Tags
+        </a>
+        
+        <a href="/about" class>
+          About
+        </a>
+        
+      </div>
+    </div>
+    <div id="header">
+      <div class="intro">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <div class="author">Charles</div>
+      </div>
+      <div class="nav">
+        <span class="iconfont icon-menu menu-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+    </div>
+    <div id="side" class="animated bounceInLeft">
+      <div class="shrink">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <span class="iconfont icon-menu toggle-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+      <div class="magnify">
+        <div class="about">
+          <div class="author">Charles</div>
+          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        </div>
+
+        <div class="nav">
+          
+          <a href="/" class>
+            Home
+          </a>
+          
+          <a href="/archives" class>
+            Archives
+          </a>
+          
+          <a href="/categories" class>
+            Categories
+          </a>
+          
+          <a href="/tags" class>
+            Tags
+          </a>
+          
+          <a href="/about" class>
+            About
+          </a>
+          
+          <a href="#" class="search-box">
+            <span class="iconfont icon-sousuo"></span>
+          </a>
+        </div>
+        <div class="bottom">
+          <div class="follow">
+            
+            <a href="https://github.com/Charles-xcz" target="_block">
+              <span class="iconfont icon-github"></span>
+            </a>
+             
+            <a href="/atom.xml" target="_block">
+              <span class="iconfont icon-rss"></span>
+            </a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="container">
+      <div class="main animated bounceInRight delay-0.7s">
+        <article class="post-entry">
+    <div class="header">
+      
+      <div class="title">多线程——线程池</div>
+      <div class="meta">
+        <span class="item">
+          <span class="iconfont icon-time-circle"></span>
+          <span>2020/03/11</span>
+        </span>
+
+        
+          <span class="item leancloud-visitors" id="/2020/03/11/多线程——线程池/" data-flag-title="多线程——线程池">
+            <span class="iconfont icon-eye1"></span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+
+         
+        <span class="item">
+          <span class="iconfont icon-folder"></span>
+          <span>
+              
+                
+                  <a href="/categories/java">java</a>
+                
+              
+                
+                  <a href="/categories/多线程">多线程</a>
+                
+              
+          </span>
+        </span>
+        
+        
+         
+          <span class="item">
+            <span class="iconfont icon-tag1"></span>
+            <span>
+                
+                  
+                    <a href="/tags/多线程">多线程</a>
+                  
+                
+                  
+                    <a href="/tags/线程池">线程池</a>
+                  
+                
+            </span>
+          </span>
+         
+      </div>
+      <div>
+      </div>
+    </div>
+    <h2 id="1-创建线程的3种方法">1. 创建线程的3种方法<a class="post-anchor" href="#1-创建线程的3种方法"></a></h2><ul>
+<li>继承Thread类</li>
+<li>实现Runnable接口</li>
+<li>实现Callable接口</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CallableDemo</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> ExecutionException, InterruptedException </span>&#123;
+        <span class="hljs-keyword">int</span> result;
+        FutureTask&lt;Integer&gt; futureTask = <span class="hljs-keyword">new</span> FutureTask&lt;&gt;(<span class="hljs-keyword">new</span> MyThread3());
+        <span class="hljs-keyword">new</span> Thread(futureTask, <span class="hljs-string">"A"</span>).start();
+        <span class="hljs-keyword">new</span> Thread(futureTask, <span class="hljs-string">"B"</span>).start();
+        System.out.println(<span class="hljs-string">"main线程执行其他操作"</span>);
+        TimeUnit.SECONDS.sleep(<span class="hljs-number">2</span>);
+        <span class="hljs-keyword">while</span> (!futureTask.isDone()) &#123;
+
+        &#125;
+        <span class="hljs-comment">//要求获得Callable线程的返回结果,如果没有计算完成会导致阻塞,直到计算完成</span>
+        <span class="hljs-comment">//所以建议futureTask.get()放在后面,不会阻塞main线程去执行其他工作</span>
+        Integer integer = futureTask.get();
+        result = integer + <span class="hljs-number">10</span>;
+        System.out.println(<span class="hljs-string">"返回结果为--&gt;"</span> + result);
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyThread1</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Thread</span> </span>&#123;
+&#125;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyThread2</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Runnable</span> </span>&#123;
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">run</span><span class="hljs-params">()</span> </span>&#123;
+    &#125;
+&#125;
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyThread3</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">Callable</span>&lt;<span class="hljs-title">Integer</span>&gt; </span>&#123;
+
+    <span class="hljs-meta">@Override</span>
+    <span class="hljs-function"><span class="hljs-keyword">public</span> Integer <span class="hljs-title">call</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> Exception </span>&#123;
+        System.out.println(<span class="hljs-string">"***come in callable***"</span>);
+        TimeUnit.SECONDS.sleep(<span class="hljs-number">3</span>);
+        <span class="hljs-keyword">return</span> <span class="hljs-number">1024</span>;
+    &#125;
+&#125;</code></pre>
+
+<h2 id="2-使用线程池优势">2. 使用线程池优势<a class="post-anchor" href="#2-使用线程池优势"></a></h2><p>​    线程池做的工作主要是控制运行的线程的数量，处理过程中将任务放入队列，然后在线程创建后启动这些任务，如果线程数量超过了最大数量，超出数量的线程排队等候，等其它线程执行完毕，再从队列中取出任务来执行。</p>
+<p>主要特点为：线程复用，控制最大并发数，管理线程。</p>
+<p><strong>优点</strong></p>
+<ol>
+<li>降低资源消耗。通过重复利用己创建的线程降低线程创建和销毁造成的消耗。</li>
+<li>提高响应速度。当任务到达时，任务可以不需要的等到线程创建就能立即执行。</li>
+<li>提高线程的可管理性。线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一的分配，调优和监控。</li>
+</ol>
+<h2 id="3-线程池的实现">3. 线程池的实现<a class="post-anchor" href="#3-线程池的实现"></a></h2><p>​    Java中的线程池是通过Executor框架实现的，该框架中用到了Executor，Executors，ExecutorService，ThreadPoolExecutor这几个类。</p>
+<ul>
+<li><strong>Executors.newFixedThreadPool(int)</strong><ul>
+<li>创建一个定长线程池，可控制线程最大并发数，超出的线程会在阻塞队列中等待。</li>
+<li>newFixedThreadPool创建的线程池corePoolSize和maximumPoolSize值是相等的，它使用的LinkedBlockingQueue。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ExecutorService <span class="hljs-title">newFixedThreadPool</span><span class="hljs-params">(<span class="hljs-keyword">int</span> nThreads)</span> </span>&#123;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ThreadPoolExecutor(nThreads, nThreads,
+                                  <span class="hljs-number">0L</span>, TimeUnit.MILLISECONDS,
+                                  <span class="hljs-keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;());
+&#125;</code></pre>
+
+<ul>
+<li><strong>Executors.newSingleThreadExecutor()</strong><ul>
+<li>创建一个单线程化的线程池，它只会用唯一的工作线程来执行任务，保证所有任务按照指定顺序执行。</li>
+<li>newSingleThreadExecutor将corePoolSize和maximumPoolSize都设置为1，它使用的LinkedBlockingQueue。</li>
+</ul>
+</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ExecutorService <span class="hljs-title">newSingleThreadExecutor</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> FinalizableDelegatedExecutorService
+        (<span class="hljs-keyword">new</span> ThreadPoolExecutor(<span class="hljs-number">1</span>, <span class="hljs-number">1</span>,
+                                <span class="hljs-number">0L</span>, TimeUnit.MILLISECONDS,
+                                <span class="hljs-keyword">new</span> LinkedBlockingQueue&lt;Runnable&gt;()));
+&#125;</code></pre>
+
+<ul>
+<li><strong>Executors.newCachedThreadPool()</strong><ul>
+<li>创建一个可缓存线程池，如果线程池长度超过处理需要，可灵活回收空闲线程，若无可回收，则新建线程。</li>
+</ul>
+</li>
+<li>newCached ThreadPool将corePoolSize设置为0，将maximumPoolSize设置为Integer.MAX_VALUE，使用的是SynchronousQueue，也就是说来了任务就创建线程运行，当线程空闲超过60秒，就销毁线程。</li>
+</ul>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> ExecutorService <span class="hljs-title">newCachedThreadPool</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">return</span> <span class="hljs-keyword">new</span> ThreadPoolExecutor(<span class="hljs-number">0</span>, Integer.MAX_VALUE,
+                                  <span class="hljs-number">60L</span>, TimeUnit.SECONDS,
+                                  <span class="hljs-keyword">new</span> SynchronousQueue&lt;Runnable&gt;());
+&#125;</code></pre>
+
+<ul>
+<li><strong>Executors.newScheduledThreadPool()</strong></li>
+<li><strong>Executors.newWorkStealingPool(int)</strong></li>
+</ul>
+<p><font color="red"><strong>注意</strong></font>：<u>线程池不允许使用Executors去创建，而是通过ThreadPoolExecutor的方式，这样的处理方式让写的同学更加明确线程池的运行规则，规避资源耗尽的风险。</u></p>
+<p>说明：Executors返回的线程池对象的弊端如下：</p>
+<ol>
+<li>FixedThreadPool和SingleThreadPool：允许的请求队列长度为Integer.MAX_VALUE，可能会堆积大量的请求，从而导致OOM</li>
+<li>CachedThreadPool和ScheduledThreadPool：允许的创建线程数量为Integer.MAX_VALUE，可能会创建大量的线程，从而导致OOM。</li>
+</ol>
+<h2 id="4-线程池七大参数">4. 线程池七大参数<a class="post-anchor" href="#4-线程池七大参数"></a></h2><ol>
+<li><p><strong>corePoolSize</strong>：线程池中的常驻核心线程数</p>
+<ul>
+<li><p>在创建了线程池后，当有请求任务来之后，就会安排池中的线程去执行请求任务，近似理解为今日当值线程。</p>
+</li>
+<li><p>当线程池中的线程数目达到coreloolSize后，就会把到达的任务放到缓存队列当中。</p>
+</li>
+</ul>
+</li>
+<li><p><strong>maximumPoolSize</strong>：线程池能够容纳同时执行的最大线程数，此值必须大于等于1。</p>
+</li>
+<li><p><strong>keepAliveTime</strong>：多余的空闲线程的存活时间。</p>
+<p>当前线程池数量超过corePoolSize时，当空闲时间达到keepAliveTime值时，多余空闲线程会被销毁直到只剩下corePoolSize个线程为止。</p>
+</li>
+<li><p><strong>unit</strong>：keepAliveTime的单位。</p>
+</li>
+<li><p><strong>workQueue</strong>：任务队列，被提交但尚未被执行的任务。</p>
+</li>
+<li><p><strong>threadFactory</strong>：表示生成线程池中工作线程的线程工厂，用于创建线程一般用默认的即可。</p>
+</li>
+<li><p><strong>handler</strong>：拒绝策略，表示当队列满了并且工作线程大于等于线程池的最大线程数（maximumPoolSize）时如何来处理。</p>
+</li>
+</ol>
+<h2 id="5-线程池底层原理">5. 线程池底层原理<a class="post-anchor" href="#5-线程池底层原理"></a></h2><a href="https://i.loli.net/2020/02/29/Xz8uLJGgDAmOCR9.png" data-caption="image-20200227210501537.png" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/Xz8uLJGgDAmOCR9.png" alt="image-20200227210501537.png"></a>
+
+<p><strong>处理流程：</strong></p>
+<a href="https://i.loli.net/2020/02/29/mc3LJQT6G4q5yaw.png" data-caption="image-20200227205230833" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/mc3LJQT6G4q5yaw.png" alt="image-20200227205230833"></a>
+
+<h2 id="6-拒绝策略">6. 拒绝策略<a class="post-anchor" href="#6-拒绝策略"></a></h2><ol>
+<li><strong>AbortPolicy（默认）</strong>：直接抛出RejectedExecutionException异常阻止系统正常运行。</li>
+<li><strong>CallerRunsPolicy</strong>：“调用者运行“一种调节机制，该策略既不会抛弃任务，也不会抛出异常，而是将某些任务回退到调用者，从而降低新的任务流量。</li>
+<li><strong>DiscardoldestPolicy</strong>：抛弃队列中等待最久的任务，然后把当前任务加入队列中尝试再次提交当前任务。</li>
+<li><strong>DiscardPolicy</strong>：直接丢弃任务，不予任何处理也不抛出异常。如果允许任务丢失，这是最好的一种方案。</li>
+</ol>
+<h2 id="7-手写线程池">7. 手写线程池<a class="post-anchor" href="#7-手写线程池"></a></h2><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyThreadPoolDemo</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        ExecutorService threadPool = <span class="hljs-keyword">new</span> ThreadPoolExecutor(
+                <span class="hljs-number">2</span>,
+                <span class="hljs-number">5</span>,
+                <span class="hljs-number">1L</span>,
+                TimeUnit.SECONDS,
+                <span class="hljs-keyword">new</span> LinkedBlockingQueue&lt;&gt;(<span class="hljs-number">3</span>),
+                Executors.defaultThreadFactory(),
+                <span class="hljs-keyword">new</span> ThreadPoolExecutor.CallerRunsPolicy());
+        <span class="hljs-keyword">try</span> &#123;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">15</span>; i++) &#123;
+                threadPool.execute(() -&gt; &#123;
+                    System.out.println(Thread.currentThread().getName() + <span class="hljs-string">" 来办理业务"</span>);
+                &#125;);
+            &#125;
+        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            threadPool.shutdown();
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<h2 id="8-线程数量考虑">8. 线程数量考虑<a class="post-anchor" href="#8-线程数量考虑"></a></h2><p><strong>CPU密集型</strong>：</p>
+<ul>
+<li>CPU密集的意思是该任务需要大量的运算，而没有阻塞，CPU一直全速运行。</li>
+<li>CPU密集任务只有在真正的多核CPU上才可能得到加速（通过多线程），而在单核CPU上，无论你开几个模拟的多线程该任务都不可能得到加速，因为CPU总的运算能力就那些。</li>
+<li>CPU密集型任务配置尽可能少的线程数量：</li>
+<li><strong>一般公式：CPU核数+1个线程的线程池</strong></li>
+</ul>
+<p><strong>IO密集型</strong>：</p>
+<ul>
+<li>由于IO密集型任务线程并不是一直在执行任务，则应配置尽可能多的线程。</li>
+<li>IO密集型，即该任务需要大量的IO，即大量的阻塞。</li>
+<li>在单线程上运行IO密集型的任务会导致浪费大量的CPU运算能力浪费在等待。</li>
+<li>所以在IO密集型任务中使用多线程可以大大的加速程序运行，即使在单核CPU上，这种加速主要就是利用了被浪费掉的阻塞时间。</li>
+<li>IO密集型时，大部分线程都阻塞，故需要多配置线程数。</li>
+<li>两种说法：<ul>
+<li>如CPU核数*2</li>
+<li>CPU核数/1-阻塞系数        阻塞系数在0.8~0.9之间。比如8核CPU：8/1-0.9=80个线程数</li>
+</ul>
+</li>
+</ul>
+
+
+  
+    <div class="post-reward">
+    <div id="reward-button">打赏</div>
+      <div id="qr">
+        <div class="wrap">
+            
+            <div class="bg-wrap">
+              <a href="/images/alipay.jpg" target="_block" class="bg" style="background-image:url('/images/alipay.jpg')"></a>
+              支付宝
+            </div>
+            
+            
+            <div class="bg-wrap">
+                <a href="/images/weixinpay.png" target="_block" class="bg" style="background-image:url('/images/weixinpay.png')"></a>
+              微信
+            </div>
+            
+        </div>
+      </div>
+    </div>
+  
+  <div class="post-guide">
+    <div class="item left">
+        
+    </div>
+    <div class="item right">
+        
+          <a href="/2020/03/11/多线程——线程阻塞和阻塞队列/">线程阻塞和阻塞队列</a>
+        
+    </div>
+  </div>
+
+  
+
+  <div class="post-copyright">
+    <div class="auth">
+      本文作者：<a href="http://Charles-xcz.github.io">Charles</a>
+    </div>
+    <div class="link">
+      永久链接：<a href="http://Charles-xcz.github.io/2020/03/11/多线程——线程池/">http://Charles-xcz.github.io/2020/03/11/多线程——线程池/</a>
+    </div>
+    <div class="declare">
+      版权声明：本文首发于<a href="http://Charles-xcz.github.io">Charles</a>的博客，转载请注明出处！
+    </div>
+  </div>
+
+  <div id="comment"></div>
+
+  
+  
+</article>
+        <footer>
+          <div class="copyright">
+            ©2020
+            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a>
+            <!-- <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a> -->
+          </div>
+          
+        </footer>
+      </div>
+    </div>
+  </body>
+  
+</html>
+<script type="text/javascript">
+                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"FxmoY9bk2JUIzmRcLKo0Ner2-gzGzoHsz\",\"API_KEY\":\"w1oDxPXzMesUY9K25GxAsVnR\"},\"service_worker\":{\"open\":false}}")
+                </script> <script type="text/javascript">window.addEventListener('load', function() {
+    
+    window.loadJs = function(d, m, a) {
+      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
+      var b = document.createElement('script')
+      b.defer = true
+      b.setAttribute('type', 'text/javascript')
+      b.setAttribute('charset', 'UTF-8')
+      b.setAttribute('async', 'true')
+      b.setAttribute('src', d)
+      m && b.setAttribute('data-main', '/scripts/app-built')
+      if (typeof a === 'function') {
+        if (window.attachEvent) {
+          b.onreadystatechange = function() {
+            var e = b.readyState
+            if (e === 'loaded' || e === 'complete') {
+              b.onreadystatechange = null
+              a()
+            }
+          }
+        } else {
+          b.onload = a
+        }
+      }
+      c.appendChild(b)
+    }
+    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
+  })</script> <script type="text/javascript">
+                  ;(function() {
+                    var bp = document.createElement('script')
+                    var curProtocol = window.location.protocol.split(':')[0]
+                    if (curProtocol === 'https') {
+                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+                    } else {
+                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+                    }
+                    var s = document.getElementsByTagName('script')[0]
+                    s.parentNode.insertBefore(bp, s)
+                  })()
+                </script> 

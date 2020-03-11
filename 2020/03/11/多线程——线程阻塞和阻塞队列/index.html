@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.9.0">
+      <script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content>
+    <meta name="description" content>
+    
+    <title>
+      线程阻塞和阻塞队列 - Charles
+    </title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/style/style.css">
+  <link rel="alternate" href="/atom.xml" title="Charles" type="application/atom+xml">
+</head>
+  <body>
+    <canvas id="pagemap"></canvas>
+    
+    <div id="post-toc" class="animated hiddenToc hide">
+      <span class="title">Toc</span>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-阻塞线程的几个工具类"><span class="toc-text">1. 阻塞线程的几个工具类</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-CountDownLatch"><span class="toc-text">1.1 CountDownLatch</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-CyclicBarrier"><span class="toc-text">1.2 CyclicBarrier</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-3-Semaphore"><span class="toc-text">1.3 Semaphore</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-BlockingQueue"><span class="toc-text">2. BlockingQueue</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#2-1-核心方法"><span class="toc-text">2.1 核心方法</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-2-实现类"><span class="toc-text">2.2 实现类</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-3-使用场景"><span class="toc-text">2.3 使用场景</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1-生产者与消费者"><span class="toc-text">1. 生产者与消费者</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2-线程池底层实现"><span class="toc-text">2. 线程池底层实现</span></a></li></ol></li></ol></li></ol>
+    </div>
+    
+    <div id="fixed-menu-wrap">
+      <span class="iconfont icon-sousuo search-box menu-reset"></span>
+      <span class="icon-toc menu-reset">Toc</span>
+      <span class="iconfont icon-arrowup menu-reset"></span>
+    </div>
+    <div id="fixed-menu">
+      <span class="iconfont icon-menu-"></span>
+    </div>
+    <div id="progress">
+      <div class="line"></div>
+    </div>
+    <div id="search-shade" class="animated hiddenSearch hide">
+      <div class="input-wrap">
+        <span class="iconfont icon-sousuo search-box"></span>
+        <input type="text" placeholder="Search">
+        <span class="iconfont icon-close"></span>
+      </div>
+      <div class="search-result">
+        <div class="meta">
+          <span><b id="result-count">0</b> results found</span>
+          <img src="/images/logo.jpeg">
+        </div>
+        <ul id="result-box"></ul>
+      </div>
+    </div>
+    <div id="menu-mask" class="animated hideMenuMask hide">
+      <span class="iconfont icon-close"></span>
+      <div class="nav">
+        
+        <a href="/" class>
+          Home
+        </a>
+        
+        <a href="/archives" class>
+          Archives
+        </a>
+        
+        <a href="/categories" class>
+          Categories
+        </a>
+        
+        <a href="/tags" class>
+          Tags
+        </a>
+        
+        <a href="/about" class>
+          About
+        </a>
+        
+      </div>
+    </div>
+    <div id="header">
+      <div class="intro">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <div class="author">Charles</div>
+      </div>
+      <div class="nav">
+        <span class="iconfont icon-menu menu-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+    </div>
+    <div id="side" class="animated bounceInLeft">
+      <div class="shrink">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <span class="iconfont icon-menu toggle-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+      <div class="magnify">
+        <div class="about">
+          <div class="author">Charles</div>
+          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        </div>
+
+        <div class="nav">
+          
+          <a href="/" class>
+            Home
+          </a>
+          
+          <a href="/archives" class>
+            Archives
+          </a>
+          
+          <a href="/categories" class>
+            Categories
+          </a>
+          
+          <a href="/tags" class>
+            Tags
+          </a>
+          
+          <a href="/about" class>
+            About
+          </a>
+          
+          <a href="#" class="search-box">
+            <span class="iconfont icon-sousuo"></span>
+          </a>
+        </div>
+        <div class="bottom">
+          <div class="follow">
+            
+            <a href="https://github.com/Charles-xcz" target="_block">
+              <span class="iconfont icon-github"></span>
+            </a>
+             
+            <a href="/atom.xml" target="_block">
+              <span class="iconfont icon-rss"></span>
+            </a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="container">
+      <div class="main animated bounceInRight delay-0.7s">
+        <article class="post-entry">
+    <div class="header">
+      
+      <div class="title">线程阻塞和阻塞队列</div>
+      <div class="meta">
+        <span class="item">
+          <span class="iconfont icon-time-circle"></span>
+          <span>2020/03/11</span>
+        </span>
+
+        
+          <span class="item leancloud-visitors" id="/2020/03/11/多线程——线程阻塞和阻塞队列/" data-flag-title="线程阻塞和阻塞队列">
+            <span class="iconfont icon-eye1"></span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+
+         
+        <span class="item">
+          <span class="iconfont icon-folder"></span>
+          <span>
+              
+                
+                  <a href="/categories/java">java</a>
+                
+              
+                
+                  <a href="/categories/多线程">多线程</a>
+                
+              
+          </span>
+        </span>
+        
+        
+         
+          <span class="item">
+            <span class="iconfont icon-tag1"></span>
+            <span>
+                
+                  
+                    <a href="/tags/多线程">多线程</a>
+                  
+                
+                  
+                    <a href="/tags/BlockingQueue">BlockingQueue</a>
+                  
+                
+            </span>
+          </span>
+         
+      </div>
+      <div>
+      </div>
+    </div>
+    <h2 id="1-阻塞线程的几个工具类">1. 阻塞线程的几个工具类<a class="post-anchor" href="#1-阻塞线程的几个工具类"></a></h2><h3 id="1-1-CountDownLatch">1.1 CountDownLatch<a class="post-anchor" href="#1-1-CountDownLatch"></a></h3><blockquote>
+<p>CountDownLatch：让一些线程阻塞直到另一些线程完成一系列操作后才被唤醒。</p>
+</blockquote>
+<p>​    CountDownLatch主要有两个方法，当一个或多个线程调用await方法时，调用线程会被阻塞。</p>
+<p>​    其它线程调用countDown方法会将计数器减1（调用countDown方法的线程不会阻塞），当计数器的值变为零时，因调用await方法被阻塞的线程会被唤醒，继续执行。</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CountDownLatchDemo</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+        <span class="hljs-comment">//计数器的值设为6</span>
+        CountDownLatch countDownLatch = <span class="hljs-keyword">new</span> CountDownLatch(<span class="hljs-number">6</span>);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">6</span>; i++) &#123;
+            <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">" 离开教室"</span>);
+                countDownLatch.countDown();
+            &#125;, String.valueOf(i)).start();
+        &#125;
+        <span class="hljs-comment">//线程阻塞，直到计数器减到0，线程被唤醒</span>
+        countDownLatch.await();
+        System.out.println(Thread.currentThread().getName()+<span class="hljs-string">"===管理员锁门==="</span>);
+    &#125;
+&#125;</code></pre>
+
+<h3 id="1-2-CyclicBarrier">1.2 CyclicBarrier<a class="post-anchor" href="#1-2-CyclicBarrier"></a></h3><blockquote>
+<p>CyclicBarrier的字面意思是可循环（Cyclic）使用的屏障（Barrier）。</p>
+</blockquote>
+<p>​    它要做的事情是，让一组线程到达一个屏障（也可以叫同步点）时被阻塞，到最后一个线程到达屏障时，屏障才会开门，所有被屏障拦截的线程才会继续执行，线程进入屏障通过CyclicBarrier的await）方法。</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">CyclicBarrierDemo</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        <span class="hljs-comment">//当有七个线程到达同步点，执行方法</span>
+        CyclicBarrier cyclicBarrier = <span class="hljs-keyword">new</span> CyclicBarrier(<span class="hljs-number">7</span>, () -&gt; &#123;
+            System.out.println(<span class="hljs-string">"****召唤神龙****"</span>);
+        &#125;);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= <span class="hljs-number">7</span>; i++) &#123;
+            <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> finalI = i;
+            <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">" 收集到第"</span> + finalI + <span class="hljs-string">"颗龙珠"</span>);
+                <span class="hljs-keyword">try</span> &#123;
+                    <span class="hljs-comment">//被阻塞，同步点</span>
+                    cyclicBarrier.await();
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException | BrokenBarrierException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;, String.valueOf(i)).start();
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<h3 id="1-3-Semaphore">1.3 Semaphore<a class="post-anchor" href="#1-3-Semaphore"></a></h3><blockquote>
+<p>信号量主要用于两个目的，一个是用于多元共享资源的互斥使用，另一个用于并发线程数的控制。</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SemaphoreDemo</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        <span class="hljs-comment">//设定三个共享资源，只有抢到资源的能够执行</span>
+        <span class="hljs-comment">//即最多个线程可以同时执行，其他线程需要等待资源被释放才能抢占资源。</span>
+        Semaphore semaphore = <span class="hljs-keyword">new</span> Semaphore(<span class="hljs-number">3</span>);
+        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">1</span>; i &lt;= <span class="hljs-number">7</span>; i++) &#123;
+            <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> finalI = i;
+            <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+                <span class="hljs-keyword">try</span> &#123;
+                    semaphore.acquire();
+                    System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"--&gt;抢到资源"</span>);
+                    TimeUnit.SECONDS.sleep(<span class="hljs-number">3</span>);
+                    System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"--&gt;3s后释放了资源"</span>);
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;<span class="hljs-keyword">finally</span> &#123;
+                    semaphore.release();
+                &#125;
+            &#125;, String.valueOf(i)).start();
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+<h2 id="2-BlockingQueue">2. BlockingQueue<a class="post-anchor" href="#2-BlockingQueue"></a></h2><p>​    当阻塞队列是空时，从队列中获取元素的操作将会被阻塞。</p>
+<p>​    当阻塞队列是满时，往队列里添加元素的操作将会被阻塞。</p>
+<a href="https://i.loli.net/2020/03/11/mLMgf57dSGqvwlP.png" data-caption="image-20200226181920788" data-fancybox="images"><img src="https://i.loli.net/2020/03/11/mLMgf57dSGqvwlP.png" alt="image-20200226181920788"></a>
+
+<p>​    在多线程领域：所谓阻塞，在某些情况下会挂起线程（即阻塞），一旦条件满足，被挂起的线程又会自动被唤醒。</p>
+<p><strong>为什么需要BlockingQueue</strong></p>
+<p>​    好处是我们不需要关心什么时候需要阻塞线程，什么时候需要唤醒线程，因为这一切BlockingQueue都给你一手包办了。</p>
+<p>​    在<strong>concurrent</strong>包发布以前，在多线程环境下，我们每个程序员都必须去自己控制这些细节，尤其还要兼顾效率和线程安全，而这会给我们的程序带来不小的复杂度。</p>
+<h3 id="2-1-核心方法">2.1 核心方法<a class="post-anchor" href="#2-1-核心方法"></a></h3><p><strong>四组操作</strong></p>
+<table>
+<thead>
+<tr>
+<th align="center">方法类型</th>
+<th align="center">抛出异常</th>
+<th align="center">特殊值</th>
+<th align="center">阻塞</th>
+<th align="center">超时</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">插入</td>
+<td align="center">add(e)</td>
+<td align="center">offer(e)</td>
+<td align="center">put(e)</td>
+<td align="center">offer(e,time,unit)</td>
+</tr>
+<tr>
+<td align="center">移除</td>
+<td align="center">remove()</td>
+<td align="center">poll()</td>
+<td align="center">take()</td>
+<td align="center">poll(time,unit)</td>
+</tr>
+<tr>
+<td align="center">检查</td>
+<td align="center">element()</td>
+<td align="center">peek()</td>
+<td align="center">不可用</td>
+<td align="center">不可用</td>
+</tr>
+</tbody></table>
+<ul>
+<li><p>抛出异常</p>
+<ul>
+<li>当阻塞队列满时，再往队列里add插入元素会抛 IllegalStateException:Queue full</li>
+<li>当阻塞队列空时，再往队列里remove移除元素会抛 NoSuchElementException</li>
+</ul>
+</li>
+<li><p>特殊值</p>
+<ul>
+<li>插入方法，成功ture 失败false</li>
+<li>移除方法，成功返回出队列的元素，队列里面没有就返回null</li>
+</ul>
+</li>
+<li><p>一直阻塞</p>
+<ul>
+<li>当阻塞队列满时，生产者线程继续往队列里put元素，队列会一直阻塞生产线程直到put数据or响应中断退出。</li>
+<li>当阻塞队列空时，消费者线程试图从队列里take元素，队列会一直阻塞消费者线程直到队列可用。</li>
+</ul>
+</li>
+<li><p>超时 </p>
+<ul>
+<li>当阻塞队列满时，队列会阻塞生产者线程一定时间，超时则返回false</li>
+</ul>
+</li>
+</ul>
+<h3 id="2-2-实现类">2.2 实现类<a class="post-anchor" href="#2-2-实现类"></a></h3><ul>
+<li><font color="blue"><strong>ArrayBlockingQueue</strong></font>：由数组结构组成的有界阻塞队列。</li>
+<li><font color="blue"><strong>LinkedBlockingQueue</strong></font>：由链结构组成的有界（但大小<strong>默认值</strong>为Integer.MAX_VALUE）阻塞队列。注意默认值</li>
+<li>PriorityBlockingQueue：支持优先级排序的无界阻塞队列。</li>
+<li>DelayQueue：使用优先级队列实现的延迟无界阻塞队列。</li>
+<li><font color="blue"><strong>SynchronousQueue</strong></font>：不存储元素的阻塞队列，也即单个元素的队列。</li>
+<li>LinkedTransferQueue：由链表结构组成的无界阻塞队列。</li>
+<li>LinkedBlockingDeque：由链表结构组成的双向阻塞队列</li>
+</ul>
+<p><strong>SynchronousQueue没有容量</strong></p>
+<p>​    与其他BlockingQueue不同，SynchronousQueue是一个不存储元素的BlockingQueue。</p>
+<p>​    每一个put操作必须要等待一个take操作，否则不能继续添加元素，反之亦然。</p>
+<h3 id="2-3-使用场景">2.3 使用场景<a class="post-anchor" href="#2-3-使用场景"></a></h3><h4 id="1-生产者与消费者">1. 生产者与消费者<a class="post-anchor" href="#1-生产者与消费者"></a></h4><blockquote>
+<p>传统方式实现：</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ProducerConsumer</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        ShareData shareData = <span class="hljs-keyword">new</span> ShareData();
+        <span class="hljs-comment">//生产</span>
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;
+                <span class="hljs-keyword">try</span> &#123;
+                    shareData.increment();
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+        &#125;, <span class="hljs-string">"AA"</span>).start();
+        <span class="hljs-comment">//消费</span>
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;
+                <span class="hljs-keyword">try</span> &#123;
+                    shareData.decrement();
+                &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                    e.printStackTrace();
+                &#125;
+            &#125;
+        &#125;, <span class="hljs-string">"BB"</span>).start();
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShareData</span> </span>&#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> number = <span class="hljs-number">0</span>;
+    <span class="hljs-keyword">private</span> Lock lock = <span class="hljs-keyword">new</span> ReentrantLock();
+    <span class="hljs-keyword">private</span> Condition condition = lock.newCondition();
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">increment</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+        lock.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            <span class="hljs-comment">//1.判断  用while,防止虚假唤醒</span>
+            <span class="hljs-keyword">while</span> (number != <span class="hljs-number">0</span>) &#123;
+                <span class="hljs-comment">//等待,不能生产</span>
+                condition.await();
+            &#125;
+            <span class="hljs-comment">//2.操作</span>
+            number++;
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"\t"</span> + number);
+            <span class="hljs-comment">//3.通知唤醒</span>
+            condition.signalAll();
+        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            lock.unlock();
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">decrement</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+        lock.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            <span class="hljs-comment">//1.判断  用while,防止虚假唤醒</span>
+            <span class="hljs-keyword">while</span> (number == <span class="hljs-number">0</span>) &#123;
+                <span class="hljs-comment">//等待,不能生产</span>
+                condition.await();
+            &#125;
+            <span class="hljs-comment">//2.操作</span>
+            number--;
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"\t"</span> + number);
+            <span class="hljs-comment">//3.通知唤醒</span>
+            condition.signalAll();
+        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            lock.unlock();
+        &#125;
+
+    &#125;
+&#125;</code></pre>
+
+<blockquote>
+<p>阻塞队列方式实现</p>
+</blockquote>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ProConsumerBlockingQueue</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+        Resource resource = <span class="hljs-keyword">new</span> Resource(<span class="hljs-keyword">new</span> ArrayBlockingQueue&lt;&gt;(<span class="hljs-number">10</span>));
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"\t生产线程启动"</span>);
+            <span class="hljs-keyword">try</span> &#123;
+                resource.myProd();
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;, <span class="hljs-string">"AA"</span>).start();
+
+        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"\t消费线程启动"</span>);
+            <span class="hljs-keyword">try</span> &#123;
+                resource.myConsumer();
+            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
+                e.printStackTrace();
+            &#125;
+        &#125;, <span class="hljs-string">"BB"</span>).start();
+
+        TimeUnit.SECONDS.sleep(<span class="hljs-number">5</span>);
+        System.out.println(<span class="hljs-string">"5秒钟,终止"</span>);
+        resource.stop();
+    &#125;
+&#125;
+
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Resource</span> </span>&#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> Boolean flag = <span class="hljs-keyword">true</span>;
+    <span class="hljs-keyword">private</span> AtomicInteger atomicInteger = <span class="hljs-keyword">new</span> AtomicInteger();
+    BlockingQueue&lt;Object&gt; blockingQueue;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-title">Resource</span><span class="hljs-params">(BlockingQueue&lt;Object&gt; blockingQueue)</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.blockingQueue = blockingQueue;
+        System.out.println(blockingQueue.getClass().getName());
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">myProd</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+        String data;
+        <span class="hljs-keyword">boolean</span> retVal;
+        <span class="hljs-keyword">while</span> (flag) &#123;
+            data = atomicInteger.incrementAndGet() + <span class="hljs-string">""</span>;
+            retVal = blockingQueue.offer(data, <span class="hljs-number">2L</span>, TimeUnit.SECONDS);
+            <span class="hljs-keyword">if</span> (retVal) &#123;
+                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"\t 插入数据:"</span> + data);
+            &#125; <span class="hljs-keyword">else</span> &#123;
+                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"\t 插入数据失败:"</span>);
+            &#125;
+            TimeUnit.SECONDS.sleep(<span class="hljs-number">1</span>);
+        &#125;
+        System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"\tflag变为false,生产停止"</span>);
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">myConsumer</span><span class="hljs-params">()</span> <span class="hljs-keyword">throws</span> InterruptedException </span>&#123;
+        String result;
+        <span class="hljs-keyword">while</span> (flag) &#123;
+            result = (String) blockingQueue.poll(<span class="hljs-number">2L</span>, TimeUnit.SECONDS);
+            <span class="hljs-keyword">if</span> (<span class="hljs-keyword">null</span> == result || <span class="hljs-string">""</span>.equalsIgnoreCase(result)) &#123;
+                flag = <span class="hljs-keyword">false</span>;
+                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">" 消费退出"</span>);
+                <span class="hljs-keyword">return</span>;
+            &#125;
+            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"\t 取出数据:"</span> + result);
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">stop</span><span class="hljs-params">()</span> </span>&#123;
+        <span class="hljs-keyword">this</span>.flag = <span class="hljs-keyword">false</span>;
+    &#125;
+&#125;</code></pre>
+
+<h4 id="2-线程池底层实现">2. 线程池底层实现<a class="post-anchor" href="#2-线程池底层实现"></a></h4><p>​    线程池的底层实现也用到了阻塞队列。</p>
+<p>​    线程池的具体内容在</p>
+
+
+  
+    <div class="post-reward">
+    <div id="reward-button">打赏</div>
+      <div id="qr">
+        <div class="wrap">
+            
+            <div class="bg-wrap">
+              <a href="/images/alipay.jpg" target="_block" class="bg" style="background-image:url('/images/alipay.jpg')"></a>
+              支付宝
+            </div>
+            
+            
+            <div class="bg-wrap">
+                <a href="/images/weixinpay.png" target="_block" class="bg" style="background-image:url('/images/weixinpay.png')"></a>
+              微信
+            </div>
+            
+        </div>
+      </div>
+    </div>
+  
+  <div class="post-guide">
+    <div class="item left">
+        
+          <a href="/2020/03/11/多线程——线程池/">多线程——线程池</a>
+        
+    </div>
+    <div class="item right">
+        
+          <a href="/2020/03/11/synchronized和Lock/">synchronized和Lock</a>
+        
+    </div>
+  </div>
+
+  
+
+  <div class="post-copyright">
+    <div class="auth">
+      本文作者：<a href="http://Charles-xcz.github.io">Charles</a>
+    </div>
+    <div class="link">
+      永久链接：<a href="http://Charles-xcz.github.io/2020/03/11/多线程——线程阻塞和阻塞队列/">http://Charles-xcz.github.io/2020/03/11/多线程——线程阻塞和阻塞队列/</a>
+    </div>
+    <div class="declare">
+      版权声明：本文首发于<a href="http://Charles-xcz.github.io">Charles</a>的博客，转载请注明出处！
+    </div>
+  </div>
+
+  <div id="comment"></div>
+
+  
+  
+</article>
+        <footer>
+          <div class="copyright">
+            ©2020
+            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a>
+            <!-- <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a> -->
+          </div>
+          
+        </footer>
+      </div>
+    </div>
+  </body>
+  
+</html>
+<script type="text/javascript">
+                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"FxmoY9bk2JUIzmRcLKo0Ner2-gzGzoHsz\",\"API_KEY\":\"w1oDxPXzMesUY9K25GxAsVnR\"},\"service_worker\":{\"open\":false}}")
+                </script> <script type="text/javascript">window.addEventListener('load', function() {
+    
+    window.loadJs = function(d, m, a) {
+      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
+      var b = document.createElement('script')
+      b.defer = true
+      b.setAttribute('type', 'text/javascript')
+      b.setAttribute('charset', 'UTF-8')
+      b.setAttribute('async', 'true')
+      b.setAttribute('src', d)
+      m && b.setAttribute('data-main', '/scripts/app-built')
+      if (typeof a === 'function') {
+        if (window.attachEvent) {
+          b.onreadystatechange = function() {
+            var e = b.readyState
+            if (e === 'loaded' || e === 'complete') {
+              b.onreadystatechange = null
+              a()
+            }
+          }
+        } else {
+          b.onload = a
+        }
+      }
+      c.appendChild(b)
+    }
+    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
+  })</script> <script type="text/javascript">
+                  ;(function() {
+                    var bp = document.createElement('script')
+                    var curProtocol = window.location.protocol.split(':')[0]
+                    if (curProtocol === 'https') {
+                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+                    } else {
+                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+                    }
+                    var s = document.getElementsByTagName('script')[0]
+                    s.parentNode.insertBefore(bp, s)
+                  })()
+                </script> 
