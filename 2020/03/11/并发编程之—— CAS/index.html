@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.9.0">
+      <script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content>
+    <meta name="description" content>
+    
+    <title>
+      并发编程之—— CAS - Charles
+    </title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/style/style.css">
+  <link rel="alternate" href="/atom.xml" title="Charles" type="application/atom+xml">
+</head>
+  <body>
+    <canvas id="pagemap"></canvas>
+    
+    <div id="post-toc" class="animated hiddenToc hide">
+      <span class="title">Toc</span>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-CAS的底层原理"><span class="toc-text">1. CAS的底层原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-CAS缺点"><span class="toc-text">2. CAS缺点</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-ABA问题"><span class="toc-text">3. ABA问题</span></a></li></ol>
+    </div>
+    
+    <div id="fixed-menu-wrap">
+      <span class="iconfont icon-sousuo search-box menu-reset"></span>
+      <span class="icon-toc menu-reset">Toc</span>
+      <span class="iconfont icon-arrowup menu-reset"></span>
+    </div>
+    <div id="fixed-menu">
+      <span class="iconfont icon-menu-"></span>
+    </div>
+    <div id="progress">
+      <div class="line"></div>
+    </div>
+    <div id="search-shade" class="animated hiddenSearch hide">
+      <div class="input-wrap">
+        <span class="iconfont icon-sousuo search-box"></span>
+        <input type="text" placeholder="Search">
+        <span class="iconfont icon-close"></span>
+      </div>
+      <div class="search-result">
+        <div class="meta">
+          <span><b id="result-count">0</b> results found</span>
+          <img src="/images/logo.jpeg">
+        </div>
+        <ul id="result-box"></ul>
+      </div>
+    </div>
+    <div id="menu-mask" class="animated hideMenuMask hide">
+      <span class="iconfont icon-close"></span>
+      <div class="nav">
+        
+        <a href="/" class>
+          Home
+        </a>
+        
+        <a href="/archives" class>
+          Archives
+        </a>
+        
+        <a href="/categories" class>
+          Categories
+        </a>
+        
+        <a href="/tags" class>
+          Tags
+        </a>
+        
+        <a href="/about" class>
+          About
+        </a>
+        
+      </div>
+    </div>
+    <div id="header">
+      <div class="intro">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <div class="author">Charles</div>
+      </div>
+      <div class="nav">
+        <span class="iconfont icon-menu menu-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+    </div>
+    <div id="side" class="animated bounceInLeft">
+      <div class="shrink">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <span class="iconfont icon-menu toggle-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+      <div class="magnify">
+        <div class="about">
+          <div class="author">Charles</div>
+          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        </div>
+
+        <div class="nav">
+          
+          <a href="/" class>
+            Home
+          </a>
+          
+          <a href="/archives" class>
+            Archives
+          </a>
+          
+          <a href="/categories" class>
+            Categories
+          </a>
+          
+          <a href="/tags" class>
+            Tags
+          </a>
+          
+          <a href="/about" class>
+            About
+          </a>
+          
+          <a href="#" class="search-box">
+            <span class="iconfont icon-sousuo"></span>
+          </a>
+        </div>
+        <div class="bottom">
+          <div class="follow">
+            
+            <a href="https://github.com/Charles-xcz" target="_block">
+              <span class="iconfont icon-github"></span>
+            </a>
+             
+            <a href="/atom.xml" target="_block">
+              <span class="iconfont icon-rss"></span>
+            </a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="container">
+      <div class="main animated bounceInRight delay-0.7s">
+        <article class="post-entry">
+    <div class="header">
+      
+      <div class="title">并发编程之—— CAS</div>
+      <div class="meta">
+        <span class="item">
+          <span class="iconfont icon-time-circle"></span>
+          <span>2020/03/11</span>
+        </span>
+
+        
+          <span class="item leancloud-visitors" id="/2020/03/11/并发编程之—— CAS/" data-flag-title="并发编程之—— CAS">
+            <span class="iconfont icon-eye1"></span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+
+         
+        <span class="item">
+          <span class="iconfont icon-folder"></span>
+          <span>
+              
+                
+                  <a href="/categories/java">java</a>
+                
+              
+                
+                  <a href="/categories/多线程">多线程</a>
+                
+              
+          </span>
+        </span>
+        
+        
+         
+          <span class="item">
+            <span class="iconfont icon-tag1"></span>
+            <span>
+                
+                  
+                    <a href="/tags/多线程">多线程</a>
+                  
+                
+                  
+                    <a href="/tags/CAS">CAS</a>
+                  
+                
+            </span>
+          </span>
+         
+      </div>
+      <div>
+      </div>
+    </div>
+    <h2 id="引言">引言<a class="post-anchor" href="#引言"></a></h2><blockquote>
+<p>CAS：Compare-And-Swap 比较并交换，它是一条<strong>CPU并发原语</strong></p>
+</blockquote>
+<p>它的功能是判断内存某个位置的值是否为预期值，如果是则更改为新的值，这个过程是原子的。</p>
+<h2 id="1-CAS的底层原理">1. CAS的底层原理<a class="post-anchor" href="#1-CAS的底层原理"></a></h2><p>原子整型的原子自增就是通过CAS的原理实现的。</p>
+<pre><code class="hljs java">AtomicInteger atomicInteger=<span class="hljs-keyword">new</span> AtomicInteger(<span class="hljs-number">5</span>);
+atomicInteger.getAndIncrement;</code></pre>
+
+<p>下面通过AtomicInteger类的源码例子来了解CAS是什么：</p>
+<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AtomicInteger</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Number</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">java</span>.<span class="hljs-title">io</span>.<span class="hljs-title">Serializable</span> </span>&#123;
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> serialVersionUID = <span class="hljs-number">6214790243416807050L</span>;
+
+    <span class="hljs-comment">// setup to use Unsafe.compareAndSwapInt for updates</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Unsafe unsafe = Unsafe.getUnsafe();
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> valueOffset;
+
+    <span class="hljs-keyword">static</span> &#123;
+        <span class="hljs-keyword">try</span> &#123;
+            valueOffset = unsafe.objectFieldOffset
+                (AtomicInteger.class.getDeclaredField(<span class="hljs-string">"value"</span>));
+        &#125; <span class="hljs-keyword">catch</span> (Exception ex) &#123; <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(ex); &#125;
+    &#125;
+
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> value;
+    
+    .......
+        
+<span class="hljs-comment">/**
+ * Atomically increments by one the current value.
+ *
+ * <span class="hljs-doctag">@return</span> the previous value
+ */</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getAndIncrement</span><span class="hljs-params">()</span> </span>&#123;
+    <span class="hljs-keyword">return</span> unsafe.getAndAddInt(<span class="hljs-keyword">this</span>, valueOffset, <span class="hljs-number">1</span>);
+&#125;</code></pre>
+
+<p>可以看到AtomicInteger类中引入了一个Unsafe类，CAS是通过Unsafe类实现的。    </p>
+<p><strong>先了解一下Unsafe类</strong></p>
+<ol>
+<li><font color="blue"><strong>Unsafe</strong></font>是CAS的核心类，由于Java方法无法直接访问底层系统，需要通过本地（native）方法来访问，Unsafe相当于一个后门，基于该类可以直接操作特定内存的数据。Unsafe类存在于sun.misc包中，其内部方法操作可以像C的指针一样直接操作内存，因为Java中CAS操作的执行依赖于Unsafe类的方法。</li>
+</ol>
+<p>​    <font color="red"><strong>注意：</strong></font>Unsafe类中的所有方法都是native修饰的，也就是Unsafe类中的方法都直接调用操作系统层资源执行相应任务。</p>
+<ol start="2">
+<li>变量valueOffset，表示该变量值在内存中的偏移地址，因为Unsafe类就是根据内存偏移地址获取数据的。</li>
+<li>变量value用volatile修饰，保证了多线程之间的内存可见性。</li>
+</ol>
+<pre><code class="hljs java"><span class="hljs-comment">//Unsafe类中的getAndAddInt方法</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getAndAddInt</span><span class="hljs-params">(Object var1, <span class="hljs-keyword">long</span> var2, <span class="hljs-keyword">int</span> var4)</span> </span>&#123;
+    <span class="hljs-keyword">int</span> var5;
+    <span class="hljs-keyword">do</span> &#123;
+        var5 = <span class="hljs-keyword">this</span>.getIntVolatile(var1, var2);
+    &#125; <span class="hljs-keyword">while</span>(!<span class="hljs-keyword">this</span>.compareAndSwapInt(var1, var2, var5, var5 + var4));
+
+    <span class="hljs-keyword">return</span> var5;
+&#125;</code></pre>
+
+<p>​    CAS并发原语在JAVA语言中就是<strong>sun.misc.Unsafe</strong>类中的各个方法实现的。</p>
+<p>​    调用UnSafe类中的CAS方法，JVM会帮我们实现出CAS汇编指令。这是一种完全依赖于硬件的功能，通过它实现了原子操作。</p>
+<p>​    再次强调，由于CAS是一种系统原语，原语属于操作系统用语范畴，是由若干条指令组成的，用于完成某个功能的一个过程，并且原语的执行必须是连续的，在执行过程中不允许被中断，也就是说CAS是一条CPU的原子指令，不会造成所谓的数据不一致问题。</p>
+<p>​    假设线程A和线程B两个线程同时执行getAndAddlnt操作实现过程（分别跑在不同CPU上）：</p>
+<ol>
+<li>Atomiclnteger里面的value原始值为3，即主内存中Atomiclnteger的value为3，根据JMM模型，线程A和线程B各自持有一份值为3的value的副本分别到各自的工作内存。</li>
+<li>线程A通过getIntVolatile(var1,var2)拿到value值3，这时线程A被挂起。</li>
+<li>线程B也通过getIntVolatile(var1,var2)方法获取到value值3，此时刚好线程B没有被挂起并执行compareAndSwaplnt方法比较内存值也为3，成功修改内存值为4，线程B完成收工，一切OK。</li>
+<li>这时线程A恢复，执行compareAndSwaplnt方法比较，发现自己手里的值数字3和主内存的值数字4不一致，说明该值己经被其它线程抢先一步修改过了，那A线程本次修改失败，只能重新读取重新来一遍了。</li>
+<li>线程A重新获取value值，因为变量value被volatile修饰，所以其它线程对它的修改，线程A总是能够看到，线程A继续执行compareAndSwaplnt进行比较替换，直到成功。</li>
+</ol>
+<p>即：<strong>比较当前工作内存的值和主内存中的值，如果相同则执行规定操作，否则继续比较直到主内存和工作内存中的值一致为止。</strong></p>
+<h2 id="2-CAS缺点">2. CAS缺点<a class="post-anchor" href="#2-CAS缺点"></a></h2><ol>
+<li><p>由于通过do while循环实现，可能导致循环时间长，cpu开销大。</p>
+</li>
+<li><p>只能保证一个共享变量的原子操作。</p>
+<p>当对一个共享变量执行操作时，我们可以使用循环CAS的方式来保证原子操作，但是<br>对多个共享变量操作时，循环CAS就无法保证操作的原子性，这个时候就要使用锁来保证原子性。</p>
+</li>
+<li><p>引出来ABA问题</p>
+</li>
+</ol>
+<h2 id="3-ABA问题">3. ABA问题<a class="post-anchor" href="#3-ABA问题"></a></h2><p>​    CAS算法实现一个重要前提需要取出内存中某时刻的数据并在当下时刻比较并替换，那么在这个时间差类会导致数据的变化。</p>
+<p>​    比如说一个线程1从内存位置V中取出A，这时候另一个线程2也从内存中取出A，并且线程2进行了一些操作将值变成了B，然后线程2又将V位置的数据变成A，这时候线程1进行CAS操作发现内存中仍然是A，然后线程1操作成功。</p>
+<p>​    尽管这个过程线程1的CAS操作成功，但内存V位置的值中间产生了变化，有时这种问题会造成影响，这就叫做ABA问题。</p>
+<p><strong>解决ABA问题</strong></p>
+<p>​    新增一种机制，<strong>版本号</strong>（类似于时间戳）</p>
+<p><strong>原子引用</strong>：AtomicInteger，只是对基本类型进行原子操作，要想对对象进行原子操作，可使用原子引用类型。</p>
+<pre><code class="hljs java">AtomicReference&lt;T&gt;			<span class="hljs-comment">//不带版本号 AtomicReference&lt;Integer&gt; 等同于 AtomicInteger</span>
+AtomicStampedReference&lt;T&gt;	<span class="hljs-comment">//带版本号的原子引用，可以解决ABA问题</span></code></pre>
+
+
+
+  
+    <div class="post-reward">
+    <div id="reward-button">打赏</div>
+      <div id="qr">
+        <div class="wrap">
+            
+            <div class="bg-wrap">
+              <a href="/images/alipay.jpg" target="_block" class="bg" style="background-image:url('/images/alipay.jpg')"></a>
+              支付宝
+            </div>
+            
+            
+            <div class="bg-wrap">
+                <a href="/images/weixinpay.png" target="_block" class="bg" style="background-image:url('/images/weixinpay.png')"></a>
+              微信
+            </div>
+            
+        </div>
+      </div>
+    </div>
+  
+  <div class="post-guide">
+    <div class="item left">
+        
+          <a href="/2020/03/11/synchronized和Lock/">synchronized和Lock</a>
+        
+    </div>
+    <div class="item right">
+        
+          <a href="/2020/03/01/JVM学习(2)——JVM的堆栈方法区以及GC算法/">JVM学习(2)——JVM的堆/栈/方法区以及GC算法</a>
+        
+    </div>
+  </div>
+
+  
+
+  <div class="post-copyright">
+    <div class="auth">
+      本文作者：<a href="http://Charles-xcz.github.io">Charles</a>
+    </div>
+    <div class="link">
+      永久链接：<a href="http://Charles-xcz.github.io/2020/03/11/并发编程之—— CAS/">http://Charles-xcz.github.io/2020/03/11/并发编程之—— CAS/</a>
+    </div>
+    <div class="declare">
+      版权声明：本文首发于<a href="http://Charles-xcz.github.io">Charles</a>的博客，转载请注明出处！
+    </div>
+  </div>
+
+  <div id="comment"></div>
+
+  
+  
+</article>
+        <footer>
+          <div class="copyright">
+            ©2020
+            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a>
+            <!-- <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a> -->
+          </div>
+          
+        </footer>
+      </div>
+    </div>
+  </body>
+  
+</html>
+<script type="text/javascript">
+                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"FxmoY9bk2JUIzmRcLKo0Ner2-gzGzoHsz\",\"API_KEY\":\"w1oDxPXzMesUY9K25GxAsVnR\"},\"service_worker\":{\"open\":false}}")
+                </script> <script type="text/javascript">window.addEventListener('load', function() {
+    
+    window.loadJs = function(d, m, a) {
+      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
+      var b = document.createElement('script')
+      b.defer = true
+      b.setAttribute('type', 'text/javascript')
+      b.setAttribute('charset', 'UTF-8')
+      b.setAttribute('async', 'true')
+      b.setAttribute('src', d)
+      m && b.setAttribute('data-main', '/scripts/app-built')
+      if (typeof a === 'function') {
+        if (window.attachEvent) {
+          b.onreadystatechange = function() {
+            var e = b.readyState
+            if (e === 'loaded' || e === 'complete') {
+              b.onreadystatechange = null
+              a()
+            }
+          }
+        } else {
+          b.onload = a
+        }
+      }
+      c.appendChild(b)
+    }
+    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
+  })</script> <script type="text/javascript">
+                  ;(function() {
+                    var bp = document.createElement('script')
+                    var curProtocol = window.location.protocol.split(':')[0]
+                    if (curProtocol === 'https') {
+                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+                    } else {
+                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+                    }
+                    var s = document.getElementsByTagName('script')[0]
+                    s.parentNode.insertBefore(bp, s)
+                  })()
+                </script> 

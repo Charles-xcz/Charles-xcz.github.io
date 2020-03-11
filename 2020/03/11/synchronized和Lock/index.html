@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.9.0">
+      <script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content>
+    <meta name="description" content>
+    
+    <title>
+      synchronized和Lock - Charles
+    </title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/style/style.css">
+  <link rel="alternate" href="/atom.xml" title="Charles" type="application/atom+xml">
+</head>
+  <body>
+    <canvas id="pagemap"></canvas>
+    
+    <div id="post-toc" class="animated hiddenToc hide">
+      <span class="title">Toc</span>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-公平锁与非公平锁"><span class="toc-text">1. 公平锁与非公平锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-可重入锁"><span class="toc-text">2. 可重入锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-自旋锁"><span class="toc-text">3. 自旋锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-独占锁-共享锁"><span class="toc-text">4. 独占锁/共享锁</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-synchronized和Lock区别"><span class="toc-text">5. synchronized和Lock区别</span></a></li></ol>
+    </div>
+    
+    <div id="fixed-menu-wrap">
+      <span class="iconfont icon-sousuo search-box menu-reset"></span>
+      <span class="icon-toc menu-reset">Toc</span>
+      <span class="iconfont icon-arrowup menu-reset"></span>
+    </div>
+    <div id="fixed-menu">
+      <span class="iconfont icon-menu-"></span>
+    </div>
+    <div id="progress">
+      <div class="line"></div>
+    </div>
+    <div id="search-shade" class="animated hiddenSearch hide">
+      <div class="input-wrap">
+        <span class="iconfont icon-sousuo search-box"></span>
+        <input type="text" placeholder="Search">
+        <span class="iconfont icon-close"></span>
+      </div>
+      <div class="search-result">
+        <div class="meta">
+          <span><b id="result-count">0</b> results found</span>
+          <img src="/images/logo.jpeg">
+        </div>
+        <ul id="result-box"></ul>
+      </div>
+    </div>
+    <div id="menu-mask" class="animated hideMenuMask hide">
+      <span class="iconfont icon-close"></span>
+      <div class="nav">
+        
+        <a href="/" class>
+          Home
+        </a>
+        
+        <a href="/archives" class>
+          Archives
+        </a>
+        
+        <a href="/categories" class>
+          Categories
+        </a>
+        
+        <a href="/tags" class>
+          Tags
+        </a>
+        
+        <a href="/about" class>
+          About
+        </a>
+        
+      </div>
+    </div>
+    <div id="header">
+      <div class="intro">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <div class="author">Charles</div>
+      </div>
+      <div class="nav">
+        <span class="iconfont icon-menu menu-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+    </div>
+    <div id="side" class="animated bounceInLeft">
+      <div class="shrink">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <span class="iconfont icon-menu toggle-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+      <div class="magnify">
+        <div class="about">
+          <div class="author">Charles</div>
+          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        </div>
+
+        <div class="nav">
+          
+          <a href="/" class>
+            Home
+          </a>
+          
+          <a href="/archives" class>
+            Archives
+          </a>
+          
+          <a href="/categories" class>
+            Categories
+          </a>
+          
+          <a href="/tags" class>
+            Tags
+          </a>
+          
+          <a href="/about" class>
+            About
+          </a>
+          
+          <a href="#" class="search-box">
+            <span class="iconfont icon-sousuo"></span>
+          </a>
+        </div>
+        <div class="bottom">
+          <div class="follow">
+            
+            <a href="https://github.com/Charles-xcz" target="_block">
+              <span class="iconfont icon-github"></span>
+            </a>
+             
+            <a href="/atom.xml" target="_block">
+              <span class="iconfont icon-rss"></span>
+            </a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="container">
+      <div class="main animated bounceInRight delay-0.7s">
+        <article class="post-entry">
+    <div class="header">
+      
+      <div class="title">synchronized和Lock</div>
+      <div class="meta">
+        <span class="item">
+          <span class="iconfont icon-time-circle"></span>
+          <span>2020/03/11</span>
+        </span>
+
+        
+          <span class="item leancloud-visitors" id="/2020/03/11/synchronized和Lock/" data-flag-title="synchronized和Lock">
+            <span class="iconfont icon-eye1"></span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+
+         
+        <span class="item">
+          <span class="iconfont icon-folder"></span>
+          <span>
+              
+                
+                  <a href="/categories/java">java</a>
+                
+              
+                
+                  <a href="/categories/多线程">多线程</a>
+                
+              
+          </span>
+        </span>
+        
+        
+         
+          <span class="item">
+            <span class="iconfont icon-tag1"></span>
+            <span>
+                
+                  
+                    <a href="/tags/多线程">多线程</a>
+                  
+                
+                  
+                    <a href="/tags/锁">锁</a>
+                  
+                
+            </span>
+          </span>
+         
+      </div>
+      <div>
+      </div>
+    </div>
+    <h2 id="1-公平锁与非公平锁">1. 公平锁与非公平锁<a class="post-anchor" href="#1-公平锁与非公平锁"></a></h2><blockquote>
+<p>公平锁：是指多个线程按照申请锁的顺序来获取锁，FIFO。</p>
+<p>非公平锁：是指多个线程获取锁的顺序并不是按照申请锁的顺序，有可能后申请的线程比先申请的线程优先获取锁，在高并发的情况下，有可能会造成优先级反转或者饥饿现象</p>
+</blockquote>
+<pre><code class="hljs java">Lock lock = <span class="hljs-keyword">new</span> ReentrantLock();		<span class="hljs-comment">//默认为非公平锁 等同new ReentrantLock(false);</span>
+Lock lock = <span class="hljs-keyword">new</span> ReentrantLock(<span class="hljs-keyword">true</span>);	<span class="hljs-comment">//公平锁</span></code></pre>
+
+<h2 id="2-可重入锁">2. 可重入锁<a class="post-anchor" href="#2-可重入锁"></a></h2><p>​    指的是同一线程外层函数获得锁之后，内层递归函数仍然能获取该锁的代码，同一个线程在外层方法获取锁的时候，在进入内层方法会自动获取锁。</p>
+<p>​    即：<strong>线程可以进入任何一个他已经拥有锁的同步代码块。</strong></p>
+<p>​    可重入锁最大的作用是<strong>避免死锁</strong></p>
+<p>​    ReentrantLock和Synchronized是典型的可重入锁</p>
+<h2 id="3-自旋锁">3. 自旋锁<a class="post-anchor" href="#3-自旋锁"></a></h2><p>​    是指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去试获取锁。</p>
+<p>​    这样的好处是减少线程上下文切换的消耗。</p>
+<p>​    缺点是循环会消耗CPU。</p>
+<p>例如前面博客<a href="https://charles-xcz.github.io/2020/03/11/CAS/">《并发编程之—— CAS》</a>介绍到的CAS的实现就是自旋锁。</p>
+<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getAndAddInt</span><span class="hljs-params">(Object var1, <span class="hljs-keyword">long</span> var2, <span class="hljs-keyword">int</span> var4)</span> </span>&#123;
+    <span class="hljs-keyword">int</span> var5;
+    <span class="hljs-keyword">do</span> &#123;
+        var5 = <span class="hljs-keyword">this</span>.getIntVolatile(var1, var2);
+    &#125; <span class="hljs-keyword">while</span>(!<span class="hljs-keyword">this</span>.compareAndSwapInt(var1, var2, var5, var5 + var4));
+
+    <span class="hljs-keyword">return</span> var5;
+&#125;</code></pre>
+
+<h2 id="4-独占锁-共享锁">4. 独占锁/共享锁<a class="post-anchor" href="#4-独占锁-共享锁"></a></h2><blockquote>
+<p>独占锁：该锁一次只能被一个进程持有。对ReentrantLock和Synchronized而言都是独占锁。</p>
+<p>共享锁：指该锁可被多个线程持有。</p>
+</blockquote>
+<p>对ReentrantReadWriteLock而言，其读锁是共享锁，其写锁是独占锁。</p>
+<p>读锁的共享锁可保证并发读是非常高效的，读写，写读，写写的过程是互斥的。</p>
+<pre><code class="hljs java">ReentrantReadWriteLock lock = <span class="hljs-keyword">new</span> ReentrantReadWriteLock();
+<span class="hljs-comment">//写锁，是互斥的</span>
+lock.writeLock().lock();
+..........
+lock.writeLock().unlock();
+<span class="hljs-comment">//读锁是共享的</span>
+lock.readLock().lock();
+..........
+lock.readLock().unlock();</code></pre>
+
+<h2 id="5-synchronized和Lock区别">5. synchronized和Lock区别<a class="post-anchor" href="#5-synchronized和Lock区别"></a></h2><ol>
+<li><p>原始构成不同</p>
+<ul>
+<li><p>synchronized是关键字，属于JVM层面</p>
+<p>monitorenter，monitorexit</p>
+<p>底层是通过monitor对象来完成，其实wait/notify 等方法也依赖monitor对象只有在同步块或方法中才能调wait/notify等方法</p>
+</li>
+<li><p>Lock是具体类(java.util.concurrent.locks.Lock)，是api层面</p>
+</li>
+</ul>
+</li>
+<li><p>使用方法</p>
+<ul>
+<li>synchronized不需要手动释放锁，当synchronized代码执行完后，系统会自动让线程释放对锁的占用</li>
+<li>ReentrantLock则需要用户手动释放锁，若没有手动释放可能导致死锁现象</li>
+</ul>
+</li>
+<li><p>等待是否可中断</p>
+<ul>
+<li><p>synchronized不可中断，除非是抛出异常或正常运行结束</p>
+</li>
+<li><p>ReentrantLock可中断</p>
+<p>设置超时方法 tryLock(long timeout,TimeUnit unit)</p>
+<p>lockUnterruptibly放代码块中，调用interrupt()方法可中断</p>
+</li>
+</ul>
+</li>
+<li><p>加锁是否公平</p>
+<ul>
+<li>synchronized 只能是非公平锁</li>
+<li>ReentrantLock 默认非公平，但构造方法传入参数true可设置为公平锁</li>
+</ul>
+</li>
+<li><p><strong>锁绑定多个条件condition</strong></p>
+<ul>
+<li>synchronized没有</li>
+<li>ReentrantLock用来实现分组唤醒需要唤醒的线程们，可以精确唤醒，而不是像synchronized要么随机唤醒一个线程要么唤醒全部线程。</li>
+</ul>
+</li>
+</ol>
+<p><strong>Lock精确唤醒示例</strong>：</p>
+<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShareData1</span> </span>&#123;
+    <span class="hljs-comment">/**
+     * A:1,B:2,C:3
+     */</span>
+    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> number = <span class="hljs-number">1</span>;
+    <span class="hljs-keyword">private</span> Lock lock = <span class="hljs-keyword">new</span> ReentrantLock();
+    <span class="hljs-keyword">private</span> Condition c1 = lock.newCondition();
+    <span class="hljs-keyword">private</span> Condition c2 = lock.newCondition();
+    <span class="hljs-keyword">private</span> Condition c3 = lock.newCondition();
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print1</span><span class="hljs-params">()</span> </span>&#123;
+        lock.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            <span class="hljs-comment">//1.判断</span>
+            <span class="hljs-keyword">while</span> (number != <span class="hljs-number">1</span>) &#123;
+                c1.await();
+            &#125;
+            <span class="hljs-comment">//2.操作</span>
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;
+                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"--&gt; "</span> + i);
+            &#125;
+            number = <span class="hljs-number">2</span>;
+            <span class="hljs-comment">//3.通知</span>
+            c2.signal();
+        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            lock.unlock();
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print2</span><span class="hljs-params">()</span> </span>&#123;
+        lock.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            <span class="hljs-comment">//1.判断</span>
+            <span class="hljs-keyword">while</span> (number != <span class="hljs-number">2</span>) &#123;
+                c2.await();
+            &#125;
+            <span class="hljs-comment">//2.操作</span>
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;
+                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"--&gt; "</span> + i);
+            &#125;
+            number = <span class="hljs-number">3</span>;
+            <span class="hljs-comment">//3.通知</span>
+            c3.signal();
+        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            lock.unlock();
+        &#125;
+    &#125;
+
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print3</span><span class="hljs-params">()</span> </span>&#123;
+        lock.lock();
+        <span class="hljs-keyword">try</span> &#123;
+            <span class="hljs-comment">//1.判断</span>
+            <span class="hljs-keyword">while</span> (number != <span class="hljs-number">3</span>) &#123;
+                c3.await();
+            &#125;
+            <span class="hljs-comment">//2.操作</span>
+            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;
+                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"--&gt; "</span> + i);
+            &#125;
+            number = <span class="hljs-number">1</span>;
+            <span class="hljs-comment">//3.通知</span>
+            c1.signal();
+        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
+            e.printStackTrace();
+        &#125; <span class="hljs-keyword">finally</span> &#123;
+            lock.unlock();
+        &#125;
+    &#125;
+&#125;</code></pre>
+
+
+
+  
+    <div class="post-reward">
+    <div id="reward-button">打赏</div>
+      <div id="qr">
+        <div class="wrap">
+            
+            <div class="bg-wrap">
+              <a href="/images/alipay.jpg" target="_block" class="bg" style="background-image:url('/images/alipay.jpg')"></a>
+              支付宝
+            </div>
+            
+            
+            <div class="bg-wrap">
+                <a href="/images/weixinpay.png" target="_block" class="bg" style="background-image:url('/images/weixinpay.png')"></a>
+              微信
+            </div>
+            
+        </div>
+      </div>
+    </div>
+  
+  <div class="post-guide">
+    <div class="item left">
+        
+          <a href="/2020/03/11/线程阻塞和阻塞队列/">线程阻塞和阻塞队列</a>
+        
+    </div>
+    <div class="item right">
+        
+          <a href="/2020/03/11/并发编程之—— CAS/">并发编程之—— CAS</a>
+        
+    </div>
+  </div>
+
+  
+
+  <div class="post-copyright">
+    <div class="auth">
+      本文作者：<a href="http://Charles-xcz.github.io">Charles</a>
+    </div>
+    <div class="link">
+      永久链接：<a href="http://Charles-xcz.github.io/2020/03/11/synchronized和Lock/">http://Charles-xcz.github.io/2020/03/11/synchronized和Lock/</a>
+    </div>
+    <div class="declare">
+      版权声明：本文首发于<a href="http://Charles-xcz.github.io">Charles</a>的博客，转载请注明出处！
+    </div>
+  </div>
+
+  <div id="comment"></div>
+
+  
+  
+</article>
+        <footer>
+          <div class="copyright">
+            ©2020
+            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a>
+            <!-- <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a> -->
+          </div>
+          
+        </footer>
+      </div>
+    </div>
+  </body>
+  
+</html>
+<script type="text/javascript">
+                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"FxmoY9bk2JUIzmRcLKo0Ner2-gzGzoHsz\",\"API_KEY\":\"w1oDxPXzMesUY9K25GxAsVnR\"},\"service_worker\":{\"open\":false}}")
+                </script> <script type="text/javascript">window.addEventListener('load', function() {
+    
+    window.loadJs = function(d, m, a) {
+      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
+      var b = document.createElement('script')
+      b.defer = true
+      b.setAttribute('type', 'text/javascript')
+      b.setAttribute('charset', 'UTF-8')
+      b.setAttribute('async', 'true')
+      b.setAttribute('src', d)
+      m && b.setAttribute('data-main', '/scripts/app-built')
+      if (typeof a === 'function') {
+        if (window.attachEvent) {
+          b.onreadystatechange = function() {
+            var e = b.readyState
+            if (e === 'loaded' || e === 'complete') {
+              b.onreadystatechange = null
+              a()
+            }
+          }
+        } else {
+          b.onload = a
+        }
+      }
+      c.appendChild(b)
+    }
+    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
+  })</script> <script type="text/javascript">
+                  ;(function() {
+                    var bp = document.createElement('script')
+                    var curProtocol = window.location.protocol.split(':')[0]
+                    if (curProtocol === 'https') {
+                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+                    } else {
+                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+                    }
+                    var s = document.getElementsByTagName('script')[0]
+                    s.parentNode.insertBefore(bp, s)
+                  })()
+                </script> 
