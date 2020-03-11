@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://charles-xcz.github.io/"/>
-  <updated>2020-03-01T13:50:34.311Z</updated>
+  <updated>2020-03-11T11:55:49.626Z</updated>
   <id>http://charles-xcz.github.io/</id>
   
   <author>
@@ -15,6 +15,36 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>并发编程之—— CAS</title>
+    <link href="http://charles-xcz.github.io/2020/03/11/CAS/"/>
+    <id>http://charles-xcz.github.io/2020/03/11/CAS/</id>
+    <published>2020-03-11T09:57:55.055Z</published>
+    <updated>2020-03-11T11:55:49.626Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;CAS：Compare-And-Swap 比较并交换，它是一条&lt;strong&gt;CPU并发原语&lt;/strong&gt;&lt;/p&gt;
+&lt;/block
+      
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://Charles-xcz.github.io/categories/java/"/>
+    
+      <category term="多线程" scheme="http://Charles-xcz.github.io/categories/java/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+    
+      <category term="多线程" scheme="http://Charles-xcz.github.io/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
+    
+      <category term="CAS" scheme="http://Charles-xcz.github.io/tags/CAS/"/>
+    
+  </entry>
   
   <entry>
     <title>JVM学习(2)——JVM的堆/栈/方法区以及GC算法</title>
