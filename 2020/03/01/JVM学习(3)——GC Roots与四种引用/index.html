@@ -1,0 +1,459 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.9.0">
+      <script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content>
+    <meta name="description" content>
+    
+    <title>
+      JVM学习(3)——GC Roots与四种引用 - Charles
+    </title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/style/style.css">
+  <link rel="alternate" href="/atom.xml" title="Charles" type="application/atom+xml">
+</head>
+  <body>
+    <canvas id="pagemap"></canvas>
+    
+    <div id="post-toc" class="animated hiddenToc hide">
+      <span class="title">Toc</span>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-GC-Roots"><span class="toc-text">1. GC Roots</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-强引用"><span class="toc-text">2. 强引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-软引用"><span class="toc-text">3. 软引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-弱引用"><span class="toc-text">4. 弱引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-虚引用"><span class="toc-text">5. 虚引用</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-总结"><span class="toc-text">6. 总结</span></a></li></ol>
+    </div>
+    
+    <div id="fixed-menu-wrap">
+      <span class="iconfont icon-sousuo search-box menu-reset"></span>
+      <span class="icon-toc menu-reset">Toc</span>
+      <span class="iconfont icon-arrowup menu-reset"></span>
+    </div>
+    <div id="fixed-menu">
+      <span class="iconfont icon-menu-"></span>
+    </div>
+    <div id="progress">
+      <div class="line"></div>
+    </div>
+    <div id="search-shade" class="animated hiddenSearch hide">
+      <div class="input-wrap">
+        <span class="iconfont icon-sousuo search-box"></span>
+        <input type="text" placeholder="Search">
+        <span class="iconfont icon-close"></span>
+      </div>
+      <div class="search-result">
+        <div class="meta">
+          <span><b id="result-count">0</b> results found</span>
+          <img src="/images/logo.jpeg">
+        </div>
+        <ul id="result-box"></ul>
+      </div>
+    </div>
+    <div id="menu-mask" class="animated hideMenuMask hide">
+      <span class="iconfont icon-close"></span>
+      <div class="nav">
+        
+        <a href="/" class>
+          Home
+        </a>
+        
+        <a href="/archives" class>
+          Archives
+        </a>
+        
+        <a href="/categories" class>
+          Categories
+        </a>
+        
+        <a href="/tags" class>
+          Tags
+        </a>
+        
+        <a href="/about" class>
+          About
+        </a>
+        
+      </div>
+    </div>
+    <div id="header">
+      <div class="intro">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <div class="author">Charles</div>
+      </div>
+      <div class="nav">
+        <span class="iconfont icon-menu menu-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+    </div>
+    <div id="side" class="animated bounceInLeft">
+      <div class="shrink">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <span class="iconfont icon-menu toggle-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+      <div class="magnify">
+        <div class="about">
+          <div class="author">Charles</div>
+          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        </div>
+
+        <div class="nav">
+          
+          <a href="/" class>
+            Home
+          </a>
+          
+          <a href="/archives" class>
+            Archives
+          </a>
+          
+          <a href="/categories" class>
+            Categories
+          </a>
+          
+          <a href="/tags" class>
+            Tags
+          </a>
+          
+          <a href="/about" class>
+            About
+          </a>
+          
+          <a href="#" class="search-box">
+            <span class="iconfont icon-sousuo"></span>
+          </a>
+        </div>
+        <div class="bottom">
+          <div class="follow">
+            
+            <a href="https://github.com/Charles-xcz" target="_block">
+              <span class="iconfont icon-github"></span>
+            </a>
+             
+            <a href="/atom.xml" target="_block">
+              <span class="iconfont icon-rss"></span>
+            </a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="container">
+      <div class="main animated bounceInRight delay-0.7s">
+        <article class="post-entry">
+    <div class="header">
+      
+      <div class="title">JVM学习(3)——GC Roots与四种引用</div>
+      <div class="meta">
+        <span class="item">
+          <span class="iconfont icon-time-circle"></span>
+          <span>2020/03/01</span>
+        </span>
+
+        
+          <span class="item leancloud-visitors" id="/2020/03/01/JVM学习(3)——GC Roots与四种引用/" data-flag-title="JVM学习(3)——GC Roots与四种引用">
+            <span class="iconfont icon-eye1"></span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+
+         
+        <span class="item">
+          <span class="iconfont icon-folder"></span>
+          <span>
+              
+                
+                  <a href="/categories/java">java</a>
+                
+              
+          </span>
+        </span>
+        
+        
+         
+          <span class="item">
+            <span class="iconfont icon-tag1"></span>
+            <span>
+                
+                  
+                    <a href="/tags/JVM">JVM</a>
+                  
+                
+                  
+                    <a href="/tags/GC">GC</a>
+                  
+                
+            </span>
+          </span>
+         
+      </div>
+      <div>
+      </div>
+    </div>
+    <h2 id="引言">引言<a class="post-anchor" href="#引言"></a></h2><p>什么是垃圾，简单来说就是内存中已经不在被使用的空间就是垃圾。</p>
+<p>如何判断一个对象可以被回收？</p>
+<ul>
+<li>引用计数法（JVM中不使用这种算法）</li>
+<li>枚举根节点做可达性分析（根搜索路径）</li>
+</ul>
+<p>因为引用计数法会导致循环引用问题，所以Java使用了可达性分析的方法来判别垃圾。</p>
+<h2 id="1-GC-Roots">1. GC Roots<a class="post-anchor" href="#1-GC-Roots"></a></h2><p>​    所谓GC Roots就是用来Tracing GC的根集合，是一组必须活跃的引用。</p>
+<p>​    基本思路就是通过一系列名为 GC Roots 的对象作为起始点，从这个被称为GC Roots的对象开始向下搜索，如果一个对象到GC Roots没有任何引用链相连时，则说明此对象不可用。</p>
+<p>​    也即给定一个集合的引用作为根出发，通过引用关系遍历对象图，能被遍历到的（可到达的）对象就被判定为存活，没有被遍历到的就自然被判定为死亡。</p>
+<a href="../../../../../charles/Desktop/%25E9%259D%25A2%25E8%25AF%2595%25E5%2587%2586%25E5%25A4%2587/upload/image-20200303095959288.png" data-caption="image-20200303095959288" data-fancybox="images"><img src="../../../../../charles/Desktop/%25E9%259D%25A2%25E8%25AF%2595%25E5%2587%2586%25E5%25A4%2587/upload/image-20200303095959288.png" alt="image-20200303095959288"></a>
+
+<p>哪些对象可以作为GC Roots</p>
+<ol>
+<li>虚拟机栈（栈帧中的局部变量区，也叫做局部变量表）中引用的对象。</li>
+<li>方法区中的类静态属性引用的对象。</li>
+<li>方法区中常量引用的对象。</li>
+<li>本地方法栈中Native方法引用的对象。</li>
+</ol>
+<h2 id="2-强引用">2. 强引用<a class="post-anchor" href="#2-强引用"></a></h2><p>​    当内存不足，JVM开始垃圾回收，对于强引用的对象，就算是出现了OOM也不会对该对象进行回收，死都不收。</p>
+<p>​    强引用是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。</p>
+<p>​    在Java中最常见的就是强引用，把一个对象赋给一个引用变量，这个引用变量就是一个强引用。</p>
+<p>​    当一个对象被强引用变量引用时，它处于可达状态，它是不可能被垃圾回收机制回收的，即使该对象以后永远都不会被用到JVM也不会回收。因此<strong>强引用是造成Java内存泄漏的主要原因之一</strong>。</p>
+<p>​    对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，一般认为就是可以被垃圾收集的了（当然具体回收时机还是要看垃圾收集策略）。</p>
+<h2 id="3-软引用">3. 软引用<a class="post-anchor" href="#3-软引用"></a></h2><blockquote>
+<p> SoftReference<object> softReference = new SoftReference&lt;&gt;(Obj);</object></p>
+</blockquote>
+<p>​    软引用是一种相对强引用弱化了一些的引用，需要用java.lang.ref.SoftReference类来实现，可以让对象豁免一些垃圾收集。</p>
+<p>​    对于只有软引用的对象来说，</p>
+<ul>
+<li><p>当系统内存充足时它不会被回收，</p>
+</li>
+<li><p>当系统内存不足时它会被回收。</p>
+</li>
+</ul>
+<p>​    软引用通常用在对内存敏感的程序中，比如<strong>高速缓存</strong>就有用到软引用，内存够用的时候就保留，不够用就回收！</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**
+ * VM options: -Xms5m -Xmx5m
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SoftReferenceDemo</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">softRefMemoryEnough</span><span class="hljs-params">()</span> </span>&#123;
+        Object o1=<span class="hljs-keyword">new</span> Object();
+        SoftReference&lt;Object&gt; softReference = <span class="hljs-keyword">new</span> SoftReference&lt;&gt;(o1);
+        o1 = <span class="hljs-keyword">null</span>;
+        System.gc();
+        System.out.println(o1);
+        System.out.println(softReference.get());
+    &#125;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">softRefMemoryNotEnough</span><span class="hljs-params">()</span> </span>&#123;
+        Object o1=<span class="hljs-keyword">new</span> Object();
+        SoftReference&lt;Object&gt; softReference = <span class="hljs-keyword">new</span> SoftReference&lt;&gt;(o1);
+        o1 = <span class="hljs-keyword">null</span>;
+        <span class="hljs-keyword">try</span> &#123;
+            <span class="hljs-keyword">byte</span>[] bytes = <span class="hljs-keyword">new</span> <span class="hljs-keyword">byte</span>[<span class="hljs-number">30</span> * <span class="hljs-number">1024</span> * <span class="hljs-number">1024</span>];
+        &#125; <span class="hljs-keyword">catch</span> (Throwable e) &#123;
+            e.printStackTrace();
+        &#125;<span class="hljs-keyword">finally</span> &#123;
+            System.out.println(o1);
+            System.out.println(softReference.get());
+        &#125;
+    &#125;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        softRefMemoryEnough();
+        softRefMemoryNotEnough();
+    &#125;
+&#125;
+<span class="hljs-comment">/**
+ * 输出结果表明：内存足够时，软引用不会被回收，内存不足时会被回收。
+ * null
+ * java.lang.Object@1b6d3586
+ *
+ * java.lang.OutOfMemoryError: Java heap space
+ *	 at jvm.reference.SoftReferenceDemo.softRefMemoryNotEnough(SoftReferenceDemo.java:23)
+ *	 at jvm.reference.SoftReferenceDemo.main(SoftReferenceDemo.java:34)
+ * null
+ * null
+ */</span></code></pre>
+
+<h2 id="4-弱引用">4. 弱引用<a class="post-anchor" href="#4-弱引用"></a></h2><blockquote>
+<p>WeakReference</p>
+</blockquote>
+<p>无论内存是否充足，只要GC都会被回收。</p>
+<p>软引用和弱引用的<strong>应用场景</strong>：</p>
+<p>假如有一个应用需要读取大量的本地图片：</p>
+<ul>
+<li>如果每次读取图片都从硬盘读取则会严重影响性能，</li>
+<li>如果一次性全部加载到内存中又可能造成内存溢出。</li>
+</ul>
+<p>此时使用软引用可以解决这个问题。</p>
+<p>​    设计思路是：用一个HashMap来保存图片的路径和相应图片对象关联的软引用之间的映射关系.</p>
+<p>​    在内存不足时，JVM会自动回收这些缓存图片对象所占用的空间，从而有效地避免了OOM的问题。</p>
+<p>​    Map&lt;String,SoftReference<bitmap>&gt;imageCache =new HashMap&lt;String,SoftReference<bitmap>&gt;();</bitmap></bitmap></p>
+<p>WeakHashMap运用的弱引用</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**
+ * 输出结果为：
+ * &#123;888=hashMap&#125;
+ * &#123;&#125;
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">WeakHashMapDemo</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        myWeakHashMap();
+    &#125;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">myWeakHashMap</span><span class="hljs-params">()</span> </span>&#123;
+        WeakHashMap&lt;Integer, String&gt; map = <span class="hljs-keyword">new</span> WeakHashMap&lt;&gt;();
+        Integer key = <span class="hljs-number">999</span>;
+        String value = <span class="hljs-string">"hashMap"</span>;
+        map.put(key, value);
+        key = <span class="hljs-keyword">null</span>;
+        System.out.println(map);
+        System.gc();
+        System.out.println(map);
+    &#125;
+&#125;</code></pre>
+
+<h2 id="5-虚引用">5. 虚引用<a class="post-anchor" href="#5-虚引用"></a></h2><blockquote>
+<p>PhantomReference，又称幽灵引用</p>
+</blockquote>
+<p>​    顾名思义，就是形同虚设，与其他几种引用都不同，虚引用并不会决定对象的生命周期。</p>
+<p>​    如果一个对象仅持有虚引用，那么它就和没有任何引用一样，在任何时候都可能被垃圾回收器回收，它不能单独使用也不能通过它访问对象，<strong>虚引用必须和引用队列（ReferenceQueue）联合使用</strong>。（注：其他引用也可以和引用队列联合使用）</p>
+<p>​    虚引用的主要作用是跟踪对象被垃圾回收的状态。仅仅是提供了一种确保对象被finalize以后，做某些事情的机制。</p>
+<p>​    PhantomReference的get方法总是返回null，因此无法访问对应的引用对象。其意义在于说明一个对象已经进入finalization阶段，可以被gc回收，用来实现比finalization机制更灵活的回收操作。</p>
+<p>​    换句话说，设置虚引用关联的唯一目的，就是在这个对象被收集器回收的时候收到一个系统通知或者后续添加进一步的处理。<br>Java 技术允许使用finalize()方法在垃圾收集器将对象从内存中清除出去之前做必要的清理工作。</p>
+<pre><code class="hljs java"><span class="hljs-comment">/**
+ * null
+ * null
+ * ==============
+ * null
+ * java.lang.ref.PhantomReference@1b6d3586
+ */</span>
+<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ReferenceQueueDemo</span> </span>&#123;
+    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
+        Object o1 = <span class="hljs-keyword">new</span> Object();
+        ReferenceQueue&lt;Object&gt; referenceQueue = <span class="hljs-keyword">new</span> ReferenceQueue&lt;&gt;();
+        PhantomReference&lt;Object&gt; reference = <span class="hljs-keyword">new</span> PhantomReference&lt;&gt;(o1, referenceQueue);
+        System.out.println(reference.get());
+        System.out.println(referenceQueue.poll());
+        System.out.println(<span class="hljs-string">"=============="</span>);
+        o1 = <span class="hljs-keyword">null</span>;
+        System.gc();
+        System.out.println(reference.get());
+        System.out.println(referenceQueue.poll());
+    &#125;
+&#125;</code></pre>
+
+<p>​    创建引用的时候可以指定关联的队列，当GC释放对象内存的时候，会将引用加入到引用队列如果程序发现某个虚引用已经被加入到引用队列，那么就可以在所引用的对象的内存被回收之前采取必要的行动了这相当于是一种通知机制。</p>
+<p>​    当关联的引用队列中有数据的时候，意味着引用指向的堆内存中的对象被回收。通过这种方式，JVM允许我们在对象被销毁后，做一些我们自己想做的事情。</p>
+<h2 id="6-总结">6. 总结<a class="post-anchor" href="#6-总结"></a></h2><a href="https://i.loli.net/2020/03/03/ec1raYgd2pzf9DX.png" data-caption="image-20200303163153336" data-fancybox="images"><img src="https://i.loli.net/2020/03/03/ec1raYgd2pzf9DX.png" alt="image-20200303163153336"></a>
+
+  
+    <div class="post-reward">
+    <div id="reward-button">打赏</div>
+      <div id="qr">
+        <div class="wrap">
+            
+            <div class="bg-wrap">
+              <a href="/images/alipay.jpg" target="_block" class="bg" style="background-image:url('/images/alipay.jpg')"></a>
+              支付宝
+            </div>
+            
+            
+            <div class="bg-wrap">
+                <a href="/images/weixinpay.png" target="_block" class="bg" style="background-image:url('/images/weixinpay.png')"></a>
+              微信
+            </div>
+            
+        </div>
+      </div>
+    </div>
+  
+  <div class="post-guide">
+    <div class="item left">
+        
+          <a href="/2020/03/11/并发编程之—— CAS/">并发编程之—— CAS</a>
+        
+    </div>
+    <div class="item right">
+        
+          <a href="/2020/02/29/JVM学习(1)——类加载、连接与初始化/">JVM学习(1)——类加载、连接与初始化</a>
+        
+    </div>
+  </div>
+
+  
+
+  <div class="post-copyright">
+    <div class="auth">
+      本文作者：<a href="http://Charles-xcz.github.io">Charles</a>
+    </div>
+    <div class="link">
+      永久链接：<a href="http://Charles-xcz.github.io/2020/03/01/JVM学习(3)——GC Roots与四种引用/">http://Charles-xcz.github.io/2020/03/01/JVM学习(3)——GC Roots与四种引用/</a>
+    </div>
+    <div class="declare">
+      版权声明：本文首发于<a href="http://Charles-xcz.github.io">Charles</a>的博客，转载请注明出处！
+    </div>
+  </div>
+
+  <div id="comment"></div>
+
+  
+  
+</article>
+        <footer>
+          <div class="copyright">
+            ©2020
+            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a>
+            <!-- <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a> -->
+          </div>
+          
+        </footer>
+      </div>
+    </div>
+  </body>
+  
+</html>
+<script type="text/javascript">
+                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"FxmoY9bk2JUIzmRcLKo0Ner2-gzGzoHsz\",\"API_KEY\":\"w1oDxPXzMesUY9K25GxAsVnR\"},\"service_worker\":{\"open\":false}}")
+                </script> <script type="text/javascript">window.addEventListener('load', function() {
+    
+    window.loadJs = function(d, m, a) {
+      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
+      var b = document.createElement('script')
+      b.defer = true
+      b.setAttribute('type', 'text/javascript')
+      b.setAttribute('charset', 'UTF-8')
+      b.setAttribute('async', 'true')
+      b.setAttribute('src', d)
+      m && b.setAttribute('data-main', '/scripts/app-built')
+      if (typeof a === 'function') {
+        if (window.attachEvent) {
+          b.onreadystatechange = function() {
+            var e = b.readyState
+            if (e === 'loaded' || e === 'complete') {
+              b.onreadystatechange = null
+              a()
+            }
+          }
+        } else {
+          b.onload = a
+        }
+      }
+      c.appendChild(b)
+    }
+    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
+  })</script> <script type="text/javascript">
+                  ;(function() {
+                    var bp = document.createElement('script')
+                    var curProtocol = window.location.protocol.split(':')[0]
+                    if (curProtocol === 'https') {
+                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+                    } else {
+                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+                    }
+                    var s = document.getElementsByTagName('script')[0]
+                    s.parentNode.insertBefore(bp, s)
+                  })()
+                </script> 
