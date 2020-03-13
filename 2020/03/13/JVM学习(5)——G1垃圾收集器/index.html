@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.9.0">
+      <script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content>
+    <meta name="description" content>
+    
+    <title>
+      JVM学习(5)——G1垃圾收集器 - Charles
+    </title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/style/style.css">
+  <link rel="alternate" href="/atom.xml" title="Charles" type="application/atom+xml">
+</head>
+  <body>
+    <canvas id="pagemap"></canvas>
+    
+    <div id="post-toc" class="animated hiddenToc hide">
+      <span class="title">Toc</span>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#引言"><span class="toc-text">引言</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#1-概述"><span class="toc-text">1. 概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-主要改变"><span class="toc-text">2. 主要改变</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-重要概念"><span class="toc-text">3. 重要概念</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-分区（Region）"><span class="toc-text">1. 分区（Region）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-收集集合（CSet）"><span class="toc-text">2. 收集集合（CSet）</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-已记忆集合（RSet）"><span class="toc-text">3. 已记忆集合（RSet）</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#4-GC模式"><span class="toc-text">4. GC模式</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Young-GC"><span class="toc-text">1. Young GC</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-Mixed-GC"><span class="toc-text">2. Mixed GC</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#5-并发标记-—-三色标记算法"><span class="toc-text">5. 并发标记 — 三色标记算法</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#6-SATB"><span class="toc-text">6. SATB</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#7-停顿预测模型"><span class="toc-text">7. 停顿预测模型</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#8-G1调优实践"><span class="toc-text">8. G1调优实践</span></a></li></ol>
+    </div>
+    
+    <div id="fixed-menu-wrap">
+      <span class="iconfont icon-sousuo search-box menu-reset"></span>
+      <span class="icon-toc menu-reset">Toc</span>
+      <span class="iconfont icon-arrowup menu-reset"></span>
+    </div>
+    <div id="fixed-menu">
+      <span class="iconfont icon-menu-"></span>
+    </div>
+    <div id="progress">
+      <div class="line"></div>
+    </div>
+    <div id="search-shade" class="animated hiddenSearch hide">
+      <div class="input-wrap">
+        <span class="iconfont icon-sousuo search-box"></span>
+        <input type="text" placeholder="Search">
+        <span class="iconfont icon-close"></span>
+      </div>
+      <div class="search-result">
+        <div class="meta">
+          <span><b id="result-count">0</b> results found</span>
+          <img src="/images/logo.jpeg">
+        </div>
+        <ul id="result-box"></ul>
+      </div>
+    </div>
+    <div id="menu-mask" class="animated hideMenuMask hide">
+      <span class="iconfont icon-close"></span>
+      <div class="nav">
+        
+        <a href="/" class>
+          Home
+        </a>
+        
+        <a href="/archives" class>
+          Archives
+        </a>
+        
+        <a href="/categories" class>
+          Categories
+        </a>
+        
+        <a href="/tags" class>
+          Tags
+        </a>
+        
+        <a href="/about" class>
+          About
+        </a>
+        
+      </div>
+    </div>
+    <div id="header">
+      <div class="intro">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <div class="author">Charles</div>
+      </div>
+      <div class="nav">
+        <span class="iconfont icon-menu menu-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+    </div>
+    <div id="side" class="animated bounceInLeft">
+      <div class="shrink">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <span class="iconfont icon-menu toggle-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+      <div class="magnify">
+        <div class="about">
+          <div class="author">Charles</div>
+          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        </div>
+
+        <div class="nav">
+          
+          <a href="/" class>
+            Home
+          </a>
+          
+          <a href="/archives" class>
+            Archives
+          </a>
+          
+          <a href="/categories" class>
+            Categories
+          </a>
+          
+          <a href="/tags" class>
+            Tags
+          </a>
+          
+          <a href="/about" class>
+            About
+          </a>
+          
+          <a href="#" class="search-box">
+            <span class="iconfont icon-sousuo"></span>
+          </a>
+        </div>
+        <div class="bottom">
+          <div class="follow">
+            
+            <a href="https://github.com/Charles-xcz" target="_block">
+              <span class="iconfont icon-github"></span>
+            </a>
+             
+            <a href="/atom.xml" target="_block">
+              <span class="iconfont icon-rss"></span>
+            </a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="container">
+      <div class="main animated bounceInRight delay-0.7s">
+        <article class="post-entry">
+    <div class="header">
+      
+      <div class="title">JVM学习(5)——G1垃圾收集器</div>
+      <div class="meta">
+        <span class="item">
+          <span class="iconfont icon-time-circle"></span>
+          <span>2020/03/13</span>
+        </span>
+
+        
+          <span class="item leancloud-visitors" id="/2020/03/13/JVM学习(5)——G1垃圾收集器/" data-flag-title="JVM学习(5)——G1垃圾收集器">
+            <span class="iconfont icon-eye1"></span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+
+         
+        <span class="item">
+          <span class="iconfont icon-folder"></span>
+          <span>
+              
+                
+                  <a href="/categories/java">java</a>
+                
+              
+          </span>
+        </span>
+        
+        
+         
+          <span class="item">
+            <span class="iconfont icon-tag1"></span>
+            <span>
+                
+                  
+                    <a href="/tags/JVM">JVM</a>
+                  
+                
+                  
+                    <a href="/tags/GC">GC</a>
+                  
+                
+            </span>
+          </span>
+         
+      </div>
+      <div>
+      </div>
+    </div>
+    <h2 id="引言">引言<a class="post-anchor" href="#引言"></a></h2><p>以前收集器的特点：</p>
+<ul>
+<li>年轻代和老年代是各自独立且连续的内存块；</li>
+<li>年轻代收集使用单Eden+S0+S1进行复制算法；</li>
+<li>老年代收集必须扫描整个老年代区域；</li>
+<li>都是以尽可能少而快速地执行GC为设计原则。</li>
+</ul>
+<p>CMS垃圾收集器虽然减少了暂停应用程序的运行时间，但是它还存在内存碎片的问题。</p>
+<p>于是为了<strong>去除内存碎片</strong>的问题，同时保留CMS<strong>低暂停时间</strong>的优点，Java7发布了一个新的垃圾收集器——G1垃圾收集器。<font color="blue"><strong>在Java9中，G1作为默认垃圾收集器。</strong></font></p>
+<h2 id="1-概述">1. 概述<a class="post-anchor" href="#1-概述"></a></h2><blockquote>
+<p><strong>G1（Garbage-First）</strong>，是一款面向服务端垃圾的收集器，应用在多处理器和大容量内存环境中，在实现<strong>高吞吐量</strong>的同时，尽可能的满足垃圾收集<strong>暂停时间</strong>的要求。它的设计目标是取代CMS收集器。尽量满足：<strong>吞吐量+响应能力。</strong></p>
+</blockquote>
+<a href="https://i.loli.net/2020/03/07/H7WyeFjcMmxTd5i.png" data-caption="image-20200307111549799" data-fancybox="images"><img src="https://i.loli.net/2020/03/07/H7WyeFjcMmxTd5i.png" alt="image-20200307111549799"></a>
+
+<p>G1算法将堆划分为若干个区域（Region），它仍然属于<strong>分代收集器</strong>。</p>
+<p>这些Region的新生代部分，垃圾收集依然采用暂停所有应用线程的方式，将存活对象拷贝到老年代或者Survivor空间。</p>
+<p>这些Region的老年代部分，G1收集器通过将对象从一个区域复制到另外一个区域，完成了清理工作。</p>
+<p>这就意味着，在正常的处理过程中，G1完成了堆的压缩（至少是部分堆的压缩），这样也就不会有CMS内存碎片问题的存在了。</p>
+<p>在G1中，还有一种特殊的区域，叫Humongous（巨大的）区域：</p>
+<ul>
+<li>如果一个对象占用的空间超过了分区容量50%以上，G1收集器就认为这是一个巨型对象。</li>
+<li>这些巨型对象默认直接会被分配在年老代，但是如果它是一个短期存在的巨型对象，就会对垃圾收集器造成负面影响。</li>
+<li>为了解决这个问题，G1划分了一个Humongous区，它用来专门存放巨型对象。</li>
+<li>如果一个H区装不下一个巨型对象，那么G1会寻找连续的H分区来存储。为了能找到连续的H区，有时候不得不启动Full GC。</li>
+</ul>
+<h2 id="2-主要改变">2. 主要改变<a class="post-anchor" href="#2-主要改变"></a></h2><ul>
+<li><p>heap被划分为一个个相等的不连续的内存区域（regions），每个region都有一个分代的角色；</p>
+<ul>
+<li>eden、survivor、old对每个角色的数量并没有强制的限定，也就是说对每种分代内存的大小，可以动态变化；</li>
+<li>G1最大的特点就是高效的执行回收，优先去执行那些大量对象可回收的区域（region）。</li>
+</ul>
+</li>
+<li><p>G1使用了gc停顿可预测的模型，来满足用户设定的gc停顿时间。</p>
+<ul>
+<li>根据用户设定的目标时间，G1会自动地选择哪些region要清除，一次清除多少个region；</li>
+<li>G1从多个region中复制存活的对象，然后集中放入一个region中，同时整理、清除内存（copying收集算法）。</li>
+</ul>
+</li>
+</ul>
+<p><strong>G1 vs CMS</strong></p>
+<ul>
+<li>G1在压缩空间方面有优势；</li>
+<li>对比使用mark-sweep的CMS，G1将内存空间分成若干Region，并使用的copying算法不会造成内存碎片；</li>
+<li>Eden、Survivor、Old区不在固定，在内存使用效率上来说更灵活；</li>
+<li>G1可以通过设置预期停顿时间（Pause Time）来控制垃圾收集时间，避免应用雪崩现象；</li>
+<li>G1在回收内存后会马上同时做合并空闲内存的工作，而CMS默认是在STW（stop the world）的时候做；</li>
+<li>G1会在Young GC中使用，而CMS只能在Old区使用；</li>
+<li>对比Parallel Scavenge（基于copying）、Parallel Old收集器（基于mark-compact-sweep）对整个区域做整理导致gc停顿会比较长，而G1只是特定地整理几个region；</li>
+<li>G1并非一个实时的收集器，与parallel Scavenge一样，对gc停顿时间的设置并不绝对生效，只是G1有较高的几率保证不超过设定的gc停顿时间。与之前的gc收集器对比，G1会根据用户设定的gc停顿时间，智能评估哪几个region需要被回收可以满足用户的设定。</li>
+</ul>
+<h2 id="3-重要概念">3. 重要概念<a class="post-anchor" href="#3-重要概念"></a></h2><h3 id="1-分区（Region）">1. 分区（Region）<a class="post-anchor" href="#1-分区（Region）"></a></h3><p>G1采取了不同的策略来解决并行、串行和CMS收集器的碎片、暂停时间不可控等问题。</p>
+<p>G1将整个堆分成相同大小的分区（Region）：</p>
+<ul>
+<li>每个分区都可能是年轻代也可能是老年代，但是在同一时刻只能属于某个代。<ul>
+<li>年轻代、幸存区、老年代这些概念还存在，成为逻辑上的概念，这样方便复用之前分代框架的逻辑。</li>
+</ul>
+</li>
+<li>在物理上不需要连续，则带来了额外的好处<ul>
+<li>有的分区内垃圾对象特别多，有的分区内垃圾对象很少，G1会优先回收垃圾对象特别多的分区，这样可以花费较少的时间来回收这些分区的垃圾，这也就是G1名字的由来，即首先收集垃圾最多的分区。</li>
+</ul>
+</li>
+<li><strong>依然是在新生代满了的时候，对整个新生代进行回收</strong><ul>
+<li>整个新生代中的对象，要么被回收、要么晋升，至于<strong><font color="blue">新生代也采取分区机制的原因，则是因为这样跟老年代的策略统一，方便调整代的大小。</font></strong></li>
+</ul>
+</li>
+<li>G1还是一种带压缩的收集器，在回收老年代的分区时，是将存活的对象从一个分区拷贝到另一个可用分区，这个拷贝的过程就实现了局部的压缩。</li>
+</ul>
+<h3 id="2-收集集合（CSet）">2. 收集集合（CSet）<a class="post-anchor" href="#2-收集集合（CSet）"></a></h3><ul>
+<li>一组可被回收的分区的集合。<ul>
+<li>Young GC时CSet就是所有年轻代里面的Region。</li>
+<li>Mixed GC时CSet是所有年轻代里的Region加上在全局并发标记阶段标记出来的收益高的Region。</li>
+</ul>
+</li>
+<li>位于CSet的Region中的存活数据会在GC过程中被移动到另一个可用分区。</li>
+</ul>
+<h3 id="3-已记忆集合（RSet）">3. 已记忆集合（RSet）<a class="post-anchor" href="#3-已记忆集合（RSet）"></a></h3><ul>
+<li>一个谁引用了我的机制，记录引用了当前region的分区内对象的卡片索引。</li>
+<li>当要回收该分区时，通过扫描分区的RSet，来确定引用本分区内的对象是否存活，如引用本分区的对象全是垃圾，则当前分区内的对象可能也是垃圾。</li>
+<li>RSet的价值在于使得垃圾收集器不需要扫描整个堆找到谁引用了当前分区中的对象，只需要扫描RSet即可。</li>
+</ul>
+<a href="https://i.loli.net/2020/03/12/h9zS2XW5dPc1KGk.png" data-caption data-fancybox="images"><img src="https://i.loli.net/2020/03/12/h9zS2XW5dPc1KGk.png" alt></a>
+
+<p>逻辑上说每个Region都有一个RSet，RSet记录了其他Region中的对象引用本Region中对象的关系，属于points-into结构（谁引用了我的对象）。</p>
+<p>而Card Table则是一种points-out（我引用了谁的对象）的结构，每个Card 覆盖一定范围的Heap（一般为512Bytes）。</p>
+<p>G1的RSet是在Card Table的基础上实现的：默认情况下，每个card都未被引用。</p>
+<p>当一个地址空间被引用时，这个地址空间对应的数组索引的值被标记为’0’，即标记为脏引用，此外RSet也将这个数组下标记录下来，并标记这些引用该地址的指针来自哪些Region的哪些Card。这个RSet其实是一个Hash Table，Key是别的Region的起始地址，Value是一个集合，里面的元素是Card Table的Index。</p>
+<p><strong>由于新生代有多个，那么我们需要在新生代之间记录引用吗？</strong></p>
+<p>这是不必要的，原因在于每次GC时，所有新生代都会被扫描，所以只需要记录老年代和新生代以及老年代之间的引用即可。</p>
+<h2 id="4-GC模式">4. GC模式<a class="post-anchor" href="#4-GC模式"></a></h2><p>G1提供了两种GC模式，<strong><font color="blue">Young GC和Mixed GC</font></strong>，两种都是需要Stop The World的。</p>
+<h3 id="1-Young-GC">1. Young GC<a class="post-anchor" href="#1-Young-GC"></a></h3><p>Young GC：选定<strong>所有年轻代里的Region</strong>。通过控制年轻代的Region个数，即年轻代内存大小，来控制YoungGC的时间开销。</p>
+<ul>
+<li>Young GC主要是对Eden区进行GC，它在<strong>Eden空间耗尽时会被触发</strong>。</li>
+<li>在这种情况下，Eden空间的数据移动到Survivor空间中，如果Survivor空间不够，Eden空间的部分数据会直接晋升到老年代空间。</li>
+<li>Survivor区的数据移动到新的Survivor区中，也有部分数据晋升到老年代空间中。在回收之后所有之前属于Eden的区块全部变成空白，即不属于任何一个分区（Eden、Survivor、Old）。</li>
+<li>GC完成工作，应用线程继续执行。</li>
+</ul>
+<h3 id="2-Mixed-GC">2. Mixed GC<a class="post-anchor" href="#2-Mixed-GC"></a></h3><p>Mixed GC：选定<strong>所有年轻代里的Region</strong>和根据global concurrent marking统计得出收集<strong>收益高的部分老年代Region</strong>。在用户指定的开销目标范围内尽可能选择收益高的老年代Region。</p>
+<p>分为<strong>global concurent marking</strong>和<strong>拷贝存活对象</strong>两步。</p>
+<p><strong>global concurent marking：</strong>执行过程类似于CMS，但是不同的是，在G1 GC中，它主要是为Mixed GC提供标记服务的，并不是一次GC过程的一个必须环节。执行过程分为四个步骤：</p>
+<ol>
+<li>初始标记（initial mark，STW）：<ul>
+<li>它标记了从GC Root开始直接可达的对象；</li>
+<li><strong>initial mark是共用了Young GC的暂停</strong>，这是因为他们可以复用root scan操作，所以可以说global concurrent marking是伴随Young GC而发生的。</li>
+</ul>
+</li>
+<li>并发标记（Concurrent Marking）<ul>
+<li>这个阶段从GC Root开始对heap中的对象进行标记，标记线程与应用程序线程并发执行，并且收集各个Region的存活对象信息。</li>
+<li>采用的三色标记算法，在下文介绍。</li>
+</ul>
+</li>
+<li>重新标记（Remark，STW）：标记那些在并发标记阶段发生变化的对象，将被回收。</li>
+<li>清理（Cleanup）<ul>
+<li>清除空Region（没有存活对象的），加入free list。</li>
+<li>只是回收了没有存活对象的Region，所以它并不需要STW。</li>
+</ul>
+</li>
+</ol>
+<p><strong><font color="red">注意</font></strong>：<strong>Mixed GC不是Full GC</strong></p>
+<ul>
+<li>它只能回收部分老年代的Region；</li>
+<li>如果Mixed GC实在无法跟上程序分配内存的速度，导致老年代填满无法继续进行Mixed GC，就会使用serial old GC（Full GC）来收集整个GC heap；</li>
+<li>所以本质上，G1是不提供Full GC的。</li>
+</ul>
+<p><strong>什么时候触发MixedGC?</strong></p>
+<p>Mixed GC是由一些参数控制，另外也通过参数控制着哪些老年代Region会被选入CSet（收集集合）。</p>
+<ol>
+<li><strong>G1HeapWastePercent</strong>：在global concurrent marking结束之后，我们可以知道old gen regions中有多少空间要被回收，在每次YGC之后和再次发生Mixed GC之前，会检查垃圾占比是否达到此参数，只有达到了，下次才会发生Mixed GC。</li>
+<li><strong>G1MixedGCLiveThresholdPercent</strong>：old generation region中的存活对象的占比，只有在此参数之下的Region，才会被选入CSet。</li>
+<li><strong>G1MixedGCCountTarget</strong>：一次global concurrent marking之后，最多执行Mixed GC的次数。</li>
+<li><strong>G1OldCSetRegionThresholdPercent</strong>：一次Mixed GC中能被选入CSet的最多old generation region数量。</li>
+</ol>
+<p>常用参数表</p>
+<p><a href="https://i.loli.net/2020/03/12/GypXouMgbr4jKHv.png" data-caption="image-20200312183937412" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/GypXouMgbr4jKHv.png" alt="image-20200312183937412"></a></p>
+<h2 id="5-并发标记-—-三色标记算法">5. 并发标记 — 三色标记算法<a class="post-anchor" href="#5-并发标记-—-三色标记算法"></a></h2><p><strong>三色标记算法</strong>：它是描述追踪式回收器的一种有效的方法，利用它可以推演回收器的正确性。</p>
+<p>我们将对象分为三种类型：</p>
+<ul>
+<li>黑色：根对象，或者该对象与它的子对象都被扫描过（对象被标记了，且它的所有field也被标记完了）</li>
+<li>灰色：对象本身被扫描，但还没扫描完该对象中的子对象（它的field还没有被标记或标记完）</li>
+<li>白色：未被扫描对象，扫描完成所有对象之后，最终为白色的为不可达对象，即垃圾对象（对象没有被标记到）</li>
+</ul>
+<p>步骤：</p>
+<ol>
+<li><p>首先根对象标记为黑色，子对象被置为灰色；</p>
+</li>
+<li><p>继续由灰色遍历，将已扫描了子对象的对象置为黑色</p>
+</li>
+<li><p>遍历了所有可达的对象后，所有可达的对象都变成了黑色。不可达的对象即为白色，需要被清理</p>
+</li>
+</ol>
+<div align="center">
+    <a href="https://i.loli.net/2020/03/12/BDZsNHQTnyiOehW.png" data-caption="image-20200312202122270" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/BDZsNHQTnyiOehW.png" alt="image-20200312202122270"></a>
+    <a href="https://i.loli.net/2020/03/12/t92IsVaKZGTpzXE.png" data-caption="image-20200312202506531" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/t92IsVaKZGTpzXE.png" alt="image-20200312202506531"></a>
+    <a href="https://i.loli.net/2020/03/12/aG1Qoc3q4K5Sn9h.png" data-caption="image-20200312202622222" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/aG1Qoc3q4K5Sn9h.png" alt="image-20200312202622222"></a>
+</div>
+
+
+<p>但是如果在标记过程中，应用程序也在运行，那么对象的指针就有可能改变。这样的话，我们就会遇到一个问题：漏标。</p>
+<p>当垃圾收集器扫描到下面图1的情况；</p>
+<p>这时候应用程序执行了以下操作：A.c=C; B.c=null;这样，对象的状态图变成图2情形；</p>
+<p>这时候垃圾收集器再标记扫描的时候就会变成图3；</p>
+<p>很显然，此时C是白色，被认为是垃圾需要清理掉，显然这是不合理的。</p>
+<div align="center">
+    <a href="https://i.loli.net/2020/03/12/ph4nO2mVxM7kaXS.png" data-caption="image-20200312203027083" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/ph4nO2mVxM7kaXS.png" alt="image-20200312203027083"></a>
+    <a href="https://i.loli.net/2020/03/12/Q2wzThNJpZfFuBi.png" data-caption="image-20200312203605603" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/Q2wzThNJpZfFuBi.png" alt="image-20200312203605603"></a>
+    <a href="https://i.loli.net/2020/03/12/ulG2tsZr9ya516R.png" data-caption="image-20200312203532494" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/ulG2tsZr9ya516R.png" alt="image-20200312203532494"></a>
+</div>
+
+
+<p>这时就需要使用的是SATB（Snapshot-At-The-Beginning）的方式，来解决这种问题。</p>
+<h2 id="6-SATB">6. SATB<a class="post-anchor" href="#6-SATB"></a></h2><p>SATB全称snapshot-at-the-beginning，由Taiichi Yuasa为增量式标记清除垃圾收集器开发的一个算法，主要应用于垃圾收集的并发标记阶段，</p>
+<p>它有3个步骤：</p>
+<ol>
+<li>在开始标记的时候生成一个快照图，标记存活对象。</li>
+<li>在并发标记的时候所有被改变的对象入队（在write barrier里把所有旧的引用所指向的对象都变成非白的）。</li>
+<li>可能存在浮动垃圾，将在下次被收集。</li>
+</ol>
+<p>SATB是维持并发GC的一种手段。G1并发的基础就是SATB。</p>
+<p>SATB可以理解成在GC开始之前对堆内存里的对象做一次快照，此时活的对象就认为是活的，从而形成一个对象图。</p>
+<p>在GC收集的时候，新生代的对象也认为是活的对象，除此之外其他不可达的对象都认为是垃圾对象。</p>
+<p><strong>如何找到在GC过程中分配的对象呢？</strong></p>
+<ul>
+<li>每个region记录着两个top-at-mark-start（TAMS）指针，分别为prevTAMS和nextTAMS。在TAMS以上的对象就是新分配的，因而被视为隐式marked。</li>
+<li>通过这种方式我们就找到了在GC过程中新分配的对象，并把这些对象认为是活的对象。</li>
+</ul>
+<p>Region包含了5个指针，分别是bottom、previous TAMS、next TAMS、top和end</p>
+<p><a href="https://i.loli.net/2020/03/12/ARsFuL3jaGbJNle.png" data-caption="image-20200312213709598" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/ARsFuL3jaGbJNle.png" alt="image-20200312213709598"></a></p>
+<p>其中previous TAMS、next TAMS是前后两次发生并发标记时的位置，全称<code>top-at-mark-start</code>，</p>
+<p> 1、假设并发标记开始，将该Region当前的top指针赋值给next TAMS，在并发标记标记期间，分配的对象都在[next TAMS, top]之间，SATB能够确保这部分的对象都会被标记，默认都是存活的。</p>
+<p> 2、当并发标记结束时，将next TAMS所在的地址赋值给previous TAMS，SATB给 [bottom, previous TAMS] 之间的对象创建一个快照Bitmap，所有垃圾对象能通过快照被识别出来</p>
+<p><strong>那么在GC过程中引用发生变化的问题怎么解决呢？</strong></p>
+<ul>
+<li><p>对black新引用了一个white对象，然后又从gray对象中删除了对该white对象的引用，这样会造成了该white对象漏标记</p>
+</li>
+<li><p>对black新引用了一个white对象，然后从gray对象删了一个引用该white对象的white对象，这样也会造成了该white对象漏标记</p>
+</li>
+<li><p>对black新引用了一个网刚new出来的white对象，没有其他gray对象引用该white对象，这样也会造成了该white对象漏标记</p>
+</li>
+</ul>
+<p>对于三色算法在concurrent的时候可能产生的漏标记问题，SATB在marking阶段中，对于从gray对象移除的目标引用对象标记为gray，对于black引用的新产生的对象标记为black；由于是在开始的时候进行snapshot，因而可能存在Floating Garbage。</p>
+<p><strong>漏标与误标</strong></p>
+<ul>
+<li>误标没什么关系，顶多造成浮动垃圾，在下次gc还是可以回收的。</li>
+<li>但是漏标的后果是致命的，把本应该存活的对象给回收了，从而影响的程序的正确性</li>
+</ul>
+<p><strong>漏标</strong>的情况只会发生在白色对象中，且满足以下任意一个条件：</p>
+<ol>
+<li>并发标记时，应用线程给一个黑色对象的引用类型字段赋值了该白色对象。</li>
+<li>并发标记时，应用线程删除所有灰色对象到该白色对象的引用。</li>
+</ol>
+<p>对于第一种情况，利用post-write barrier，记录所有新增的引用关系，然后根据这些引用关系为根重新扫描一遍。</p>
+<p>对于第二种情况，利用pre-write barrier，将所有即将被删除的引用关系的旧引用记录下来，最后以这些旧引用为根重新扫描一遍。</p>
+<h2 id="7-停顿预测模型">7. 停顿预测模型<a class="post-anchor" href="#7-停顿预测模型"></a></h2><p>G1收集器突出表现出来的一点是通过一个停顿预测模型根据用户配置的停顿时间来选择CSet的大小，从而达到用户期待的应用程序暂停时间。</p>
+<ul>
+<li>通过-XX:MaxGCPauseMillis参数来设置。这一点有点类似于ParallelScavenge收集器。</li>
+</ul>
+<p>关于停顿时间的设置并不是越短越好。</p>
+<ul>
+<li>设置的时间越短意味着每次收集的CSet越小，导致垃圾逐步积累变多，最终不得不退化成SerialOld GC。</li>
+<li>停顿时间设置的过长，那么会导致每次都会产生长时间的停顿，影响了程序对外的响应时间。</li>
+</ul>
+<h2 id="8-G1调优实践">8. G1调优实践<a class="post-anchor" href="#8-G1调优实践"></a></h2><p><strong>不断调优暂停时间指标</strong></p>
+<ul>
+<li>通过-XX:MaxGCPauseMillis=x可以设置启动应用程序暂停的时间；</li>
+<li>G1在运行的时候会根据这个参数选择CSet来满足响应时间的设置。</li>
+<li>一般情况下这个值设置到100ms或者200ms都是可以的（不同情况下会不一样），但如果设置成50ms就不太合理。暂停时间设置的太短，就会导致出现G1跟不上垃圾产生的速度。最终退化成FullGC。</li>
+<li>所以对这个参数的调优是一个持续的过程，逐步调整到最佳状态。</li>
+</ul>
+<p><strong>不要设置新生代和老年代的大小</strong></p>
+<ul>
+<li>G1收集器在运行的时候会调整新生代和老年代的大小。</li>
+<li>通过改变代的大小来调整对象晋升的速度以及晋升年龄，从而达到我们为收集器设置的暂停时间目标。</li>
+<li>若手动设置了新生代大小相当于放弃了G1为我们做的自动调优。我们需要做的只是设置整个堆内存的大小，剩下的交给G1自己去分配各个代的大小即可。</li>
+</ul>
+<p><strong>关注Evacuation Failure</strong></p>
+<ul>
+<li>Evacuation Failure类似于CMS里面的晋升失败，堆空间的垃圾太多导致无法完成Region之间的拷贝，于是不得不退化成Full GC来做一次全局范围内的垃圾收集。</li>
+</ul>
+
+
+  
+    <div class="post-reward">
+    <div id="reward-button">打赏</div>
+      <div id="qr">
+        <div class="wrap">
+            
+            <div class="bg-wrap">
+              <a href="/images/alipay.jpg" target="_block" class="bg" style="background-image:url('/images/alipay.jpg')"></a>
+              支付宝
+            </div>
+            
+            
+            <div class="bg-wrap">
+                <a href="/images/weixinpay.png" target="_block" class="bg" style="background-image:url('/images/weixinpay.png')"></a>
+              微信
+            </div>
+            
+        </div>
+      </div>
+    </div>
+  
+  <div class="post-guide">
+    <div class="item left">
+        
+          <a href="/2020/03/13/JVM学习(3)——GC Roots与四种引用 - 副本/"></a>
+        
+    </div>
+    <div class="item right">
+        
+          <a href="/2020/03/13/JVM学习(4)——GC垃圾收集器/"></a>
+        
+    </div>
+  </div>
+
+  
+
+  <div class="post-copyright">
+    <div class="auth">
+      本文作者：<a href="http://Charles-xcz.github.io">Charles</a>
+    </div>
+    <div class="link">
+      永久链接：<a href="http://Charles-xcz.github.io/2020/03/13/JVM学习(5)——G1垃圾收集器/">http://Charles-xcz.github.io/2020/03/13/JVM学习(5)——G1垃圾收集器/</a>
+    </div>
+    <div class="declare">
+      版权声明：本文首发于<a href="http://Charles-xcz.github.io">Charles</a>的博客，转载请注明出处！
+    </div>
+  </div>
+
+  <div id="comment"></div>
+
+  
+  
+</article>
+        <footer>
+          <div class="copyright">
+            ©2020
+            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a>
+            <!-- <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a> -->
+          </div>
+          
+        </footer>
+      </div>
+    </div>
+  </body>
+  
+</html>
+<script type="text/javascript">
+                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"FxmoY9bk2JUIzmRcLKo0Ner2-gzGzoHsz\",\"API_KEY\":\"w1oDxPXzMesUY9K25GxAsVnR\"},\"service_worker\":{\"open\":true}}")
+                </script> <script type="text/javascript">window.addEventListener('load', function() {
+    
+    window.loadJs = function(d, m, a) {
+      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
+      var b = document.createElement('script')
+      b.defer = true
+      b.setAttribute('type', 'text/javascript')
+      b.setAttribute('charset', 'UTF-8')
+      b.setAttribute('async', 'true')
+      b.setAttribute('src', d)
+      m && b.setAttribute('data-main', '/scripts/app-built')
+      if (typeof a === 'function') {
+        if (window.attachEvent) {
+          b.onreadystatechange = function() {
+            var e = b.readyState
+            if (e === 'loaded' || e === 'complete') {
+              b.onreadystatechange = null
+              a()
+            }
+          }
+        } else {
+          b.onload = a
+        }
+      }
+      c.appendChild(b)
+    }
+    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
+  })</script> <script type="text/javascript">
+                  ;(function() {
+                    var bp = document.createElement('script')
+                    var curProtocol = window.location.protocol.split(':')[0]
+                    if (curProtocol === 'https') {
+                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+                    } else {
+                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+                    }
+                    var s = document.getElementsByTagName('script')[0]
+                    s.parentNode.insertBefore(bp, s)
+                  })()
+                </script> 

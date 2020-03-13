@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://charles-xcz.github.io/"/>
-  <updated>2020-03-11T12:52:38.145Z</updated>
+  <updated>2020-03-13T02:50:21.928Z</updated>
   <id>http://charles-xcz.github.io/</id>
   
   <author>
@@ -17,18 +17,45 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
-    <title>JVM学习(2)——JVM的堆/栈/方法区以及GC算法</title>
-    <link href="http://charles-xcz.github.io/2020/03/12/JVM%E5%AD%A6%E4%B9%A0(2)%E2%80%94%E2%80%94JVM%E7%9A%84%E5%A0%86%E6%A0%88%E6%96%B9%E6%B3%95%E5%8C%BA%E4%BB%A5%E5%8F%8AGC%E7%AE%97%E6%B3%95%20-%20%E5%89%AF%E6%9C%AC/"/>
-    <id>http://charles-xcz.github.io/2020/03/12/JVM%E5%AD%A6%E4%B9%A0(2)%E2%80%94%E2%80%94JVM%E7%9A%84%E5%A0%86%E6%A0%88%E6%96%B9%E6%B3%95%E5%8C%BA%E4%BB%A5%E5%8F%8AGC%E7%AE%97%E6%B3%95%20-%20%E5%89%AF%E6%9C%AC/</id>
-    <published>2020-03-12T14:10:37.673Z</published>
-    <updated>2020-03-11T12:52:38.145Z</updated>
+    <title></title>
+    <link href="http://charles-xcz.github.io/2020/03/13/JVM%E5%AD%A6%E4%B9%A0(3)%E2%80%94%E2%80%94GC%20Roots%E4%B8%8E%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8%20-%20%E5%89%AF%E6%9C%AC/"/>
+    <id>http://charles-xcz.github.io/2020/03/13/JVM%E5%AD%A6%E4%B9%A0(3)%E2%80%94%E2%80%94GC%20Roots%E4%B8%8E%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8%20-%20%E5%89%AF%E6%9C%AC/</id>
+    <published>2020-03-13T02:50:21.928Z</published>
+    <updated>2020-03-13T02:50:21.928Z</updated>
     
     <summary type="html">
     
       
       
-        &lt;h2 id=&quot;一-方法区-Method-Area&quot;&gt;一. 方法区 Method Area&lt;a class=&quot;post-anchor&quot; href=&quot;#一-方法区-Method-Area&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;属于供各线程共享的运行时内存区域。&lt;/p&gt;
-&lt;p&gt;它&lt;strong&gt;
+        &lt;hr&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;以前收集器的特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;年轻代和老年代是各自独立且连续的内存块；&lt;/li&gt;
+&lt;li&gt;年轻代收集使用单Eden+S0+S
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>JVM学习(5)——G1垃圾收集器</title>
+    <link href="http://charles-xcz.github.io/2020/03/13/JVM%E5%AD%A6%E4%B9%A0(5)%E2%80%94%E2%80%94G1%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/"/>
+    <id>http://charles-xcz.github.io/2020/03/13/JVM%E5%AD%A6%E4%B9%A0(5)%E2%80%94%E2%80%94G1%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</id>
+    <published>2020-03-13T02:49:00.000Z</published>
+    <updated>2020-03-13T02:49:47.592Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;以前收集器的特点：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;年轻代和老年代是各自独立且连续的内存块；&lt;/li&gt;
+&lt;li&gt;年轻代收集使用单Eden+S0+S1进行复制算法；&lt;/
       
     
     </summary>
@@ -38,6 +65,62 @@
     
     
       <category term="JVM" scheme="http://Charles-xcz.github.io/tags/JVM/"/>
+    
+      <category term="GC" scheme="http://Charles-xcz.github.io/tags/GC/"/>
+    
+  </entry>
+  
+  <entry>
+    <title></title>
+    <link href="http://charles-xcz.github.io/2020/03/13/JVM%E5%AD%A6%E4%B9%A0(4)%E2%80%94%E2%80%94GC%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/"/>
+    <id>http://charles-xcz.github.io/2020/03/13/JVM%E5%AD%A6%E4%B9%A0(4)%E2%80%94%E2%80%94GC%E5%9E%83%E5%9C%BE%E6%94%B6%E9%9B%86%E5%99%A8/</id>
+    <published>2020-03-13T02:43:45.442Z</published>
+    <updated>2020-03-13T02:46:18.519Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;hr&gt;
+&lt;hr&gt;
+&lt;h2 id=&quot;1-介绍&quot;&gt;1. 介绍&lt;a class=&quot;post-anchor&quot; href=&quot;#1-介绍&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;GC垃圾收集器是GC算法的实现。&lt;/p&gt;
+&lt;p&gt;主要分为四种：&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;Serial：串行垃圾收集器（
+      
+    
+    </summary>
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>JVM学习(3)——GC Roots与四种引用</title>
+    <link href="http://charles-xcz.github.io/2020/03/12/JVM%E5%AD%A6%E4%B9%A0(3)%E2%80%94%E2%80%94GC%20Roots%E4%B8%8E%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8/"/>
+    <id>http://charles-xcz.github.io/2020/03/12/JVM%E5%AD%A6%E4%B9%A0(3)%E2%80%94%E2%80%94GC%20Roots%E4%B8%8E%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8/</id>
+    <published>2020-03-12T01:56:48.000Z</published>
+    <updated>2020-03-13T00:10:20.242Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h2&gt;&lt;p&gt;什么是垃圾，简单来说就是内存中已经不在被使用的空间就是垃圾。&lt;/p&gt;
+&lt;p&gt;如何判断一个对象可以被回收？&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;引用计数
+      
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://Charles-xcz.github.io/categories/java/"/>
+    
+    
+      <category term="JVM" scheme="http://Charles-xcz.github.io/tags/JVM/"/>
+    
+      <category term="GC" scheme="http://Charles-xcz.github.io/tags/GC/"/>
     
   </entry>
   
@@ -189,20 +272,18 @@
   </entry>
   
   <entry>
-    <title>JVM学习(3)——GC Roots与四种引用</title>
-    <link href="http://charles-xcz.github.io/2020/03/01/JVM%E5%AD%A6%E4%B9%A0(3)%E2%80%94%E2%80%94GC%20Roots%E4%B8%8E%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8/"/>
-    <id>http://charles-xcz.github.io/2020/03/01/JVM%E5%AD%A6%E4%B9%A0(3)%E2%80%94%E2%80%94GC%20Roots%E4%B8%8E%E5%9B%9B%E7%A7%8D%E5%BC%95%E7%94%A8/</id>
-    <published>2020-03-01T08:17:23.666Z</published>
-    <updated>2020-03-12T14:18:46.325Z</updated>
+    <title>JVM学习(2)——JVM的堆/栈/方法区以及GC算法</title>
+    <link href="http://charles-xcz.github.io/2020/03/09/JVM%E5%AD%A6%E4%B9%A0(2)%E2%80%94%E2%80%94JVM%E5%86%85%E5%AD%98%E4%BB%A5%E5%8F%8AGC%E7%AE%97%E6%B3%95/"/>
+    <id>http://charles-xcz.github.io/2020/03/09/JVM%E5%AD%A6%E4%B9%A0(2)%E2%80%94%E2%80%94JVM%E5%86%85%E5%AD%98%E4%BB%A5%E5%8F%8AGC%E7%AE%97%E6%B3%95/</id>
+    <published>2020-03-09T01:56:48.000Z</published>
+    <updated>2020-03-13T02:53:25.493Z</updated>
     
     <summary type="html">
     
       
       
-        &lt;h2 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;什么是垃圾，简单来说就是内存中已经不在被使用的空间就是垃圾。&lt;/p&gt;
-&lt;p&gt;如何判断一个对象可以被回收？&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;引用计数法（JVM中不使用这
+        &lt;h2 id=&quot;一-方法区-Method-Area&quot;&gt;一. 方法区 Method Area&lt;a class=&quot;post-anchor&quot; href=&quot;#一-方法区-Method-Area&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;属于供各线程共享的运行时内存区域。&lt;/p&gt;
+&lt;p&gt;它&lt;strong&gt;
       
     
     </summary>
@@ -212,8 +293,6 @@
     
     
       <category term="JVM" scheme="http://Charles-xcz.github.io/tags/JVM/"/>
-    
-      <category term="GC" scheme="http://Charles-xcz.github.io/tags/GC/"/>
     
   </entry>
   

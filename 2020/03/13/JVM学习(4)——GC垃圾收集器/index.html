@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html>
+  <head><meta name="generator" content="Hexo 3.9.0">
+      <script>
+  var _hmt = _hmt || []
+  ;(function() {
+    var hm = document.createElement('script')
+    hm.src = 'https://hm.baidu.com/hm.js?5a0acc897fd96474a2c8f4deac84611a'
+    var s = document.getElementsByTagName('script')[0]
+    s.parentNode.insertBefore(hm, s)
+  })()
+</script> 
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <meta name="keywords" content>
+    <meta name="description" content>
+    
+    <title>
+          Charles
+    </title>
+    <link rel="manifest" href="/manifest.json">
+    <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
+    <link rel="stylesheet" href="/style/style.css">
+  <link rel="alternate" href="/atom.xml" title="Charles" type="application/atom+xml">
+</head>
+  <body>
+    <canvas id="pagemap"></canvas>
+    
+    <div id="post-toc" class="animated hiddenToc hide">
+      <span class="title">Toc</span>
+      <ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-介绍"><span class="toc-text">1. 介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#2-详情"><span class="toc-text">2. 详情</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-Serial"><span class="toc-text">1. Serial</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#2-ParNew"><span class="toc-text">2. ParNew</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#3-Parallel-Scavenge"><span class="toc-text">3. Parallel Scavenge</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#4-Serial-Old"><span class="toc-text">4. Serial Old</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#5-ParallelOld"><span class="toc-text">5. ParallelOld</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#6-CMS"><span class="toc-text">6. CMS</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#3-垃圾收集器的选择"><span class="toc-text">3. 垃圾收集器的选择</span></a></li></ol>
+    </div>
+    
+    <div id="fixed-menu-wrap">
+      <span class="iconfont icon-sousuo search-box menu-reset"></span>
+      <span class="icon-toc menu-reset">Toc</span>
+      <span class="iconfont icon-arrowup menu-reset"></span>
+    </div>
+    <div id="fixed-menu">
+      <span class="iconfont icon-menu-"></span>
+    </div>
+    <div id="progress">
+      <div class="line"></div>
+    </div>
+    <div id="search-shade" class="animated hiddenSearch hide">
+      <div class="input-wrap">
+        <span class="iconfont icon-sousuo search-box"></span>
+        <input type="text" placeholder="Search">
+        <span class="iconfont icon-close"></span>
+      </div>
+      <div class="search-result">
+        <div class="meta">
+          <span><b id="result-count">0</b> results found</span>
+          <img src="/images/logo.jpeg">
+        </div>
+        <ul id="result-box"></ul>
+      </div>
+    </div>
+    <div id="menu-mask" class="animated hideMenuMask hide">
+      <span class="iconfont icon-close"></span>
+      <div class="nav">
+        
+        <a href="/" class>
+          Home
+        </a>
+        
+        <a href="/archives" class>
+          Archives
+        </a>
+        
+        <a href="/categories" class>
+          Categories
+        </a>
+        
+        <a href="/tags" class>
+          Tags
+        </a>
+        
+        <a href="/about" class>
+          About
+        </a>
+        
+      </div>
+    </div>
+    <div id="header">
+      <div class="intro">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <div class="author">Charles</div>
+      </div>
+      <div class="nav">
+        <span class="iconfont icon-menu menu-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+    </div>
+    <div id="side" class="animated bounceInLeft">
+      <div class="shrink">
+        <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        <span class="iconfont icon-menu toggle-icon"></span>
+        <a href="#" class="search-box">
+          <span class="iconfont icon-sousuo"></span>
+        </a>
+      </div>
+      <div class="magnify">
+        <div class="about">
+          <div class="author">Charles</div>
+          <a href="/" class="logo" style="background-image: url('/images/logo.jpeg')"></a>
+        </div>
+
+        <div class="nav">
+          
+          <a href="/" class>
+            Home
+          </a>
+          
+          <a href="/archives" class>
+            Archives
+          </a>
+          
+          <a href="/categories" class>
+            Categories
+          </a>
+          
+          <a href="/tags" class>
+            Tags
+          </a>
+          
+          <a href="/about" class>
+            About
+          </a>
+          
+          <a href="#" class="search-box">
+            <span class="iconfont icon-sousuo"></span>
+          </a>
+        </div>
+        <div class="bottom">
+          <div class="follow">
+            
+            <a href="https://github.com/Charles-xcz" target="_block">
+              <span class="iconfont icon-github"></span>
+            </a>
+             
+            <a href="/atom.xml" target="_block">
+              <span class="iconfont icon-rss"></span>
+            </a>
+            
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="container">
+      <div class="main animated bounceInRight delay-0.7s">
+        <article class="post-entry">
+    <div class="header">
+      
+      <div class="title"></div>
+      <div class="meta">
+        <span class="item">
+          <span class="iconfont icon-time-circle"></span>
+          <span>2020/03/13</span>
+        </span>
+
+        
+          <span class="item leancloud-visitors" id="/2020/03/13/JVM学习(4)——GC垃圾收集器/" data-flag-title>
+            <span class="iconfont icon-eye1"></span>
+            <span class="leancloud-visitors-count"></span>
+          </span>
+        
+
+        
+        
+        
+      </div>
+      <div>
+      </div>
+    </div>
+    <hr>
+<hr>
+<h2 id="1-介绍">1. 介绍<a class="post-anchor" href="#1-介绍"></a></h2><p>GC垃圾收集器是GC算法的实现。</p>
+<p>主要分为四种：</p>
+<ul>
+<li><p>Serial：串行垃圾收集器（又分为Serial和Serial Old）</p>
+<p>它为单线程环境设计且只使用一个线程进行垃圾回收，会暂停所有用户线程。所以不适合服务器环境。</p>
+</li>
+<li><p>Parallel：并行垃圾收集器（又分为Parallel Scavenge、ParNew和Parallel Old）</p>
+<p>多个垃圾收集线程并行工作，此时用户线程是暂停的，适用于科学计算/大数据处理等弱交互场景</p>
+</li>
+<li><p>CMS：并发垃圾收集器</p>
+<p>用户线程和垃圾收集线程同时执行（不一定是并行，可能交替执行），不需要停顿用户线程。</p>
+<p>互联网公司多用它，适用于对响应时间有要求的场景。</p>
+</li>
+<li><p>G1：</p>
+</li>
+</ul>
+<p>查看服务器的使用的垃圾回收器：-XX:PrintCommandLineFlags</p>
+<p>Java中的<strong>7种</strong>GC垃圾收集器：开启方式如：-XX:+UseParallelGC</p>
+<p>UseSerialGC、UseSerialOldGC、UseParallelGC、UserParallelOldGC、UseParNewGC、UseConcMarkSweepGC、UseG1GC</p>
+<p><a href="https://i.loli.net/2020/03/06/KwCYNaklmgDIcTo.png" data-caption="image-20200306151703270" data-fancybox="images"><img src="https://i.loli.net/2020/03/06/KwCYNaklmgDIcTo.png" alt="image-20200306151703270"></a></p>
+<h2 id="2-详情">2. 详情<a class="post-anchor" href="#2-详情"></a></h2><p><strong>部分参数：</strong></p>
+<ul>
+<li><p>DefNew——Default New Generation </p>
+</li>
+<li><p>Tenured——Old</p>
+</li>
+<li><p>ParNew——Parallel New Generation</p>
+</li>
+<li><p>PSYoungGen——Parallel Scavenge</p>
+</li>
+<li><p>ParOldGen——Parallel Old Generation</p>
+</li>
+</ul>
+<h3 id="1-Serial">1. Serial<a class="post-anchor" href="#1-Serial"></a></h3><p>​    串行垃圾收集器是最古老，最稳定以及效率最高的收集器，只使用一个线程去回收但其在进行垃圾收集过程中可能会产生较长的停顿（Stop-The-World 状态）。虽然在收集垃圾的过程中需要暂停所有其他的工作线程，但它简单高效，对于限定单个cpu环境来说，没有线程交互的开销可以获得最高的单线程垃圾收集效率。因此，Serial垃圾收集器依然是Java虚拟机运行在Client模式下默认的新生代垃圾收集器。</p>
+<p><strong>开启参数：-XX:+UseSerialGC</strong></p>
+<p>开启后会使用<strong>Serial（Young区）+Serial Old（Old区）</strong>的收集器组合。</p>
+<p>新生代、老年代都会使用串行垃圾收集器，新生代使用<strong>复制算法</strong>，老年代使用<strong>标记-整理算法</strong>。</p>
+<h3 id="2-ParNew">2. ParNew<a class="post-anchor" href="#2-ParNew"></a></h3><p>​    ParNew收集器其实就是Serial收集器新生代的并行多线程版本，最常见的应用场景是配合老年代的CMS GC工作，其余的行为和Serial收集器完全一样，ParNew垃圾收集器在垃圾收集过程中同样也要暂停所有其他的工作线程。它是很多java虚拟机运行在Server模式下新生代的默认垃圾收集器。</p>
+<p>开启参数：<strong>-XX:+UseParNewGC</strong>    启用ParNew收集器，只影响新生代的收集，不影响老年代。</p>
+<p>开启上述参数后，会使用：<strong>ParNew（Young区用）+Serial Old</strong>的收集器组合。新生代使用<strong>复制算法</strong>，老年代采用<strong>标记-整理</strong>算法。</p>
+<p>但是，ParNew+Tenured这样的搭配，Java8已经不再推荐。deprecated</p>
+<p>注：<strong>-XX:ParallelGCThreads</strong>，修改限制线程数量，默认开启和CPU数量相同的线程的数。</p>
+<h3 id="3-Parallel-Scavenge">3. Parallel Scavenge<a class="post-anchor" href="#3-Parallel-Scavenge"></a></h3><p>​    Parallel Scavenge收集器类似ParNew也是一个新生代垃圾收集器，使用复制算法，也是一个并行的多线程的垃圾收集器，俗称吞吐量优先收集器。</p>
+<p>它关注的重点是：</p>
+<ul>
+<li><p><strong>可控制的吞吐量</strong>（Thoughput=运行用户代码时间/（运行用户代码时间+垃圾收集时间））。高吞吐量意味着高效利用CPU时间，它多用于后台运算而不需要太多交互的任务。</p>
+</li>
+<li><p>自适用调节策略也是Parallel Scavenge收集器与ParNew收集器的一个重要区别。</p>
+<p><strong>自适用调节策略</strong>：虚拟机会根据当前系统的运行情况收集性能监控信息，动态调整这些参数以提供最适合的停顿时间（-XX:MaxGCPauseMillis）或最大吞吐量</p>
+</li>
+</ul>
+<p>开启参数：<strong>-XX:+UseParallelGC或-XX:+UseParallerOldGC</strong>（二者可互相激活） 默认情况下Java8的配置。</p>
+<p>开启上述参数后，会使用 <strong>Parallel Scavenge+UserParallelOldGC</strong>的收集器组合。新生代使用<strong>复制算法</strong>，老年代采用<strong>标记-整理</strong>算法。</p>
+<h3 id="4-Serial-Old">4. Serial Old<a class="post-anchor" href="#4-Serial-Old"></a></h3><p>单线程的标记-整理算法，主要运行在Client默认的Java虚拟机的老年代垃圾收集器。</p>
+<p>在Server模式下，主要有两个用途：</p>
+<ol>
+<li>在JDK1.5之前版本中与Parallel Scavenge收集器搭配使用。</li>
+<li>作为老年代中使用CMS收集器的后备垃圾收集器。</li>
+</ol>
+<h3 id="5-ParallelOld">5. ParallelOld<a class="post-anchor" href="#5-ParallelOld"></a></h3><p>​    ParallelOldGC在JDK1.6才开始出现，在1.6之前，新生代使用Parallel Scavenge收集器只能搭配老年代的Serial Old收集器。只能保证新生代的吞吐量优先，无法保证整体的吞吐量。</p>
+<h3 id="6-CMS">6. CMS<a class="post-anchor" href="#6-CMS"></a></h3><p>​    并发标记清除GC（Concurrent Mark Sweep）是一种以获取最短回收停顿时间为目标的收集器。适合应用在互联网或者B/S系统的服务器上，这类应用尤其重视服务器响应速度，希望系统停顿时间最短。</p>
+<p>CMS非常适合堆内存大、CPU核数多的服务器应用，也是G1出现之前大型应用的首选收集器。</p>
+<p>并发收集<strong>低停顿</strong>，并发指与用户线程并发执行。</p>
+<p>开启参数：<strong>-XX:+UseConcMarkSweepGC</strong>         开启该参数后会自动将-XX:+UseParNewGC打开。</p>
+<p>开启该参数后，使用<strong>ParNew（Young区）+CMS（Old区）+Serial Old</strong>的组合。Serial Old会作为CMS出错的<strong>后备收集器</strong>。</p>
+<p>四步过程：</p>
+<ol>
+<li><p>初始标记（CMS initial mark）：只是标记以下GC Roots能直接关联的对象，速度很快，仍然需要暂停所有的工作线程。</p>
+</li>
+<li><p>并发标记（CMS concurrent mark）</p>
+<ul>
+<li><p>进行GC Roots跟踪过程，和用户线程一起工作，不需要暂停工作线程。</p>
+</li>
+<li><p>主要标记过程，标记全部对象。</p>
+</li>
+</ul>
+</li>
+<li><p>重新标记（CMS remark）</p>
+<ul>
+<li>为了修正在并发标记期间，因用户程序继续运行而导致标记产生变动的那一部分标记记录，仍然需要暂停所有的工作线程。</li>
+<li>由于并发标记时，用户线程依然运行，因此在正式清理前，再做修正。</li>
+</ul>
+<p>在CMS中，为了在并发标记阶段结束后，可以快速找到哪些card有引用更新，因此将<strong>老年代内存分为很多个Card</strong>，再使用Card Table维护每个card是否在并发标记阶段有引用变化，如果变化了，我们就说这个Card是Dirty的，这样可以提高重新标记阶段的速度。</p>
+<p><a href="https://i.loli.net/2020/03/12/gIsHUyc2NPwFb3C.png" data-caption="50145-20180717152605855-734360183" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/gIsHUyc2NPwFb3C.png" alt="50145-20180717152605855-734360183"></a></p>
+<p>如果引用了发生了变化，则标记1。标记时，采用了bit位的方式标记，大大节省了空间，如byte=3的二进制位0000 0011,从右到左，第1位可以表示dirtyCard，第2位可以表示有引用年轻代，这样在Young gc时，也可以通过Card Table快速找到需要扫描的老年代card，无需扫描整个老年代。（很多博文上说一个Card管理512Bytes的heap）。</p>
+</li>
+<li><p>并发清除（CMS concurrent sweep）</p>
+<ul>
+<li>清除GC Roots不可达对象，和用户线程一起工作，不需要暂停工作线程。基于标记结果，直接清理对象。</li>
+</ul>
+</li>
+</ol>
+<p>CMS以流水线方式拆分了收集周期，将耗时长的操作单元保持与应用线程并发执行。只将那些必需STW才能执行的操作单元单独拎出来，控制这些单元在恰当的时机运行，并能保证仅需短暂的时间就可以完成。这样，在整个收集周期内，只有<strong>两次短暂的暂停（初始标记和重新标记）</strong>，<strong>达到了近似并发的目的</strong>。</p>
+<p><strong>优点：</strong></p>
+<ul>
+<li>并发收集、低停顿。</li>
+</ul>
+<p><strong>缺点：</strong></p>
+<ul>
+<li><p>并发执行，对CPU资源压力大</p>
+<p>由于并发进行，CMS收集线程与应用线程会同时会增加对堆内存的用，也就是说，CMS必须要在老年代堆内存用尽之前完成垃圾回收，否则CMS回收失败时，将触发担保机制，串行老年代收集器将会以STW的方式进行一次GC，从而造成较大停顿时间。</p>
+</li>
+<li><p>采用的标记清除算法会导致大量碎片。</p>
+<p>标记清除算法无法整理空间碎片，老年代空间会随着应用时长被逐步耗尽，最后将不得不通过担保机制对堆内存进行压<br>|缩。CMS也提供了参数<strong>-XX:CMSFulIGCsBeForeCompaction</strong>（默认0，即每次都进行内存整理）来指定多少次CMS收集之后，进行一次压缩的Full GC。</p>
+</li>
+</ul>
+<h2 id="3-垃圾收集器的选择">3. 垃圾收集器的选择<a class="post-anchor" href="#3-垃圾收集器的选择"></a></h2><ul>
+<li><p>单CPU或小内存，单机程序</p>
+<p>-XX:+UseSerialGC</p>
+</li>
+<li><p>多CPU，需要大吞吐量，如后台计算型应用</p>
+<p>-XX:+UseParallelGC或-XX:+UseParallelOldGC</p>
+</li>
+<li><p>多CPU，追求低停顿时间，需要快速响应，如互联网应用</p>
+<p>-XX:+UseConcMarkSweepGC</p>
+</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th align="center">参数</th>
+<th align="center">新生代垃圾收集器</th>
+<th align="center">新生代算法</th>
+<th align="center">老年代垃圾收集器</th>
+<th align="center">老年代算法</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">-XX:+UseSerialGC</td>
+<td align="center">SerialGC</td>
+<td align="center">复制</td>
+<td align="center">SerialOldGC</td>
+<td align="center">标整</td>
+</tr>
+<tr>
+<td align="center">-XX:+UseParNewGC</td>
+<td align="center">ParNew</td>
+<td align="center">复制</td>
+<td align="center">SerialOldGC</td>
+<td align="center">标整</td>
+</tr>
+<tr>
+<td align="center">-XX:+UseParallelGC/-XX:+UseParallelOldGC</td>
+<td align="center">Parallel Scavenge</td>
+<td align="center">复制</td>
+<td align="center">ParallelOld</td>
+<td align="center">标整</td>
+</tr>
+<tr>
+<td align="center">-XX:+UseConcMarkSweepGC</td>
+<td align="center">ParNew</td>
+<td align="center">复制</td>
+<td align="center">CMS+SerialOld组合</td>
+<td align="center">标清</td>
+</tr>
+<tr>
+<td align="center">-XX:+UseG1GC</td>
+<td align="center">G1整体上采用标记-整理算法</td>
+<td align="center">局部是通过复制算法，不会产生内存碎片</td>
+<td align="center"></td>
+<td align="center"></td>
+</tr>
+</tbody></table>
+
+
+  
+    <div class="post-reward">
+    <div id="reward-button">打赏</div>
+      <div id="qr">
+        <div class="wrap">
+            
+            <div class="bg-wrap">
+              <a href="/images/alipay.jpg" target="_block" class="bg" style="background-image:url('/images/alipay.jpg')"></a>
+              支付宝
+            </div>
+            
+            
+            <div class="bg-wrap">
+                <a href="/images/weixinpay.png" target="_block" class="bg" style="background-image:url('/images/weixinpay.png')"></a>
+              微信
+            </div>
+            
+        </div>
+      </div>
+    </div>
+  
+  <div class="post-guide">
+    <div class="item left">
+        
+          <a href="/2020/03/13/JVM学习(5)——G1垃圾收集器/">JVM学习(5)——G1垃圾收集器</a>
+        
+    </div>
+    <div class="item right">
+        
+          <a href="/2020/03/12/JVM学习(3)——GC Roots与四种引用/">JVM学习(3)——GC Roots与四种引用</a>
+        
+    </div>
+  </div>
+
+  
+
+  <div class="post-copyright">
+    <div class="auth">
+      本文作者：<a href="http://Charles-xcz.github.io">Charles</a>
+    </div>
+    <div class="link">
+      永久链接：<a href="http://Charles-xcz.github.io/2020/03/13/JVM学习(4)——GC垃圾收集器/">http://Charles-xcz.github.io/2020/03/13/JVM学习(4)——GC垃圾收集器/</a>
+    </div>
+    <div class="declare">
+      版权声明：本文首发于<a href="http://Charles-xcz.github.io">Charles</a>的博客，转载请注明出处！
+    </div>
+  </div>
+
+  <div id="comment"></div>
+
+  
+  
+</article>
+        <footer>
+          <div class="copyright">
+            ©2020
+            <a href="http://Charles-xcz.github.io">Charles</a> Powered by <a href="https://hexo.io">Hexo</a>
+            <!-- <a href="https://github.com/shixiaohu2206/hexo-theme-huhu">hexo-theme-huhu</a> -->
+          </div>
+          
+        </footer>
+      </div>
+    </div>
+  </body>
+  
+</html>
+<script type="text/javascript">
+                  window.HUHU_CONFIG = JSON.parse("{\"share\":[\"weibo\",\"weixin\",\"qqkongjian\",\"QQ\",\"douban\",\"facebook\",\"twitter\",\"google\"],\"valine\":{\"API_ID\":\"FxmoY9bk2JUIzmRcLKo0Ner2-gzGzoHsz\",\"API_KEY\":\"w1oDxPXzMesUY9K25GxAsVnR\"},\"service_worker\":{\"open\":true}}")
+                </script> <script type="text/javascript">window.addEventListener('load', function() {
+    
+    window.loadJs = function(d, m, a) {
+      var c = document.getElementsByTagName('head')[0] || document.head || document.documentElement
+      var b = document.createElement('script')
+      b.defer = true
+      b.setAttribute('type', 'text/javascript')
+      b.setAttribute('charset', 'UTF-8')
+      b.setAttribute('async', 'true')
+      b.setAttribute('src', d)
+      m && b.setAttribute('data-main', '/scripts/app-built')
+      if (typeof a === 'function') {
+        if (window.attachEvent) {
+          b.onreadystatechange = function() {
+            var e = b.readyState
+            if (e === 'loaded' || e === 'complete') {
+              b.onreadystatechange = null
+              a()
+            }
+          }
+        } else {
+          b.onload = a
+        }
+      }
+      c.appendChild(b)
+    }
+    window.loadJs && window.loadJs('https://cdn.bootcss.com/require.js/2.3.6/require.min.js', true, function() {require.config({"paths":{"util":"util","share":"share","search":"search","pagemap":"pagemap.min","registerSW":"registerSW","valine":"cdn/Valine.min","av":["https://cdn.jsdelivr.net/npm/leancloud-storage/dist/av-min"],"pjax":["https://cdn.bootcss.com/jquery.pjax/2.0.1/jquery.pjax.min"],"jquery":["https://cdn.bootcss.com/jquery/3.4.1/jquery.min"],"confirm":["https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min"],"fancybox":["https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min"],"chart":["https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.bundle.min"]},"map":{"*":{"css":"https://cdn.bootcss.com/require-css/0.1.10/css.min.js"}},"shim":{"fancybox":{"deps":["css!https://cdn.bootcss.com/fancybox/3.5.7/jquery.fancybox.min.css"]},"confirm":{"deps":["css!https://cdn.bootcss.com/jquery-confirm/3.3.4/jquery-confirm.min.css"]},"chart":{"deps":["css!https://cdn.bootcss.com/Chart.js/2.8.0-rc.1/Chart.min.css"]}},"waitSeconds":3})})
+  })</script> <script type="text/javascript">
+                  ;(function() {
+                    var bp = document.createElement('script')
+                    var curProtocol = window.location.protocol.split(':')[0]
+                    if (curProtocol === 'https') {
+                      bp.src = 'https://zz.bdstatic.com/linksubmit/push.js'
+                    } else {
+                      bp.src = 'http://push.zhanzhang.baidu.com/push.js'
+                    }
+                    var s = document.getElementsByTagName('script')[0]
+                    s.parentNode.insertBefore(bp, s)
+                  })()
+                </script> 
