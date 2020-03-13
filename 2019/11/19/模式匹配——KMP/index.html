@@ -20,7 +20,7 @@
   
 
 <link rel="alternate" href="/atom.xml" title="Charles" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css"></head>
 
 </html>
 
@@ -97,31 +97,31 @@
       
 
       
-      <h3 id="引言">引言<a class="post-anchor" href="#引言"></a></h3><p>​    场景：在字符串：“fffffab cfe defe” 中查找字符串 “ff”。</p>
+      <h3 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h3><p>​    场景：在字符串：“fffffab cfe defe” 中查找字符串 “ff”。</p>
 <p>​    被查找的字符串称之为：主串或目标串T ;</p>
 <p>​    想要查找的字符串”ff”称之为：字串或模式串P。</p>
 <p>​    朴素的模式匹配在匹配过程中需要进行回溯，因而会发生多次重复比较，匹配效率低。故而，需要对字符串查找算法进行优化。</p>
 <p>​    字符串查找算法中，最著名的算法之一：KMP算 法（Knuth-Morris-Pratt)</p>
 <p>​    它是精确字符串匹配算法（区别于模糊匹配）。 </p>
 <p>​    – 目标字符串中无需进行回溯。（比朴素的模式匹配算法快）<br>​    – 模式字符串的移动方向：从目标字符串的第一个字符 开始，朝目标字符串的尾部方向移动搜索匹配子串。</p>
-<h3 id="KMP算法">KMP算法<a class="post-anchor" href="#KMP算法"></a></h3><h4 id="1-KMP">1 KMP<a class="post-anchor" href="#1-KMP"></a></h4><p>​    注意：为了方便，KMP算法中，数组下标一般从1开始。</p>
+<h3 id="KMP算法"><a href="#KMP算法" class="headerlink" title="KMP算法"></a>KMP算法</h3><h4 id="1-KMP"><a href="#1-KMP" class="headerlink" title="1 KMP"></a>1 KMP</h4><p>​    注意：为了方便，KMP算法中，数组下标一般从1开始。</p>
 <p>​    KMP算法的设计初衷： 希望能在匹配过程中，目标串T中的字符匹配是一直向右前进的，而不会出现向左的回溯。</p>
 <p>下面看两个例子</p>
 <p>例1：当模式串中无重复时</p>
-<p><a href="https://i.loli.net/2020/02/29/PrOkUFaK25ZwzS9.png" data-caption="eg1" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/PrOkUFaK25ZwzS9.png" alt="eg1"></a></p>
+<p><img src="https://i.loli.net/2020/02/29/PrOkUFaK25ZwzS9.png" alt="eg1"></p>
 <p>因为模式串中无重复，因为T[1]=P[1]，T[2]=P[2]，显然T[2]!=P[1]。即第二轮比较多余</p>
 <p>同理，2，3，4，5轮的匹配都是多余的。</p>
 <p>例2：模式串P中有重复</p>
-<p><a href="https://i.loli.net/2020/02/29/W6elKXYC3Txr4Pt.png" data-caption="eg2" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/W6elKXYC3Txr4Pt.png" alt="eg2"></a></p>
+<p><img src="https://i.loli.net/2020/02/29/W6elKXYC3Txr4Pt.png" alt="eg2"></p>
 <p>从图上可以看出2，3，4，5轮，目标串匹配字符i的回溯都是多余的。我们可以直接从1跳到6。</p>
 <p>why？？为什么可以跳？怎么跳？</p>
 <p><strong>注意观察模式串字符的规律：这里我们要利用模式串P自身的重复。</strong></p>
 <p>下面继续放一些示例：</p>
 <p><strong>关注：  匹配失败，是否发生在P的第一个字符处？</strong> </p>
 <p>​         <strong>P中是否有重复模式？</strong></p>
-<p><a href="https://i.loli.net/2020/02/29/S9eZfzLmbuGoUaX.png" data-caption="eg3" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/S9eZfzLmbuGoUaX.png" alt="eg3"></a></p>
-<p><a href="https://i.loli.net/2020/02/29/zjtaPq64KhMbOLp.png" data-caption="eg4" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/zjtaPq64KhMbOLp.png" alt="eg4"></a></p>
-<p><a href="https://i.loli.net/2020/02/29/JGTR14pblvykrhZ.png" data-caption="eg5" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/JGTR14pblvykrhZ.png" alt="eg5"></a></p>
+<p><img src="https://i.loli.net/2020/02/29/S9eZfzLmbuGoUaX.png" alt="eg3"></p>
+<p><img src="https://i.loli.net/2020/02/29/zjtaPq64KhMbOLp.png" alt="eg4"></p>
+<p><img src="https://i.loli.net/2020/02/29/JGTR14pblvykrhZ.png" alt="eg5"></p>
 <p>分析总结：</p>
 <p>​    前两种情况容易得出： </p>
 <p>​     若当前轮匹配在与P[1]比较就失败，那么 下一轮应该是比较T[i+1]和P[1]</p>
@@ -133,8 +133,8 @@
 <p>在上图 Case1 中，P中无重复模式，下轮比较T[i]和P[1]，下轮比较的模式串下标为1，即next[j]=1;</p>
 <p>​            Case2中，P[1]就失配，下轮比较T[i+1]和P[1]，我们用next[j]=0来表示这种情况，代表着在模式串P开头处即失配，目标串下标i向后移动一位。我们把下标为0来代表这种情况，这也是为什么KMP算法下标从1开始计算的原因。</p>
 <p>​            Case3和Case4: 在P[j]处失配，设存在k|1&lt;k&lt;j 使得”P[1]…..P[k-1]“=”P[j-k+1]….P[j-1]” 即模式串P的前k-1位子串与从P[j]处往前k-1位子串相同，即P中在当前轮成功匹配的子串的后缀与子串的前缀有重复模式，则下轮比较从k开始，next[j]=k。</p>
-<p>所以：<a href="https://i.loli.net/2020/02/29/uT4M6WCriZvfBLx.png" data-caption="eg6" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/uT4M6WCriZvfBLx.png" alt="eg6"></a></p>
-<h4 id="2-KMP算法思想总结">2 KMP算法思想总结<a class="post-anchor" href="#2-KMP算法思想总结"></a></h4><ol>
+<p>所以：<img src="https://i.loli.net/2020/02/29/uT4M6WCriZvfBLx.png" alt="eg6"></p>
+<h4 id="2-KMP算法思想总结"><a href="#2-KMP算法思想总结" class="headerlink" title="2 KMP算法思想总结"></a>2 KMP算法思想总结</h4><ol>
 <li><p>将模式串P自身的重复规律保存到next数组中</p>
 <ol start="2">
 <li>匹配过程：若某轮匹配失败，则利用next数组分 别计算下一轮匹配时目标串和模式串的开始位置若是T[i]≠P[j]导致当前轮的匹配失败，则按照下列规则 开始下一轮匹配：<ol>
@@ -175,7 +175,7 @@
 <div class="share-btn">
       <span class="share-sns share-outer">
         <i class="ri-share-forward-line"></i>
-        分享
+        Share
       </span>
       <div class="share-wrap">
         <i class="arrow"></i>
@@ -221,7 +221,7 @@
 <div id="share-mask"></div>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/kmp/">kmp</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/算法/">算法</a></li></ul>
 
 
     </footer>
@@ -233,7 +233,7 @@
   <nav class="article-nav">
     
       <a href="/2019/11/29/路径向量路由选择/" class="article-nav-link">
-        <strong class="article-nav-caption"></strong>
+        <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
             距离向量路由选择
@@ -359,23 +359,23 @@
   <ul class="nav nav-main">
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/">home</a>
+      <a class="nav-item-link" href="/">Home</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/archives">archives</a>
+      <a class="nav-item-link" href="/archives">Archives</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/categories">categories</a>
+      <a class="nav-item-link" href="/categories">Categories</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/tags">tags</a>
+      <a class="nav-item-link" href="/tags">Tags</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/about">about</a>
+      <a class="nav-item-link" href="/about">About</a>
     </li>
     
   </ul>
@@ -408,7 +408,7 @@
 <!-- #reward -->
 <div id="reward">
   <span class="close"><i class="ri-close-line"></i></span>
-  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <p class="reward-p"><i class="ri-cup-line"></i>萨瓦迪卡~</p>
   <div class="reward-box">
     
     <div class="reward-item">

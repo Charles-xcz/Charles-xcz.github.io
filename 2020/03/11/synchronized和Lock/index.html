@@ -20,7 +20,7 @@
   
 
 <link rel="alternate" href="/atom.xml" title="Charles" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css"></head>
 
 </html>
 
@@ -60,7 +60,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">993字</span>
+            <span class="post-count">948字</span>
         </span>
     </span>
 
@@ -70,7 +70,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-book-open-line"></i>
             <span class="post-meta-item-text"> 阅读时长≈</span>
-            <span class="post-count">4分钟</span>
+            <span class="post-count">3分钟</span>
         </span>
     </span>
 </div>
@@ -97,47 +97,44 @@
       
 
       
-      <h2 id="1-公平锁与非公平锁">1. 公平锁与非公平锁<a class="post-anchor" href="#1-公平锁与非公平锁"></a></h2><blockquote>
+      <h2 id="1-公平锁与非公平锁"><a href="#1-公平锁与非公平锁" class="headerlink" title="1. 公平锁与非公平锁"></a>1. 公平锁与非公平锁</h2><blockquote>
 <p>公平锁：是指多个线程按照申请锁的顺序来获取锁，FIFO。</p>
 <p>非公平锁：是指多个线程获取锁的顺序并不是按照申请锁的顺序，有可能后申请的线程比先申请的线程优先获取锁，在高并发的情况下，有可能会造成优先级反转或者饥饿现象</p>
 </blockquote>
-<pre><code class="hljs java">Lock lock = <span class="hljs-keyword">new</span> ReentrantLock();		<span class="hljs-comment">//默认为非公平锁 等同new ReentrantLock(false);</span>
-Lock lock = <span class="hljs-keyword">new</span> ReentrantLock(<span class="hljs-keyword">true</span>);	<span class="hljs-comment">//公平锁</span></code></pre>
-
-<h2 id="2-可重入锁">2. 可重入锁<a class="post-anchor" href="#2-可重入锁"></a></h2><p>​    指的是同一线程外层函数获得锁之后，内层递归函数仍然能获取该锁的代码，同一个线程在外层方法获取锁的时候，在进入内层方法会自动获取锁。</p>
+<pre class=" language-java"><code class="language-java">Lock lock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReentrantLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//默认为非公平锁 等同new ReentrantLock(false);</span>
+Lock lock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReentrantLock</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//公平锁</span></code></pre>
+<h2 id="2-可重入锁"><a href="#2-可重入锁" class="headerlink" title="2. 可重入锁"></a>2. 可重入锁</h2><p>​    指的是同一线程外层函数获得锁之后，内层递归函数仍然能获取该锁的代码，同一个线程在外层方法获取锁的时候，在进入内层方法会自动获取锁。</p>
 <p>​    即：<strong>线程可以进入任何一个他已经拥有锁的同步代码块。</strong></p>
 <p>​    可重入锁最大的作用是<strong>避免死锁</strong></p>
 <p>​    ReentrantLock和Synchronized是典型的可重入锁</p>
-<h2 id="3-自旋锁">3. 自旋锁<a class="post-anchor" href="#3-自旋锁"></a></h2><p>​    是指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去试获取锁。</p>
+<h2 id="3-自旋锁"><a href="#3-自旋锁" class="headerlink" title="3. 自旋锁"></a>3. 自旋锁</h2><p>​    是指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去试获取锁。</p>
 <p>​    这样的好处是减少线程上下文切换的消耗。</p>
 <p>​    缺点是循环会消耗CPU。</p>
 <p>例如前面博客<a href="https://charles-xcz.github.io/2020/03/11/CAS/">《并发编程之—— CAS》</a>介绍到的CAS的实现就是自旋锁。</p>
-<pre><code class="hljs java"><span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getAndAddInt</span><span class="hljs-params">(Object var1, <span class="hljs-keyword">long</span> var2, <span class="hljs-keyword">int</span> var4)</span> </span>&#123;
-    <span class="hljs-keyword">int</span> var5;
-    <span class="hljs-keyword">do</span> &#123;
-        var5 = <span class="hljs-keyword">this</span>.getIntVolatile(var1, var2);
-    &#125; <span class="hljs-keyword">while</span>(!<span class="hljs-keyword">this</span>.compareAndSwapInt(var1, var2, var5, var5 + var4));
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">getAndAddInt</span><span class="token punctuation">(</span>Object var1<span class="token punctuation">,</span> <span class="token keyword">long</span> var2<span class="token punctuation">,</span> <span class="token keyword">int</span> var4<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> var5<span class="token punctuation">;</span>
+    <span class="token keyword">do</span> <span class="token punctuation">{</span>
+        var5 <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getIntVolatile</span><span class="token punctuation">(</span>var1<span class="token punctuation">,</span> var2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compareAndSwapInt</span><span class="token punctuation">(</span>var1<span class="token punctuation">,</span> var2<span class="token punctuation">,</span> var5<span class="token punctuation">,</span> var5 <span class="token operator">+</span> var4<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    <span class="hljs-keyword">return</span> var5;
-&#125;</code></pre>
-
-<h2 id="4-独占锁-共享锁">4. 独占锁/共享锁<a class="post-anchor" href="#4-独占锁-共享锁"></a></h2><blockquote>
+    <span class="token keyword">return</span> var5<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
+<h2 id="4-独占锁-共享锁"><a href="#4-独占锁-共享锁" class="headerlink" title="4. 独占锁/共享锁"></a>4. 独占锁/共享锁</h2><blockquote>
 <p>独占锁：该锁一次只能被一个进程持有。对ReentrantLock和Synchronized而言都是独占锁。</p>
 <p>共享锁：指该锁可被多个线程持有。</p>
 </blockquote>
 <p>对ReentrantReadWriteLock而言，其读锁是共享锁，其写锁是独占锁。</p>
 <p>读锁的共享锁可保证并发读是非常高效的，读写，写读，写写的过程是互斥的。</p>
-<pre><code class="hljs java">ReentrantReadWriteLock lock = <span class="hljs-keyword">new</span> ReentrantReadWriteLock();
-<span class="hljs-comment">//写锁，是互斥的</span>
-lock.writeLock().lock();
-..........
-lock.writeLock().unlock();
-<span class="hljs-comment">//读锁是共享的</span>
-lock.readLock().lock();
-..........
-lock.readLock().unlock();</code></pre>
-
-<h2 id="5-synchronized和Lock区别">5. synchronized和Lock区别<a class="post-anchor" href="#5-synchronized和Lock区别"></a></h2><ol>
+<pre class=" language-java"><code class="language-java">ReentrantReadWriteLock lock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReentrantReadWriteLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">//写锁，是互斥的</span>
+lock<span class="token punctuation">.</span><span class="token function">writeLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+lock<span class="token punctuation">.</span><span class="token function">writeLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment" spellcheck="true">//读锁是共享的</span>
+lock<span class="token punctuation">.</span><span class="token function">readLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+lock<span class="token punctuation">.</span><span class="token function">readLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></code></pre>
+<h2 id="5-synchronized和Lock区别"><a href="#5-synchronized和Lock区别" class="headerlink" title="5. synchronized和Lock区别"></a>5. synchronized和Lock区别</h2><ol>
 <li><p>原始构成不同</p>
 <ul>
 <li><p>synchronized是关键字，属于JVM层面</p>
@@ -178,80 +175,79 @@ lock.readLock().unlock();</code></pre>
 </li>
 </ol>
 <p><strong>Lock精确唤醒示例</strong>：</p>
-<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ShareData1</span> </span>&#123;
-    <span class="hljs-comment">/**
+<pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">ShareData1</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">/**
      * A:1,B:2,C:3
      */</span>
-    <span class="hljs-keyword">private</span> <span class="hljs-keyword">int</span> number = <span class="hljs-number">1</span>;
-    <span class="hljs-keyword">private</span> Lock lock = <span class="hljs-keyword">new</span> ReentrantLock();
-    <span class="hljs-keyword">private</span> Condition c1 = lock.newCondition();
-    <span class="hljs-keyword">private</span> Condition c2 = lock.newCondition();
-    <span class="hljs-keyword">private</span> Condition c3 = lock.newCondition();
+    <span class="token keyword">private</span> <span class="token keyword">int</span> number <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> Lock lock <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ReentrantLock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> Condition c1 <span class="token operator">=</span> lock<span class="token punctuation">.</span><span class="token function">newCondition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> Condition c2 <span class="token operator">=</span> lock<span class="token punctuation">.</span><span class="token function">newCondition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> Condition c3 <span class="token operator">=</span> lock<span class="token punctuation">.</span><span class="token function">newCondition</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print1</span><span class="hljs-params">()</span> </span>&#123;
-        lock.lock();
-        <span class="hljs-keyword">try</span> &#123;
-            <span class="hljs-comment">//1.判断</span>
-            <span class="hljs-keyword">while</span> (number != <span class="hljs-number">1</span>) &#123;
-                c1.await();
-            &#125;
-            <span class="hljs-comment">//2.操作</span>
-            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;
-                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"--&gt; "</span> + i);
-            &#125;
-            number = <span class="hljs-number">2</span>;
-            <span class="hljs-comment">//3.通知</span>
-            c2.signal();
-        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
-            e.printStackTrace();
-        &#125; <span class="hljs-keyword">finally</span> &#123;
-            lock.unlock();
-        &#125;
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">print1</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        lock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//1.判断</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>number <span class="token operator">!=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                c1<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">//2.操作</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"--> "</span> <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            number <span class="token operator">=</span> <span class="token number">2</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//3.通知</span>
+            c2<span class="token punctuation">.</span><span class="token function">signal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            lock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print2</span><span class="hljs-params">()</span> </span>&#123;
-        lock.lock();
-        <span class="hljs-keyword">try</span> &#123;
-            <span class="hljs-comment">//1.判断</span>
-            <span class="hljs-keyword">while</span> (number != <span class="hljs-number">2</span>) &#123;
-                c2.await();
-            &#125;
-            <span class="hljs-comment">//2.操作</span>
-            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;
-                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"--&gt; "</span> + i);
-            &#125;
-            number = <span class="hljs-number">3</span>;
-            <span class="hljs-comment">//3.通知</span>
-            c3.signal();
-        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
-            e.printStackTrace();
-        &#125; <span class="hljs-keyword">finally</span> &#123;
-            lock.unlock();
-        &#125;
-    &#125;
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">print2</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        lock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//1.判断</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>number <span class="token operator">!=</span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                c2<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">//2.操作</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"--> "</span> <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            number <span class="token operator">=</span> <span class="token number">3</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//3.通知</span>
+            c3<span class="token punctuation">.</span><span class="token function">signal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            lock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
 
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">print3</span><span class="hljs-params">()</span> </span>&#123;
-        lock.lock();
-        <span class="hljs-keyword">try</span> &#123;
-            <span class="hljs-comment">//1.判断</span>
-            <span class="hljs-keyword">while</span> (number != <span class="hljs-number">3</span>) &#123;
-                c3.await();
-            &#125;
-            <span class="hljs-comment">//2.操作</span>
-            <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">5</span>; i++) &#123;
-                System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"--&gt; "</span> + i);
-            &#125;
-            number = <span class="hljs-number">1</span>;
-            <span class="hljs-comment">//3.通知</span>
-            c1.signal();
-        &#125; <span class="hljs-keyword">catch</span> (Exception e) &#123;
-            e.printStackTrace();
-        &#125; <span class="hljs-keyword">finally</span> &#123;
-            lock.unlock();
-        &#125;
-    &#125;
-&#125;</code></pre>
-
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">print3</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        lock<span class="token punctuation">.</span><span class="token function">lock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            <span class="token comment" spellcheck="true">//1.判断</span>
+            <span class="token keyword">while</span> <span class="token punctuation">(</span>number <span class="token operator">!=</span> <span class="token number">3</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                c3<span class="token punctuation">.</span><span class="token function">await</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            <span class="token comment" spellcheck="true">//2.操作</span>
+            <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">5</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"--> "</span> <span class="token operator">+</span> i<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            number <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//3.通知</span>
+            c1<span class="token punctuation">.</span><span class="token function">signal</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">finally</span> <span class="token punctuation">{</span>
+            lock<span class="token punctuation">.</span><span class="token function">unlock</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
 
       
       <!-- reward -->
@@ -282,7 +278,7 @@ lock.readLock().unlock();</code></pre>
 <div class="share-btn">
       <span class="share-sns share-outer">
         <i class="ri-share-forward-line"></i>
-        分享
+        Share
       </span>
       <div class="share-wrap">
         <i class="arrow"></i>
@@ -340,7 +336,7 @@ lock.readLock().unlock();</code></pre>
   <nav class="article-nav">
     
       <a href="/2020/03/11/多线程——线程阻塞和阻塞队列/" class="article-nav-link">
-        <strong class="article-nav-caption"></strong>
+        <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
             线程阻塞和阻塞队列
@@ -350,7 +346,7 @@ lock.readLock().unlock();</code></pre>
     
     
       <a href="/2020/03/11/并发编程之—— CAS/" class="article-nav-link">
-        <strong class="article-nav-caption"></strong>
+        <strong class="article-nav-caption">下一篇</strong>
         <div class="article-nav-title">并发编程之—— CAS</div>
       </a>
     
@@ -471,23 +467,23 @@ lock.readLock().unlock();</code></pre>
   <ul class="nav nav-main">
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/">home</a>
+      <a class="nav-item-link" href="/">Home</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/archives">archives</a>
+      <a class="nav-item-link" href="/archives">Archives</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/categories">categories</a>
+      <a class="nav-item-link" href="/categories">Categories</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/tags">tags</a>
+      <a class="nav-item-link" href="/tags">Tags</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/about">about</a>
+      <a class="nav-item-link" href="/about">About</a>
     </li>
     
   </ul>
@@ -520,7 +516,7 @@ lock.readLock().unlock();</code></pre>
 <!-- #reward -->
 <div id="reward">
   <span class="close"><i class="ri-close-line"></i></span>
-  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <p class="reward-p"><i class="ri-cup-line"></i>萨瓦迪卡~</p>
   <div class="reward-box">
     
     <div class="reward-item">

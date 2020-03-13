@@ -20,7 +20,7 @@
   
 
 <link rel="alternate" href="/atom.xml" title="Charles" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css"></head>
 
 </html>
 
@@ -60,7 +60,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">2k字</span>
+            <span class="post-count">1.9k字</span>
         </span>
     </span>
 
@@ -97,13 +97,13 @@
       
 
       
-      <h2 id="1-volatile特征">1.  volatile特征<a class="post-anchor" href="#1-volatile特征"></a></h2><blockquote>
+      <h2 id="1-volatile特征"><a href="#1-volatile特征" class="headerlink" title="1.  volatile特征"></a>1.  volatile特征</h2><blockquote>
 <p><strong>volatile</strong>是Java虚拟机提供的轻量级同步机制</p>
 </blockquote>
-<h3 id="1-保证可见性">1. 保证可见性<a class="post-anchor" href="#1-保证可见性"></a></h3><ul>
+<h3 id="1-保证可见性"><a href="#1-保证可见性" class="headerlink" title="1. 保证可见性"></a>1. 保证可见性</h3><ul>
 <li>某一线程修改了一个变量值并写回主内存后，会马上通知其它使用该变量的线程进行修改</li>
 </ul>
-<h3 id="2-不保证原子性">2. 不保证原子性<a class="post-anchor" href="#2-不保证原子性"></a></h3><h3 id="3-禁止指令重排">3. 禁止指令重排<a class="post-anchor" href="#3-禁止指令重排"></a></h3><p>volatile实现禁止指令重排优化，从而避免多线程环境下程序出现乱序执行的现象。</p>
+<h3 id="2-不保证原子性"><a href="#2-不保证原子性" class="headerlink" title="2. 不保证原子性"></a>2. 不保证原子性</h3><h3 id="3-禁止指令重排"><a href="#3-禁止指令重排" class="headerlink" title="3. 禁止指令重排"></a>3. 禁止指令重排</h3><p>volatile实现禁止指令重排优化，从而避免多线程环境下程序出现乱序执行的现象。</p>
 <p>先了解一个概念，<strong>内存屏障</strong>（Memory Barrier）又称内存栅栏，是一个CPU指令，它的作用有两个：</p>
 <ol>
 <li>保证特定操作的执行顺序</li>
@@ -114,7 +114,7 @@
 <p>​    对volatile变量进行写操作时，会在写操作后加入一条store屏障指令，将工作内存中的共享变量值刷新回主内存中。</p>
 <p>​    对volatile变量进行读操作时，会在读操作后加入一条load屏障指令，从主内存中读取共享变量。</p>
 <p><strong>想要了解volatile特性的具体含义，我们先来了解一下JMM。</strong></p>
-<h2 id="2-JMM">2. JMM<a class="post-anchor" href="#2-JMM"></a></h2><p>​    JMM（Java内存模型 Java Memory Model，简称JMM）本身是一种抽象的概念并不真实存在，它描述的是一组规则或规范，通过这组规范定义了程序中各个变量（包括实例字段，静态字段和构成数组对象的元素）的访问方式。</p>
+<h2 id="2-JMM"><a href="#2-JMM" class="headerlink" title="2. JMM"></a>2. JMM</h2><p>​    JMM（Java内存模型 Java Memory Model，简称JMM）本身是一种抽象的概念并不真实存在，它描述的是一组规则或规范，通过这组规范定义了程序中各个变量（包括实例字段，静态字段和构成数组对象的元素）的访问方式。</p>
 <p>​     <strong>JMM关于同步的规定：</strong></p>
 <ol>
 <li>线程解锁前，必须把共享变量的值刷新回主内存</li>
@@ -125,7 +125,7 @@
 <p>​    而Java内存模型中规定所有变量都存储在<font color="blue"><strong>主内存</strong></font>，主内存是共享内存区域，所有线程都可以访问，但线程对变量的操作（读取赋值等）必须在<font color="blue"><strong>工作内存</strong></font>中进行。</p>
 <p>​    线程操作变量时，首先要将变量从主内存拷贝的自己的工作内存空间，然后对变量进行操作，操作完成后再将变量写回主内存，不能直接操作主内存中的变量，各个线程中的工作内存中存储着主内存中的<font color="blue"><strong>变量副本拷贝</strong></font>，因此不同的线程间无法访问对方的工作内存。</p>
 <p>​    因此，<strong>线程间的通信（传值）必须通过主内存来完成</strong>，其简要访问过程如下图：</p>
-<a href="https://i.loli.net/2020/02/29/UhTSCmGtrIEufn2.png" data-caption="image-20200224204522738" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/UhTSCmGtrIEufn2.png" alt="image-20200224204522738"></a>
+<img src="https://i.loli.net/2020/02/29/UhTSCmGtrIEufn2.png" alt="image-20200224204522738" style="zoom: 67%;">
 
 <blockquote>
 <p><strong>JMM的三大特性</strong></p>
@@ -147,12 +147,12 @@
 <p>计算机在执行程序时，为了提高性能，编译器和处理器的常常会对<font color="blue"><strong>指令做重排</strong></font>，一般分以下3种</p>
 </li>
 </ol>
-<a href="https://i.loli.net/2020/02/29/b8FIOgyAYBupqaZ.png" data-caption="image-20200225091153147" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/b8FIOgyAYBupqaZ.png" alt="image-20200225091153147"></a>
+<img src="https://i.loli.net/2020/02/29/b8FIOgyAYBupqaZ.png" alt="image-20200225091153147" style="zoom: 67%;">
 
 <p>​        指令重排，在单线程环境里，要能确保程序最终执行结果和代码顺序执行的结果是一致的。</p>
 <p>​        处理器在进行重排序时必须要考虑指令之间的<strong>数据依赖性</strong></p>
 <p>​        但是在多线程环境中，线程交替执行，由于编译器优化重排的存在，两个线程中使用的变量能否保证一致性是无法确定的，结果无法预测。</p>
-<h2 id="3-程序示例">3. 程序示例<a class="post-anchor" href="#3-程序示例"></a></h2><p>seek() 方法，</p>
+<h2 id="3-程序示例"><a href="#3-程序示例" class="headerlink" title="3. 程序示例"></a>3. 程序示例</h2><p>seek() 方法，</p>
 <ul>
 <li>number不加volatile修饰时，会在while(myData.number == 0)处死循环</li>
 <li>加volatile修饰，程序正常执行，证明了volatile的可见性：当某一线程修改了一个变量值并写回主内存后，会马上通知其它使用该变量的线程进行修改。</li>
@@ -162,82 +162,80 @@
 <li>加了volatile的情况下，number的输出结果依然小于20000，这就是不能保证原子性</li>
 <li>atomicInteger结果为2000，AtomicInteger保证原子性</li>
 </ul>
-<pre><code class="hljs java"><span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyData</span> </span>&#123;
-    <span class="hljs-comment">//int number = 0;</span>
-    <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> number = <span class="hljs-number">0</span>;
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">addTo60</span><span class="hljs-params">()</span> </span>&#123;
-        <span class="hljs-keyword">this</span>.number = <span class="hljs-number">60</span>;
-    &#125;
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">addPlusPlus</span><span class="hljs-params">()</span> </span>&#123;
-        <span class="hljs-keyword">this</span>.number++;
-    &#125;
-    
-    AtomicInteger atomicInteger = <span class="hljs-keyword">new</span> AtomicInteger();
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">addAtomic</span><span class="hljs-params">()</span> </span>&#123;
-        atomicInteger.getAndIncrement();
-    &#125;
-&#125;
-<span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">VolatileDemo01</span> </span>&#123;
-    <span class="hljs-comment">/**
+<pre class=" language-java"><code class="language-java"><span class="token keyword">class</span> <span class="token class-name">MyData</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">//int number = 0;</span>
+    <span class="token keyword">volatile</span> <span class="token keyword">int</span> number <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addTo60</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>number <span class="token operator">=</span> <span class="token number">60</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addPlusPlus</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>number<span class="token operator">++</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+
+    AtomicInteger atomicInteger <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">AtomicInteger</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">addAtomic</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        atomicInteger<span class="token punctuation">.</span><span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">VolatileDemo01</span> <span class="token punctuation">{</span>
+    <span class="token comment" spellcheck="true">/**
      *验证可见性方法
      */</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">seek</span><span class="hljs-params">()</span> </span>&#123;
-        MyData myData = <span class="hljs-keyword">new</span> MyData();
-        <span class="hljs-keyword">new</span> Thread(() -&gt; &#123;
-            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">":come in"</span>);
-            <span class="hljs-comment">//加休息1s,为了确保main线程进入循环时number为0</span>
-            <span class="hljs-keyword">try</span> &#123;
-                TimeUnit.SECONDS.sleep(<span class="hljs-number">1</span>);
-            &#125; <span class="hljs-keyword">catch</span> (InterruptedException e) &#123;
-                e.printStackTrace();
-            &#125;
-            myData.addTo60();
-            System.out.println(Thread.currentThread().getName() + <span class="hljs-string">":update number to "</span> + myData.number);
-        &#125;, <span class="hljs-string">"AAA"</span>).start();
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">seek</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        MyData myData <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">MyData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span> <span class="token punctuation">{</span>
+            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">":come in"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token comment" spellcheck="true">//加休息1s,为了确保main线程进入循环时number为0</span>
+            <span class="token keyword">try</span> <span class="token punctuation">{</span>
+                TimeUnit<span class="token punctuation">.</span>SECONDS<span class="token punctuation">.</span><span class="token function">sleep</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">InterruptedException</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <span class="token punctuation">}</span>
+            myData<span class="token punctuation">.</span><span class="token function">addTo60</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">":update number to "</span> <span class="token operator">+</span> myData<span class="token punctuation">.</span>number<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token string">"AAA"</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-        <span class="hljs-keyword">while</span> (myData.number == <span class="hljs-number">0</span>) &#123;
-        &#125;
-        
-        System.out.println(Thread.currentThread().getName() + <span class="hljs-string">"is over"</span>);
-    &#125;
-    <span class="hljs-comment">/**
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>myData<span class="token punctuation">.</span>number <span class="token operator">==</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token punctuation">}</span>
+
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"is over"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment" spellcheck="true">/**
      *验证原子性方法
      */</span>
-    <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">void</span> <span class="hljs-title">atomic</span><span class="hljs-params">()</span> </span>&#123;
-        MyData myData=<span class="hljs-keyword">new</span> MyData();
-        <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> i = <span class="hljs-number">0</span>; i &lt; <span class="hljs-number">20</span>; i++) &#123;
-            <span class="hljs-keyword">new</span> Thread(() -&gt;&#123;
-                <span class="hljs-keyword">for</span> (<span class="hljs-keyword">int</span> j = <span class="hljs-number">0</span>; j &lt; <span class="hljs-number">1000</span>; j++) &#123;
-                    myData.addPlusPlus();
-                    myData.addAtomic();
-                &#125;
-            &#125;,String.valueOf(i)).start();
-        &#125;
-        <span class="hljs-comment">//需要等待上面20个线性计算完成后,再用main线程取得最终结果,看看是多少</span>
-        <span class="hljs-comment">//因为默认有两个线程,main线程和后台gc线程</span>
-        <span class="hljs-keyword">while</span> (Thread.activeCount() &gt; <span class="hljs-number">2</span>) &#123;
-            Thread.yield();
-        &#125;
-        System.out.println(Thread.currentThread().getName()+<span class="hljs-string">"finally number value:"</span>+myData.number);
-        System.out.println(Thread.currentThread().getName()+<span class="hljs-string">"finally atomicInteger value:"</span>+myData.atomicInteger);
-    &#125;
-&#125;</code></pre>
-
-<h2 id="3-禁止指令重排作用场景">3. 禁止指令重排作用场景<a class="post-anchor" href="#3-禁止指令重排作用场景"></a></h2><p>​    <strong>单例模式DCL</strong></p>
+    <span class="token keyword">public</span> <span class="token keyword">void</span> <span class="token function">atomic</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        MyData myData<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">MyData</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> i <span class="token operator">&lt;</span> <span class="token number">20</span><span class="token punctuation">;</span> i<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">new</span> <span class="token class-name">Thread</span><span class="token punctuation">(</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">-</span><span class="token operator">></span><span class="token punctuation">{</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">int</span> j <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span> j <span class="token operator">&lt;</span> <span class="token number">1000</span><span class="token punctuation">;</span> j<span class="token operator">++</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    myData<span class="token punctuation">.</span><span class="token function">addPlusPlus</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    myData<span class="token punctuation">.</span><span class="token function">addAtomic</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            <span class="token punctuation">}</span><span class="token punctuation">,</span>String<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span>i<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        <span class="token comment" spellcheck="true">//需要等待上面20个线性计算完成后,再用main线程取得最终结果,看看是多少</span>
+        <span class="token comment" spellcheck="true">//因为默认有两个线程,main线程和后台gc线程</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span>Thread<span class="token punctuation">.</span><span class="token function">activeCount</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">></span> <span class="token number">2</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            Thread<span class="token punctuation">.</span><span class="token function">yield</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token string">"finally number value:"</span><span class="token operator">+</span>myData<span class="token punctuation">.</span>number<span class="token punctuation">)</span><span class="token punctuation">;</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span>Thread<span class="token punctuation">.</span><span class="token function">currentThread</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getName</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token operator">+</span><span class="token string">"finally atomicInteger value:"</span><span class="token operator">+</span>myData<span class="token punctuation">.</span>atomicInteger<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span>
+</code></pre>
+<h2 id="3-禁止指令重排作用场景"><a href="#3-禁止指令重排作用场景" class="headerlink" title="3. 禁止指令重排作用场景"></a>3. 禁止指令重排作用场景</h2><p>​    <strong>单例模式DCL</strong></p>
 <blockquote>
 <p>DCL（Double Check Lock）机制不一定100%线程安全，原因是指令重排序的存在，加入volatile可以禁止指令重排序</p>
 </blockquote>
 <p>​    原因在于某一个线程执行到第一次检测，读取到的instance不为null时，instance的引用对象可能没有完成初始化。</p>
 <p>​    instance=new SingletonDemo()；可以分为以下3步完成（伪代码）</p>
-<pre><code class="hljs c">memory = allocate();	<span class="hljs-comment">//1.分配对象内存空间</span>
-instance(memory);		<span class="hljs-comment">//2.初始化对象</span>
-instance = memory;		<span class="hljs-comment">//3.设置instance指向刚分配的内存地址，此时instance！=null</span></code></pre>
-
+<pre class=" language-c"><code class="language-c">memory <span class="token operator">=</span> <span class="token function">allocate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment" spellcheck="true">//1.分配对象内存空间</span>
+<span class="token function">instance</span><span class="token punctuation">(</span>memory<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//2.初始化对象</span>
+instance <span class="token operator">=</span> memory<span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//3.设置instance指向刚分配的内存地址，此时instance！=null</span></code></pre>
 <p>​    由于步骤2和步骤3不存在数据依赖关系，而且无论重排前还是重排后程序的执行结果在单线程中并没有改变，因此这种重排优化是允许的。</p>
-<pre><code class="hljs c">memory=allocate();		<span class="hljs-comment">//1.分配对象内存空间</span>
-instance=memory();		<span class="hljs-comment">//3.设置instance指向刚分配的内存地址，此时instance!=null，但是对象还没有初始化完成！</span>
-instance(memory);		<span class="hljs-comment">//2.初始化对象</span></code></pre>
-
+<pre class=" language-c"><code class="language-c">memory<span class="token operator">=</span><span class="token function">allocate</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//1.分配对象内存空间</span>
+instance<span class="token operator">=</span><span class="token function">memory</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//3.设置instance指向刚分配的内存地址，此时instance!=null，但是对象还没有初始化完成！</span>
+<span class="token function">instance</span><span class="token punctuation">(</span>memory<span class="token punctuation">)</span><span class="token punctuation">;</span>        <span class="token comment" spellcheck="true">//2.初始化对象</span></code></pre>
 <p>​    但是指令重排只会保证串行语义的执行的一致性（单线程），但并不会关心多线程间的语义一致性。</p>
 <p>​    所以当一条线程访问instance不为null时，由于instance实例未必已初始化完成，也就造成了线程安全问题。</p>
 <blockquote>
@@ -273,7 +271,7 @@ instance(memory);		<span class="hljs-comment">//2.初始化对象</span></code><
 <div class="share-btn">
       <span class="share-sns share-outer">
         <i class="ri-share-forward-line"></i>
-        分享
+        Share
       </span>
       <div class="share-wrap">
         <i class="arrow"></i>
@@ -331,7 +329,7 @@ instance(memory);		<span class="hljs-comment">//2.初始化对象</span></code><
   <nav class="article-nav">
     
       <a href="/2020/02/29/JVM学习(1)——类加载、连接与初始化/" class="article-nav-link">
-        <strong class="article-nav-caption"></strong>
+        <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
             JVM学习(1)——类加载、连接与初始化
@@ -341,7 +339,7 @@ instance(memory);		<span class="hljs-comment">//2.初始化对象</span></code><
     
     
       <a href="/2019/12/10/聊聊红黑树/" class="article-nav-link">
-        <strong class="article-nav-caption"></strong>
+        <strong class="article-nav-caption">下一篇</strong>
         <div class="article-nav-title">什么是红黑树？</div>
       </a>
     
@@ -462,23 +460,23 @@ instance(memory);		<span class="hljs-comment">//2.初始化对象</span></code><
   <ul class="nav nav-main">
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/">home</a>
+      <a class="nav-item-link" href="/">Home</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/archives">archives</a>
+      <a class="nav-item-link" href="/archives">Archives</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/categories">categories</a>
+      <a class="nav-item-link" href="/categories">Categories</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/tags">tags</a>
+      <a class="nav-item-link" href="/tags">Tags</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/about">about</a>
+      <a class="nav-item-link" href="/about">About</a>
     </li>
     
   </ul>
@@ -511,7 +509,7 @@ instance(memory);		<span class="hljs-comment">//2.初始化对象</span></code><
 <!-- #reward -->
 <div id="reward">
   <span class="close"><i class="ri-close-line"></i></span>
-  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <p class="reward-p"><i class="ri-cup-line"></i>萨瓦迪卡~</p>
   <div class="reward-box">
     
     <div class="reward-item">

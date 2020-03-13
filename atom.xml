@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://charles-xcz.github.io/"/>
-  <updated>2020-03-13T02:49:47.592Z</updated>
+  <updated>2020-03-13T12:26:30.365Z</updated>
   <id>http://charles-xcz.github.io/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>设计模式——代理模式</title>
+    <link href="http://charles-xcz.github.io/2020/03/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/"/>
+    <id>http://charles-xcz.github.io/2020/03/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</id>
+    <published>2020-03-13T10:28:40.000Z</published>
+    <updated>2020-03-13T12:26:30.365Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;1-基本介绍&quot;&gt;&lt;a href=&quot;#1-基本介绍&quot; class=&quot;headerlink&quot; title=&quot;1. 基本介绍&quot;&gt;&lt;/a&gt;1. 基本介绍&lt;/h2&gt;&lt;p&gt;代理模式：为一个对象提供一个替身，以控制对这个对象的访问。即通过代理对象访问目标对象。&lt;/p&gt;
+&lt;p&gt;这
+      
+    
+    </summary>
+    
+    
+      <category term="设计模式" scheme="http://Charles-xcz.github.io/categories/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F/"/>
+    
+    
+      <category term="代理模式" scheme="http://Charles-xcz.github.io/tags/%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/"/>
+    
+  </entry>
   
   <entry>
     <title>JVM学习(5)——G1垃圾收集器</title>
@@ -27,10 +52,10 @@
     
       
       
-        &lt;h2 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;以前收集器的特点：&lt;/p&gt;
+        &lt;h2 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h2&gt;&lt;p&gt;以前收集器的特点：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;年轻代和老年代是各自独立且连续的内存块；&lt;/li&gt;
-&lt;li&gt;年轻代收集使用单Eden+S0+S1进行复制算法；&lt;/
+&lt;li&gt;年轻代收集使用单Eden+S0+S
       
     
     </summary>
@@ -56,10 +81,10 @@
     
       
       
-        &lt;h2 id=&quot;1-介绍&quot;&gt;1. 介绍&lt;a class=&quot;post-anchor&quot; href=&quot;#1-介绍&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;GC垃圾收集器是GC算法的实现。&lt;/p&gt;
+        &lt;h2 id=&quot;1-介绍&quot;&gt;&lt;a href=&quot;#1-介绍&quot; class=&quot;headerlink&quot; title=&quot;1. 介绍&quot;&gt;&lt;/a&gt;1. 介绍&lt;/h2&gt;&lt;p&gt;GC垃圾收集器是GC算法的实现。&lt;/p&gt;
 &lt;p&gt;主要分为四种：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Serial：串行垃圾收集器（又分为Serial和
+&lt;li&gt;&lt;p&gt;Serial：串行垃圾收
       
     
     </summary>
@@ -85,10 +110,10 @@
     
       
       
-        &lt;h2 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;什么是垃圾，简单来说就是内存中已经不在被使用的空间就是垃圾。&lt;/p&gt;
+        &lt;h2 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h2&gt;&lt;p&gt;什么是垃圾，简单来说就是内存中已经不在被使用的空间就是垃圾。&lt;/p&gt;
 &lt;p&gt;如何判断一个对象可以被回收？&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;引用计数法（JVM中不使用这
+&lt;li&gt;引用计数
       
     
     </summary>
@@ -114,7 +139,7 @@
     
       
       
-        &lt;h2 id=&quot;1-阻塞线程的几个工具类&quot;&gt;1. 阻塞线程的几个工具类&lt;a class=&quot;post-anchor&quot; href=&quot;#1-阻塞线程的几个工具类&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3 id=&quot;1-1-CountDownLatch&quot;&gt;1.1 CountDownLatch&lt;a cla
+        &lt;h2 id=&quot;1-阻塞线程的几个工具类&quot;&gt;&lt;a href=&quot;#1-阻塞线程的几个工具类&quot; class=&quot;headerlink&quot; title=&quot;1. 阻塞线程的几个工具类&quot;&gt;&lt;/a&gt;1. 阻塞线程的几个工具类&lt;/h2&gt;&lt;h3 id=&quot;1-1-CountDownLatch&quot;&gt;&lt;a 
       
     
     </summary>
@@ -142,10 +167,9 @@
     
       
       
-        &lt;h2 id=&quot;1-创建线程的3种方法&quot;&gt;1. 创建线程的3种方法&lt;a class=&quot;post-anchor&quot; href=&quot;#1-创建线程的3种方法&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+        &lt;h2 id=&quot;1-创建线程的3种方法&quot;&gt;&lt;a href=&quot;#1-创建线程的3种方法&quot; class=&quot;headerlink&quot; title=&quot;1. 创建线程的3种方法&quot;&gt;&lt;/a&gt;1. 创建线程的3种方法&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;继承Thread类&lt;/li&gt;
-&lt;li&gt;实现Runnable接口&lt;/li&gt;
-&lt;li&gt;实现Cal
+&lt;li&gt;实现Runna
       
     
     </summary>
@@ -173,7 +197,7 @@
     
       
       
-        &lt;h2 id=&quot;1-阻塞线程的几个工具类&quot;&gt;1. 阻塞线程的几个工具类&lt;a class=&quot;post-anchor&quot; href=&quot;#1-阻塞线程的几个工具类&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3 id=&quot;1-1-CountDownLatch&quot;&gt;1.1 CountDownLatch&lt;a cla
+        &lt;h2 id=&quot;1-阻塞线程的几个工具类&quot;&gt;&lt;a href=&quot;#1-阻塞线程的几个工具类&quot; class=&quot;headerlink&quot; title=&quot;1. 阻塞线程的几个工具类&quot;&gt;&lt;/a&gt;1. 阻塞线程的几个工具类&lt;/h2&gt;&lt;h3 id=&quot;1-1-CountDownLatch&quot;&gt;&lt;a 
       
     
     </summary>
@@ -201,9 +225,8 @@
     
       
       
-        &lt;h2 id=&quot;1-公平锁与非公平锁&quot;&gt;1. 公平锁与非公平锁&lt;a class=&quot;post-anchor&quot; href=&quot;#1-公平锁与非公平锁&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;公平锁：是指多个线程按照申请锁的顺序来获取锁，FIFO。&lt;/p&gt;
-&lt;p&gt;非公平锁：是
+        &lt;h2 id=&quot;1-公平锁与非公平锁&quot;&gt;&lt;a href=&quot;#1-公平锁与非公平锁&quot; class=&quot;headerlink&quot; title=&quot;1. 公平锁与非公平锁&quot;&gt;&lt;/a&gt;1. 公平锁与非公平锁&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;公平锁：是指多个线程按照申请锁的顺序来获取锁，
       
     
     </summary>
@@ -231,9 +254,8 @@
     
       
       
-        &lt;h2 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;CAS：Compare-And-Swap 比较并交换，它是一条&lt;strong&gt;CPU并发原语&lt;/strong&gt;&lt;/p&gt;
-&lt;/block
+        &lt;h2 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;CAS：Compare-And-Swap 比较并交换，它是一条&lt;strong&gt;CPU并发原语&lt;/strong&gt;&lt;/
       
     
     </summary>
@@ -261,8 +283,7 @@
     
       
       
-        &lt;h2 id=&quot;一-方法区-Method-Area&quot;&gt;一. 方法区 Method Area&lt;a class=&quot;post-anchor&quot; href=&quot;#一-方法区-Method-Area&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;属于供各线程共享的运行时内存区域。&lt;/p&gt;
-&lt;p&gt;它&lt;strong&gt;
+        &lt;h2 id=&quot;一-方法区-Method-Area&quot;&gt;&lt;a href=&quot;#一-方法区-Method-Area&quot; class=&quot;headerlink&quot; title=&quot;一. 方法区 Method Area&quot;&gt;&lt;/a&gt;一. 方法区 Method Area&lt;/h2&gt;&lt;p&gt;属于供各线程共享
       
     
     </summary>
@@ -311,8 +332,8 @@
     
       
       
-        &lt;h2 id=&quot;1-volatile特征&quot;&gt;1.  volatile特征&lt;a class=&quot;post-anchor&quot; href=&quot;#1-volatile特征&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;volatile&lt;/strong&gt;是Java虚拟机提供
+        &lt;h2 id=&quot;1-volatile特征&quot;&gt;&lt;a href=&quot;#1-volatile特征&quot; class=&quot;headerlink&quot; title=&quot;1.  volatile特征&quot;&gt;&lt;/a&gt;1.  volatile特征&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;volat
       
     
     </summary>
@@ -340,7 +361,7 @@
     
       
       
-        &lt;h2 id=&quot;1-定义&quot;&gt;1. 定义&lt;a class=&quot;post-anchor&quot; href=&quot;#1-定义&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;红黑树是满足下列条件的&lt;strong&gt;二叉查找树&lt;/strong&gt;：&lt;br&gt;    每个节点都带有红色或黑色。节点的颜色由以下规则确定：&lt;br&gt; 
+        &lt;h2 id=&quot;1-定义&quot;&gt;&lt;a href=&quot;#1-定义&quot; class=&quot;headerlink&quot; title=&quot;1. 定义&quot;&gt;&lt;/a&gt;1. 定义&lt;/h2&gt;&lt;p&gt;红黑树是满足下列条件的&lt;strong&gt;二叉查找树&lt;/strong&gt;：&lt;br&gt;    每个节点都带有红色或黑色。节点的颜色
       
     
     </summary>
@@ -386,14 +407,14 @@
     <link href="http://charles-xcz.github.io/2019/11/19/%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E2%80%94%E2%80%94KMP/"/>
     <id>http://charles-xcz.github.io/2019/11/19/%E6%A8%A1%E5%BC%8F%E5%8C%B9%E9%85%8D%E2%80%94%E2%80%94KMP/</id>
     <published>2019-11-19T01:56:48.000Z</published>
-    <updated>2020-03-01T13:59:45.714Z</updated>
+    <updated>2020-03-13T10:27:56.112Z</updated>
     
     <summary type="html">
     
       
       
-        &lt;h3 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;​    场景：在字符串：“fffffab cfe defe” 中查找字符串 “ff”。&lt;/p&gt;
-&lt;p&gt;​    被查找的字符串称之为：主串或目标串T ;&lt;/p
+        &lt;h3 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h3&gt;&lt;p&gt;​    场景：在字符串：“fffffab cfe defe” 中查找字符串 “ff”。&lt;/p&gt;
+&lt;p&gt;​    被查找的字符串称之为：主串
       
     
     </summary>
@@ -403,8 +424,6 @@
     
     
       <category term="算法" scheme="http://Charles-xcz.github.io/tags/%E7%AE%97%E6%B3%95/"/>
-    
-      <category term="kmp" scheme="http://Charles-xcz.github.io/tags/kmp/"/>
     
   </entry>
   

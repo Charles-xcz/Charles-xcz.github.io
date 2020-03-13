@@ -20,7 +20,7 @@
   
 
 <link rel="alternate" href="/atom.xml" title="Charles" type="application/atom+xml">
-</head>
+<link rel="stylesheet" href="/css/prism-okaidia.css" type="text/css"></head>
 
 </html>
 
@@ -97,42 +97,40 @@
       
 
       
-      <h2 id="引言">引言<a class="post-anchor" href="#引言"></a></h2><blockquote>
+      <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><blockquote>
 <p>CAS：Compare-And-Swap 比较并交换，它是一条<strong>CPU并发原语</strong></p>
 </blockquote>
 <p>它的功能是判断内存某个位置的值是否为预期值，如果是则更改为新的值，这个过程是原子的。</p>
-<h2 id="1-CAS的底层原理">1. CAS的底层原理<a class="post-anchor" href="#1-CAS的底层原理"></a></h2><p>原子整型的原子自增就是通过CAS的原理实现的。</p>
-<pre><code class="hljs java">AtomicInteger atomicInteger=<span class="hljs-keyword">new</span> AtomicInteger(<span class="hljs-number">5</span>);
-atomicInteger.getAndIncrement;</code></pre>
-
+<h2 id="1-CAS的底层原理"><a href="#1-CAS的底层原理" class="headerlink" title="1. CAS的底层原理"></a>1. CAS的底层原理</h2><p>原子整型的原子自增就是通过CAS的原理实现的。</p>
+<pre class=" language-java"><code class="language-java">AtomicInteger atomicInteger<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">AtomicInteger</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+atomicInteger<span class="token punctuation">.</span>getAndIncrement<span class="token punctuation">;</span></code></pre>
 <p>下面通过AtomicInteger类的源码例子来了解CAS是什么：</p>
-<pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">AtomicInteger</span> <span class="hljs-keyword">extends</span> <span class="hljs-title">Number</span> <span class="hljs-keyword">implements</span> <span class="hljs-title">java</span>.<span class="hljs-title">io</span>.<span class="hljs-title">Serializable</span> </span>&#123;
-    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> serialVersionUID = <span class="hljs-number">6214790243416807050L</span>;
+<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AtomicInteger</span> <span class="token keyword">extends</span> <span class="token class-name">Number</span> <span class="token keyword">implements</span> <span class="token class-name">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>Serializable</span> <span class="token punctuation">{</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">long</span> serialVersionUID <span class="token operator">=</span> 6214790243416807050L<span class="token punctuation">;</span>
 
-    <span class="hljs-comment">// setup to use Unsafe.compareAndSwapInt for updates</span>
-    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> Unsafe unsafe = Unsafe.getUnsafe();
-    <span class="hljs-keyword">private</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">long</span> valueOffset;
+    <span class="token comment" spellcheck="true">// setup to use Unsafe.compareAndSwapInt for updates</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> Unsafe unsafe <span class="token operator">=</span> Unsafe<span class="token punctuation">.</span><span class="token function">getUnsafe</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">long</span> valueOffset<span class="token punctuation">;</span>
 
-    <span class="hljs-keyword">static</span> &#123;
-        <span class="hljs-keyword">try</span> &#123;
-            valueOffset = unsafe.objectFieldOffset
-                (AtomicInteger.class.getDeclaredField(<span class="hljs-string">"value"</span>));
-        &#125; <span class="hljs-keyword">catch</span> (Exception ex) &#123; <span class="hljs-keyword">throw</span> <span class="hljs-keyword">new</span> Error(ex); &#125;
-    &#125;
+    <span class="token keyword">static</span> <span class="token punctuation">{</span>
+        <span class="token keyword">try</span> <span class="token punctuation">{</span>
+            valueOffset <span class="token operator">=</span> unsafe<span class="token punctuation">.</span><span class="token function">objectFieldOffset</span>
+                <span class="token punctuation">(</span>AtomicInteger<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getDeclaredField</span><span class="token punctuation">(</span><span class="token string">"value"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span>ex<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span>
 
-    <span class="hljs-keyword">private</span> <span class="hljs-keyword">volatile</span> <span class="hljs-keyword">int</span> value;
-    
-    .......
-        
-<span class="hljs-comment">/**
+    <span class="token keyword">private</span> <span class="token keyword">volatile</span> <span class="token keyword">int</span> value<span class="token punctuation">;</span>
+
+    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
+
+<span class="token comment" spellcheck="true">/**
  * Atomically increments by one the current value.
  *
- * <span class="hljs-doctag">@return</span> the previous value
+ * @return the previous value
  */</span>
-<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getAndIncrement</span><span class="hljs-params">()</span> </span>&#123;
-    <span class="hljs-keyword">return</span> unsafe.getAndAddInt(<span class="hljs-keyword">this</span>, valueOffset, <span class="hljs-number">1</span>);
-&#125;</code></pre>
-
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">return</span> unsafe<span class="token punctuation">.</span><span class="token function">getAndAddInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> valueOffset<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
 <p>可以看到AtomicInteger类中引入了一个Unsafe类，CAS是通过Unsafe类实现的。    </p>
 <p><strong>先了解一下Unsafe类</strong></p>
 <ol>
@@ -143,16 +141,15 @@ atomicInteger.getAndIncrement;</code></pre>
 <li>变量valueOffset，表示该变量值在内存中的偏移地址，因为Unsafe类就是根据内存偏移地址获取数据的。</li>
 <li>变量value用volatile修饰，保证了多线程之间的内存可见性。</li>
 </ol>
-<pre><code class="hljs java"><span class="hljs-comment">//Unsafe类中的getAndAddInt方法</span>
-<span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">final</span> <span class="hljs-keyword">int</span> <span class="hljs-title">getAndAddInt</span><span class="hljs-params">(Object var1, <span class="hljs-keyword">long</span> var2, <span class="hljs-keyword">int</span> var4)</span> </span>&#123;
-    <span class="hljs-keyword">int</span> var5;
-    <span class="hljs-keyword">do</span> &#123;
-        var5 = <span class="hljs-keyword">this</span>.getIntVolatile(var1, var2);
-    &#125; <span class="hljs-keyword">while</span>(!<span class="hljs-keyword">this</span>.compareAndSwapInt(var1, var2, var5, var5 + var4));
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">//Unsafe类中的getAndAddInt方法</span>
+<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">getAndAddInt</span><span class="token punctuation">(</span>Object var1<span class="token punctuation">,</span> <span class="token keyword">long</span> var2<span class="token punctuation">,</span> <span class="token keyword">int</span> var4<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> var5<span class="token punctuation">;</span>
+    <span class="token keyword">do</span> <span class="token punctuation">{</span>
+        var5 <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getIntVolatile</span><span class="token punctuation">(</span>var1<span class="token punctuation">,</span> var2<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span> <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compareAndSwapInt</span><span class="token punctuation">(</span>var1<span class="token punctuation">,</span> var2<span class="token punctuation">,</span> var5<span class="token punctuation">,</span> var5 <span class="token operator">+</span> var4<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-    <span class="hljs-keyword">return</span> var5;
-&#125;</code></pre>
-
+    <span class="token keyword">return</span> var5<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></code></pre>
 <p>​    CAS并发原语在JAVA语言中就是<strong>sun.misc.Unsafe</strong>类中的各个方法实现的。</p>
 <p>​    调用UnSafe类中的CAS方法，JVM会帮我们实现出CAS汇编指令。这是一种完全依赖于硬件的功能，通过它实现了原子操作。</p>
 <p>​    再次强调，由于CAS是一种系统原语，原语属于操作系统用语范畴，是由若干条指令组成的，用于完成某个功能的一个过程，并且原语的执行必须是连续的，在执行过程中不允许被中断，也就是说CAS是一条CPU的原子指令，不会造成所谓的数据不一致问题。</p>
@@ -165,7 +162,7 @@ atomicInteger.getAndIncrement;</code></pre>
 <li>线程A重新获取value值，因为变量value被volatile修饰，所以其它线程对它的修改，线程A总是能够看到，线程A继续执行compareAndSwaplnt进行比较替换，直到成功。</li>
 </ol>
 <p>即：<strong>比较当前工作内存的值和主内存中的值，如果相同则执行规定操作，否则继续比较直到主内存和工作内存中的值一致为止。</strong></p>
-<h2 id="2-CAS缺点">2. CAS缺点<a class="post-anchor" href="#2-CAS缺点"></a></h2><ol>
+<h2 id="2-CAS缺点"><a href="#2-CAS缺点" class="headerlink" title="2. CAS缺点"></a>2. CAS缺点</h2><ol>
 <li><p>由于通过do while循环实现，可能导致循环时间长，cpu开销大。</p>
 </li>
 <li><p>只能保证一个共享变量的原子操作。</p>
@@ -174,15 +171,14 @@ atomicInteger.getAndIncrement;</code></pre>
 <li><p>引出来ABA问题</p>
 </li>
 </ol>
-<h2 id="3-ABA问题">3. ABA问题<a class="post-anchor" href="#3-ABA问题"></a></h2><p>​    CAS算法实现一个重要前提需要取出内存中某时刻的数据并在当下时刻比较并替换，那么在这个时间差类会导致数据的变化。</p>
+<h2 id="3-ABA问题"><a href="#3-ABA问题" class="headerlink" title="3. ABA问题"></a>3. ABA问题</h2><p>​    CAS算法实现一个重要前提需要取出内存中某时刻的数据并在当下时刻比较并替换，那么在这个时间差类会导致数据的变化。</p>
 <p>​    比如说一个线程1从内存位置V中取出A，这时候另一个线程2也从内存中取出A，并且线程2进行了一些操作将值变成了B，然后线程2又将V位置的数据变成A，这时候线程1进行CAS操作发现内存中仍然是A，然后线程1操作成功。</p>
 <p>​    尽管这个过程线程1的CAS操作成功，但内存V位置的值中间产生了变化，有时这种问题会造成影响，这就叫做ABA问题。</p>
 <p><strong>解决ABA问题</strong></p>
 <p>​    新增一种机制，<strong>版本号</strong>（类似于时间戳）</p>
 <p><strong>原子引用</strong>：AtomicInteger，只是对基本类型进行原子操作，要想对对象进行原子操作，可使用原子引用类型。</p>
-<pre><code class="hljs java">AtomicReference&lt;T&gt;			<span class="hljs-comment">//不带版本号 AtomicReference&lt;Integer&gt; 等同于 AtomicInteger</span>
-AtomicStampedReference&lt;T&gt;	<span class="hljs-comment">//带版本号的原子引用，可以解决ABA问题</span></code></pre>
-
+<pre class=" language-java"><code class="language-java">AtomicReference<span class="token operator">&lt;</span>T<span class="token operator">></span>            <span class="token comment" spellcheck="true">//不带版本号 AtomicReference&lt;Integer> 等同于 AtomicInteger</span>
+AtomicStampedReference<span class="token operator">&lt;</span>T<span class="token operator">></span>    <span class="token comment" spellcheck="true">//带版本号的原子引用，可以解决ABA问题</span></code></pre>
 
       
       <!-- reward -->
@@ -213,7 +209,7 @@ AtomicStampedReference&lt;T&gt;	<span class="hljs-comment">//带版本号的原�
 <div class="share-btn">
       <span class="share-sns share-outer">
         <i class="ri-share-forward-line"></i>
-        分享
+        Share
       </span>
       <div class="share-wrap">
         <i class="arrow"></i>
@@ -271,7 +267,7 @@ AtomicStampedReference&lt;T&gt;	<span class="hljs-comment">//带版本号的原�
   <nav class="article-nav">
     
       <a href="/2020/03/11/synchronized和Lock/" class="article-nav-link">
-        <strong class="article-nav-caption"></strong>
+        <strong class="article-nav-caption">上一篇</strong>
         <div class="article-nav-title">
           
             synchronized和Lock
@@ -281,7 +277,7 @@ AtomicStampedReference&lt;T&gt;	<span class="hljs-comment">//带版本号的原�
     
     
       <a href="/2020/03/09/JVM学习(2)——JVM内存以及GC算法/" class="article-nav-link">
-        <strong class="article-nav-caption"></strong>
+        <strong class="article-nav-caption">下一篇</strong>
         <div class="article-nav-title">JVM学习(2)——JVM的内存以及GC算法</div>
       </a>
     
@@ -402,23 +398,23 @@ AtomicStampedReference&lt;T&gt;	<span class="hljs-comment">//带版本号的原�
   <ul class="nav nav-main">
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/">home</a>
+      <a class="nav-item-link" href="/">Home</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/archives">archives</a>
+      <a class="nav-item-link" href="/archives">Archives</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/categories">categories</a>
+      <a class="nav-item-link" href="/categories">Categories</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/tags">tags</a>
+      <a class="nav-item-link" href="/tags">Tags</a>
     </li>
     
     <li class="nav-item">
-      <a class="nav-item-link" href="/about">about</a>
+      <a class="nav-item-link" href="/about">About</a>
     </li>
     
   </ul>
@@ -451,7 +447,7 @@ AtomicStampedReference&lt;T&gt;	<span class="hljs-comment">//带版本号的原�
 <!-- #reward -->
 <div id="reward">
   <span class="close"><i class="ri-close-line"></i></span>
-  <p class="reward-p"><i class="ri-cup-line"></i>请我喝杯咖啡吧~</p>
+  <p class="reward-p"><i class="ri-cup-line"></i>萨瓦迪卡~</p>
   <div class="reward-box">
     
     <div class="reward-item">
