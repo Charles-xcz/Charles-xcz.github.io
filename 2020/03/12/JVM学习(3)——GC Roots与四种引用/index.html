@@ -201,17 +201,17 @@
       <div>
       </div>
     </div>
-    <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>什么是垃圾，简单来说就是内存中已经不在被使用的空间就是垃圾。</p>
+    <h2 id="引言">引言<a class="post-anchor" href="#引言"></a></h2><p>什么是垃圾，简单来说就是内存中已经不在被使用的空间就是垃圾。</p>
 <p>如何判断一个对象可以被回收？</p>
 <ul>
 <li>引用计数法（JVM中不使用这种算法）</li>
 <li>枚举根节点做可达性分析（根搜索路径）</li>
 </ul>
 <p>因为引用计数法会导致循环引用问题，所以Java使用了可达性分析的方法来判别垃圾。</p>
-<h2 id="1-GC-Roots"><a href="#1-GC-Roots" class="headerlink" title="1. GC Roots"></a>1. GC Roots</h2><p>​    所谓GC Roots就是用来Tracing GC的根集合，是一组必须活跃的引用。</p>
+<h2 id="1-GC-Roots">1. GC Roots<a class="post-anchor" href="#1-GC-Roots"></a></h2><p>​    所谓GC Roots就是用来Tracing GC的根集合，是一组必须活跃的引用。</p>
 <p>​    基本思路就是通过一系列名为 GC Roots 的对象作为起始点，从这个被称为GC Roots的对象开始向下搜索，如果一个对象到GC Roots没有任何引用链相连时，则说明此对象不可用。</p>
 <p>​    也即给定一个集合的引用作为根出发，通过引用关系遍历对象图，能被遍历到的（可到达的）对象就被判定为存活，没有被遍历到的就自然被判定为死亡。</p>
-<img src="../../../../../charles/Desktop/%25E9%259D%25A2%25E8%25AF%2595%25E5%2587%2586%25E5%25A4%2587/upload/image-20200303095959288.png" alt="image-20200303095959288" style="zoom:67%;">
+<a href="../../../../../charles/Desktop/%25E9%259D%25A2%25E8%25AF%2595%25E5%2587%2586%25E5%25A4%2587/upload/image-20200303095959288.png" data-caption="image-20200303095959288" data-fancybox="images"><img src="../../../../../charles/Desktop/%25E9%259D%25A2%25E8%25AF%2595%25E5%2587%2586%25E5%25A4%2587/upload/image-20200303095959288.png" alt="image-20200303095959288"></a>
 
 <p>哪些对象可以作为GC Roots</p>
 <ol>
@@ -220,12 +220,12 @@
 <li>方法区中常量引用的对象。</li>
 <li>本地方法栈中Native方法引用的对象。</li>
 </ol>
-<h2 id="2-强引用"><a href="#2-强引用" class="headerlink" title="2. 强引用"></a>2. 强引用</h2><p>​    当内存不足，JVM开始垃圾回收，对于强引用的对象，就算是出现了OOM也不会对该对象进行回收，死都不收。</p>
+<h2 id="2-强引用">2. 强引用<a class="post-anchor" href="#2-强引用"></a></h2><p>​    当内存不足，JVM开始垃圾回收，对于强引用的对象，就算是出现了OOM也不会对该对象进行回收，死都不收。</p>
 <p>​    强引用是我们最常见的普通对象引用，只要还有强引用指向一个对象，就能表明对象还“活着”，垃圾收集器不会碰这种对象。</p>
 <p>​    在Java中最常见的就是强引用，把一个对象赋给一个引用变量，这个引用变量就是一个强引用。</p>
 <p>​    当一个对象被强引用变量引用时，它处于可达状态，它是不可能被垃圾回收机制回收的，即使该对象以后永远都不会被用到JVM也不会回收。因此<strong>强引用是造成Java内存泄漏的主要原因之一</strong>。</p>
 <p>​    对于一个普通的对象，如果没有其他的引用关系，只要超过了引用的作用域或者显式地将相应（强）引用赋值为null，一般认为就是可以被垃圾收集的了（当然具体回收时机还是要看垃圾收集策略）。</p>
-<h2 id="3-软引用"><a href="#3-软引用" class="headerlink" title="3. 软引用"></a>3. 软引用</h2><blockquote>
+<h2 id="3-软引用">3. 软引用<a class="post-anchor" href="#3-软引用"></a></h2><blockquote>
 <p> SoftReference<object> softReference = new SoftReference&lt;&gt;(Obj);</object></p>
 </blockquote>
 <p>​    软引用是一种相对强引用弱化了一些的引用，需要用java.lang.ref.SoftReference类来实现，可以让对象豁免一些垃圾收集。</p>
@@ -279,7 +279,7 @@
  * null
  */</span></code></pre>
 
-<h2 id="4-弱引用"><a href="#4-弱引用" class="headerlink" title="4. 弱引用"></a>4. 弱引用</h2><blockquote>
+<h2 id="4-弱引用">4. 弱引用<a class="post-anchor" href="#4-弱引用"></a></h2><blockquote>
 <p>WeakReference</p>
 </blockquote>
 <p>无论内存是否充足，只要GC都会被回收。</p>
@@ -315,7 +315,7 @@
     &#125;
 &#125;</code></pre>
 
-<h2 id="5-虚引用"><a href="#5-虚引用" class="headerlink" title="5. 虚引用"></a>5. 虚引用</h2><blockquote>
+<h2 id="5-虚引用">5. 虚引用<a class="post-anchor" href="#5-虚引用"></a></h2><blockquote>
 <p>PhantomReference，又称幽灵引用</p>
 </blockquote>
 <p>​    顾名思义，就是形同虚设，与其他几种引用都不同，虚引用并不会决定对象的生命周期。</p>
@@ -347,7 +347,7 @@
 
 <p>​    创建引用的时候可以指定关联的队列，当GC释放对象内存的时候，会将引用加入到引用队列如果程序发现某个虚引用已经被加入到引用队列，那么就可以在所引用的对象的内存被回收之前采取必要的行动了这相当于是一种通知机制。</p>
 <p>​    当关联的引用队列中有数据的时候，意味着引用指向的堆内存中的对象被回收。通过这种方式，JVM允许我们在对象被销毁后，做一些我们自己想做的事情。</p>
-<h2 id="6-总结"><a href="#6-总结" class="headerlink" title="6. 总结"></a>6. 总结</h2><img src="https://i.loli.net/2020/03/03/ec1raYgd2pzf9DX.png" alt="image-20200303163153336" style="zoom:67%;">
+<h2 id="6-总结">6. 总结<a class="post-anchor" href="#6-总结"></a></h2><a href="https://i.loli.net/2020/03/03/ec1raYgd2pzf9DX.png" data-caption="image-20200303163153336" data-fancybox="images"><img src="https://i.loli.net/2020/03/03/ec1raYgd2pzf9DX.png" alt="image-20200303163153336"></a>
 
   
     <div class="post-reward">
@@ -373,7 +373,7 @@
   <div class="post-guide">
     <div class="item left">
         
-          <a href="/2020/03/13/JVM学习(4)——GC垃圾收集器/"></a>
+          <a href="/2020/03/13/JVM学习(4)——GC垃圾收集器/">JVM学习(4)——GC垃圾收集器</a>
         
     </div>
     <div class="item right">

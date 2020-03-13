@@ -16,7 +16,7 @@
     <meta name="description" content>
     
     <title>
-      JVM学习(2)——JVM的堆/栈/方法区以及GC算法 - Charles
+      JVM学习(2)——JVM的内存以及GC算法 - Charles
     </title>
     <link rel="manifest" href="/manifest.json">
     <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
@@ -154,7 +154,7 @@
         <article class="post-entry">
     <div class="header">
       
-      <div class="title">JVM学习(2)——JVM的堆/栈/方法区以及GC算法</div>
+      <div class="title">JVM学习(2)——JVM的内存以及GC算法</div>
       <div class="meta">
         <span class="item">
           <span class="iconfont icon-time-circle"></span>
@@ -162,7 +162,7 @@
         </span>
 
         
-          <span class="item leancloud-visitors" id="/2020/03/09/JVM学习(2)——JVM内存以及GC算法/" data-flag-title="JVM学习(2)——JVM的堆/栈/方法区以及GC算法">
+          <span class="item leancloud-visitors" id="/2020/03/09/JVM学习(2)——JVM内存以及GC算法/" data-flag-title="JVM学习(2)——JVM的内存以及GC算法">
             <span class="iconfont icon-eye1"></span>
             <span class="leancloud-visitors-count"></span>
           </span>
@@ -408,6 +408,7 @@
 <p>​    可以看出，效率上来说，复制算法最优，但是却浪费了太多内存，而为了尽量兼顾上面所提到的三个指标，标记/整理算法相对来说更平滑一些，但效率上依然不尽如人意，它比复制算法多了一个标记的阶段，又比标记/清除多了一个整理内存的过程。</p>
 <blockquote>
 <p>JVM中对GC算法的具体实现体现于不同的GC垃圾收集器。</p>
+<p>可参见参见<a href="https://charles-xcz.github.io/2020/03/13/JVM学习(4)——GC垃圾收集器/">《JVM学习(1)——GC垃圾收集器》</a>、<a href="https://charles-xcz.github.io/2020/03/13/JVM学习(5)——G1垃圾收集器/">《JVM学习(5)——G1垃圾收集器》</a></p>
 </blockquote>
 
 

@@ -16,7 +16,7 @@
     <meta name="description" content>
     
     <title>
-          Charles
+      JVM学习(4)——GC垃圾收集器 - Charles
     </title>
     <link rel="manifest" href="/manifest.json">
     <link rel="shortcut icon" href="/images/favicon2.ico" type="image/x-icon">
@@ -154,7 +154,7 @@
         <article class="post-entry">
     <div class="header">
       
-      <div class="title"></div>
+      <div class="title">JVM学习(4)——GC垃圾收集器</div>
       <div class="meta">
         <span class="item">
           <span class="iconfont icon-time-circle"></span>
@@ -162,22 +162,46 @@
         </span>
 
         
-          <span class="item leancloud-visitors" id="/2020/03/13/JVM学习(4)——GC垃圾收集器/" data-flag-title>
+          <span class="item leancloud-visitors" id="/2020/03/13/JVM学习(4)——GC垃圾收集器/" data-flag-title="JVM学习(4)——GC垃圾收集器">
             <span class="iconfont icon-eye1"></span>
             <span class="leancloud-visitors-count"></span>
           </span>
         
 
+         
+        <span class="item">
+          <span class="iconfont icon-folder"></span>
+          <span>
+              
+                
+                  <a href="/categories/java">java</a>
+                
+              
+          </span>
+        </span>
         
         
-        
+         
+          <span class="item">
+            <span class="iconfont icon-tag1"></span>
+            <span>
+                
+                  
+                    <a href="/tags/JVM">JVM</a>
+                  
+                
+                  
+                    <a href="/tags/GC">GC</a>
+                  
+                
+            </span>
+          </span>
+         
       </div>
       <div>
       </div>
     </div>
-    <hr>
-<hr>
-<h2 id="1-介绍">1. 介绍<a class="post-anchor" href="#1-介绍"></a></h2><p>GC垃圾收集器是GC算法的实现。</p>
+    <h2 id="1-介绍">1. 介绍<a class="post-anchor" href="#1-介绍"></a></h2><p>GC垃圾收集器是GC算法的实现。</p>
 <p>主要分为四种：</p>
 <ul>
 <li><p>Serial：串行垃圾收集器（又分为Serial和Serial Old）</p>
@@ -190,7 +214,7 @@
 <p>用户线程和垃圾收集线程同时执行（不一定是并行，可能交替执行），不需要停顿用户线程。</p>
 <p>互联网公司多用它，适用于对响应时间有要求的场景。</p>
 </li>
-<li><p>G1：</p>
+<li><p>G1：G1内容比较多，参见<a href="https://charles-xcz.github.io/2020/03/13/JVM学习(5)——G1垃圾收集器/">《JVM学习(5)——G1垃圾收集器》</a>。</p>
 </li>
 </ul>
 <p>查看服务器的使用的垃圾回收器：-XX:PrintCommandLineFlags</p>
