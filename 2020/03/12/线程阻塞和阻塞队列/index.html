@@ -73,10 +73,6 @@
             <span class="post-count">8分钟</span>
         </span>
     </span>
-<span>
-&nbsp; | &nbsp;
-  <i>访问量：<span id="busuanzi_value_page_pv"></span></i>
-</span>
 </div>
 
       
@@ -101,7 +97,7 @@
       
 
       
-      <h2 id="1-阻塞线程的几个工具类"><a href="#1-阻塞线程的几个工具类" class="headerlink" title="1. 阻塞线程的几个工具类"></a>1. 阻塞线程的几个工具类</h2><h3 id="1-1-CountDownLatch"><a href="#1-1-CountDownLatch" class="headerlink" title="1.1 CountDownLatch"></a>1.1 CountDownLatch</h3><blockquote>
+      <h2 id="1-阻塞线程的几个工具类">1. 阻塞线程的几个工具类<a class="post-anchor" href="#1-阻塞线程的几个工具类"></a></h2><h3 id="1-1-CountDownLatch">1.1 CountDownLatch<a class="post-anchor" href="#1-1-CountDownLatch"></a></h3><blockquote>
 <p>CountDownLatch：让一些线程阻塞直到另一些线程完成一系列操作后才被唤醒。</p>
 </blockquote>
 <p>​    CountDownLatch主要有两个方法，当一个或多个线程调用await方法时，调用线程会被阻塞。</p>
@@ -122,7 +118,7 @@
     &#125;
 &#125;</code></pre>
 
-<h3 id="1-2-CyclicBarrier"><a href="#1-2-CyclicBarrier" class="headerlink" title="1.2 CyclicBarrier"></a>1.2 CyclicBarrier</h3><blockquote>
+<h3 id="1-2-CyclicBarrier">1.2 CyclicBarrier<a class="post-anchor" href="#1-2-CyclicBarrier"></a></h3><blockquote>
 <p>CyclicBarrier的字面意思是可循环（Cyclic）使用的屏障（Barrier）。</p>
 </blockquote>
 <p>​    它要做的事情是，让一组线程到达一个屏障（也可以叫同步点）时被阻塞，到最后一个线程到达屏障时，屏障才会开门，所有被屏障拦截的线程才会继续执行，线程进入屏障通过CyclicBarrier的await）方法。</p>
@@ -147,7 +143,7 @@
     &#125;
 &#125;</code></pre>
 
-<h3 id="1-3-Semaphore"><a href="#1-3-Semaphore" class="headerlink" title="1.3 Semaphore"></a>1.3 Semaphore</h3><blockquote>
+<h3 id="1-3-Semaphore">1.3 Semaphore<a class="post-anchor" href="#1-3-Semaphore"></a></h3><blockquote>
 <p>信号量主要用于两个目的，一个是用于多元共享资源的互斥使用，另一个用于并发线程数的控制。</p>
 </blockquote>
 <pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">SemaphoreDemo</span> </span>&#123;
@@ -173,15 +169,15 @@
     &#125;
 &#125;</code></pre>
 
-<h2 id="2-BlockingQueue"><a href="#2-BlockingQueue" class="headerlink" title="2. BlockingQueue"></a>2. BlockingQueue</h2><p>​    当阻塞队列是空时，从队列中获取元素的操作将会被阻塞。</p>
+<h2 id="2-BlockingQueue">2. BlockingQueue<a class="post-anchor" href="#2-BlockingQueue"></a></h2><p>​    当阻塞队列是空时，从队列中获取元素的操作将会被阻塞。</p>
 <p>​    当阻塞队列是满时，往队列里添加元素的操作将会被阻塞。</p>
-<img src="https://i.loli.net/2020/03/11/mLMgf57dSGqvwlP.png" alt="image-20200226181920788" style="zoom: 67%;">
+<a href="https://i.loli.net/2020/03/11/mLMgf57dSGqvwlP.png" data-caption="image-20200226181920788" data-fancybox="images"><img src="https://i.loli.net/2020/03/11/mLMgf57dSGqvwlP.png" alt="image-20200226181920788"></a>
 
 <p>​    在多线程领域：所谓阻塞，在某些情况下会挂起线程（即阻塞），一旦条件满足，被挂起的线程又会自动被唤醒。</p>
 <p><strong>为什么需要BlockingQueue</strong></p>
 <p>​    好处是我们不需要关心什么时候需要阻塞线程，什么时候需要唤醒线程，因为这一切BlockingQueue都给你一手包办了。</p>
 <p>​    在<strong>concurrent</strong>包发布以前，在多线程环境下，我们每个程序员都必须去自己控制这些细节，尤其还要兼顾效率和线程安全，而这会给我们的程序带来不小的复杂度。</p>
-<h3 id="2-1-核心方法"><a href="#2-1-核心方法" class="headerlink" title="2.1 核心方法"></a>2.1 核心方法</h3><p><strong>四组操作</strong></p>
+<h3 id="2-1-核心方法">2.1 核心方法<a class="post-anchor" href="#2-1-核心方法"></a></h3><p><strong>四组操作</strong></p>
 <table>
 <thead>
 <tr>
@@ -239,7 +235,7 @@
 </ul>
 </li>
 </ul>
-<h3 id="2-2-实现类"><a href="#2-2-实现类" class="headerlink" title="2.2 实现类"></a>2.2 实现类</h3><ul>
+<h3 id="2-2-实现类">2.2 实现类<a class="post-anchor" href="#2-2-实现类"></a></h3><ul>
 <li><font color="blue"><strong>ArrayBlockingQueue</strong></font>：由数组结构组成的有界阻塞队列。</li>
 <li><font color="blue"><strong>LinkedBlockingQueue</strong></font>：由链结构组成的有界（但大小<strong>默认值</strong>为Integer.MAX_VALUE）阻塞队列。注意默认值</li>
 <li>PriorityBlockingQueue：支持优先级排序的无界阻塞队列。</li>
@@ -251,7 +247,7 @@
 <p><strong>SynchronousQueue没有容量</strong></p>
 <p>​    与其他BlockingQueue不同，SynchronousQueue是一个不存储元素的BlockingQueue。</p>
 <p>​    每一个put操作必须要等待一个take操作，否则不能继续添加元素，反之亦然。</p>
-<h3 id="2-3-使用场景"><a href="#2-3-使用场景" class="headerlink" title="2.3 使用场景"></a>2.3 使用场景</h3><h4 id="1-生产者与消费者"><a href="#1-生产者与消费者" class="headerlink" title="1. 生产者与消费者"></a>1. 生产者与消费者</h4><blockquote>
+<h3 id="2-3-使用场景">2.3 使用场景<a class="post-anchor" href="#2-3-使用场景"></a></h3><h4 id="1-生产者与消费者">1. 生产者与消费者<a class="post-anchor" href="#1-生产者与消费者"></a></h4><blockquote>
 <p>传统方式实现：</p>
 </blockquote>
 <pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">ProducerConsumer</span> </span>&#123;
@@ -401,7 +397,7 @@
     &#125;
 &#125;</code></pre>
 
-<h4 id="2-线程池底层实现"><a href="#2-线程池底层实现" class="headerlink" title="2. 线程池底层实现"></a>2. 线程池底层实现</h4><p>​    线程池的底层实现也用到了阻塞队列。</p>
+<h4 id="2-线程池底层实现">2. 线程池底层实现<a class="post-anchor" href="#2-线程池底层实现"></a></h4><p>​    线程池的底层实现也用到了阻塞队列。</p>
 <p>​    线程池的具体内容在<a href="https://charles-xcz.github.io/2020/03/11/多线程——线程池/">《多线程——线程池》</a></p>
 
       
@@ -592,16 +588,14 @@
         
         
         <span>
- <!-- <i>PV:<span id="busuanzi_value_page_pv"></span></i> -->
-  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+  <i>PV：<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV：<span id="busuanzi_value_site_uv"></span></i>
 </span>
         
       </li>
       
       <li>
         <!-- cnzz统计 -->
-        
-        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
         
       </li>
     </ul>
@@ -867,7 +861,7 @@
     
     
     <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
-        src="//music.163.com/outchain/player?type=2&id=29312951&auto=0&height=32"></iframe>
+        src="//music.163.com/outchain/player?type=2&id=29312951&auto=1&height=32"></iframe>
 </div>
 
 <style>

@@ -73,10 +73,6 @@
             <span class="post-count">16分钟</span>
         </span>
     </span>
-<span>
-&nbsp; | &nbsp;
-  <i>访问量：<span id="busuanzi_value_page_pv"></span></i>
-</span>
 </div>
 
       
@@ -101,7 +97,7 @@
       
 
       
-      <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><p>以前收集器的特点：</p>
+      <h2 id="引言">引言<a class="post-anchor" href="#引言"></a></h2><p>以前收集器的特点：</p>
 <ul>
 <li>年轻代和老年代是各自独立且连续的内存块；</li>
 <li>年轻代收集使用单Eden+S0+S1进行复制算法；</li>
@@ -110,10 +106,10 @@
 </ul>
 <p>CMS垃圾收集器虽然减少了暂停应用程序的运行时间，但是它还存在内存碎片的问题。</p>
 <p>于是为了<strong>去除内存碎片</strong>的问题，同时保留CMS<strong>低暂停时间</strong>的优点，Java7发布了一个新的垃圾收集器——G1垃圾收集器。<font color="blue"><strong>在Java9中，G1作为默认垃圾收集器。</strong></font></p>
-<h2 id="1-概述"><a href="#1-概述" class="headerlink" title="1. 概述"></a>1. 概述</h2><blockquote>
+<h2 id="1-概述">1. 概述<a class="post-anchor" href="#1-概述"></a></h2><blockquote>
 <p><strong>G1（Garbage-First）</strong>，是一款面向服务端垃圾的收集器，应用在多处理器和大容量内存环境中，在实现<strong>高吞吐量</strong>的同时，尽可能的满足垃圾收集<strong>暂停时间</strong>的要求。它的设计目标是取代CMS收集器。尽量满足：<strong>吞吐量+响应能力。</strong></p>
 </blockquote>
-<img src="https://i.loli.net/2020/03/07/H7WyeFjcMmxTd5i.png" alt="image-20200307111549799" style="zoom: 67%;">
+<a href="https://i.loli.net/2020/03/07/H7WyeFjcMmxTd5i.png" data-caption="image-20200307111549799" data-fancybox="images"><img src="https://i.loli.net/2020/03/07/H7WyeFjcMmxTd5i.png" alt="image-20200307111549799"></a>
 
 <p>G1算法将堆划分为若干个区域（Region），它仍然属于<strong>分代收集器</strong>。</p>
 <p>这些Region的新生代部分，垃圾收集依然采用暂停所有应用线程的方式，将存活对象拷贝到老年代或者Survivor空间。</p>
@@ -126,7 +122,7 @@
 <li>为了解决这个问题，G1划分了一个Humongous区，它用来专门存放巨型对象。</li>
 <li>如果一个H区装不下一个巨型对象，那么G1会寻找连续的H分区来存储。为了能找到连续的H区，有时候不得不启动Full GC。</li>
 </ul>
-<h2 id="2-主要改变"><a href="#2-主要改变" class="headerlink" title="2. 主要改变"></a>2. 主要改变</h2><ul>
+<h2 id="2-主要改变">2. 主要改变<a class="post-anchor" href="#2-主要改变"></a></h2><ul>
 <li><p>heap被划分为一个个相等的不连续的内存区域（regions），每个region都有一个分代的角色；</p>
 <ul>
 <li>eden、survivor、old对每个角色的数量并没有强制的限定，也就是说对每种分代内存的大小，可以动态变化；</li>
@@ -151,7 +147,7 @@
 <li>对比Parallel Scavenge（基于copying）、Parallel Old收集器（基于mark-compact-sweep）对整个区域做整理导致gc停顿会比较长，而G1只是特定地整理几个region；</li>
 <li>G1并非一个实时的收集器，与parallel Scavenge一样，对gc停顿时间的设置并不绝对生效，只是G1有较高的几率保证不超过设定的gc停顿时间。与之前的gc收集器对比，G1会根据用户设定的gc停顿时间，智能评估哪几个region需要被回收可以满足用户的设定。</li>
 </ul>
-<h2 id="3-重要概念"><a href="#3-重要概念" class="headerlink" title="3. 重要概念"></a>3. 重要概念</h2><h3 id="1-分区（Region）"><a href="#1-分区（Region）" class="headerlink" title="1. 分区（Region）"></a>1. 分区（Region）</h3><p>G1采取了不同的策略来解决并行、串行和CMS收集器的碎片、暂停时间不可控等问题。</p>
+<h2 id="3-重要概念">3. 重要概念<a class="post-anchor" href="#3-重要概念"></a></h2><h3 id="1-分区（Region）">1. 分区（Region）<a class="post-anchor" href="#1-分区（Region）"></a></h3><p>G1采取了不同的策略来解决并行、串行和CMS收集器的碎片、暂停时间不可控等问题。</p>
 <p>G1将整个堆分成相同大小的分区（Region）：</p>
 <ul>
 <li>每个分区都可能是年轻代也可能是老年代，但是在同一时刻只能属于某个代。<ul>
@@ -168,7 +164,7 @@
 </li>
 <li>G1还是一种带压缩的收集器，在回收老年代的分区时，是将存活的对象从一个分区拷贝到另一个可用分区，这个拷贝的过程就实现了局部的压缩。</li>
 </ul>
-<h3 id="2-收集集合（CSet）"><a href="#2-收集集合（CSet）" class="headerlink" title="2. 收集集合（CSet）"></a>2. 收集集合（CSet）</h3><ul>
+<h3 id="2-收集集合（CSet）">2. 收集集合（CSet）<a class="post-anchor" href="#2-收集集合（CSet）"></a></h3><ul>
 <li>一组可被回收的分区的集合。<ul>
 <li>Young GC时CSet就是所有年轻代里面的Region。</li>
 <li>Mixed GC时CSet是所有年轻代里的Region加上在全局并发标记阶段标记出来的收益高的Region。</li>
@@ -176,12 +172,12 @@
 </li>
 <li>位于CSet的Region中的存活数据会在GC过程中被移动到另一个可用分区。</li>
 </ul>
-<h3 id="3-已记忆集合（RSet）"><a href="#3-已记忆集合（RSet）" class="headerlink" title="3. 已记忆集合（RSet）"></a>3. 已记忆集合（RSet）</h3><ul>
+<h3 id="3-已记忆集合（RSet）">3. 已记忆集合（RSet）<a class="post-anchor" href="#3-已记忆集合（RSet）"></a></h3><ul>
 <li>一个谁引用了我的机制，记录引用了当前region的分区内对象的卡片索引。</li>
 <li>当要回收该分区时，通过扫描分区的RSet，来确定引用本分区内的对象是否存活，如引用本分区的对象全是垃圾，则当前分区内的对象可能也是垃圾。</li>
 <li>RSet的价值在于使得垃圾收集器不需要扫描整个堆找到谁引用了当前分区中的对象，只需要扫描RSet即可。</li>
 </ul>
-<img src="https://i.loli.net/2020/03/12/h9zS2XW5dPc1KGk.png" style="zoom:67%;">
+<a href="https://i.loli.net/2020/03/12/h9zS2XW5dPc1KGk.png" data-caption data-fancybox="images"><img src="https://i.loli.net/2020/03/12/h9zS2XW5dPc1KGk.png" alt></a>
 
 <p>逻辑上说每个Region都有一个RSet，RSet记录了其他Region中的对象引用本Region中对象的关系，属于points-into结构（谁引用了我的对象）。</p>
 <p>而Card Table则是一种points-out（我引用了谁的对象）的结构，每个Card 覆盖一定范围的Heap（一般为512Bytes）。</p>
@@ -189,15 +185,15 @@
 <p>当一个地址空间被引用时，这个地址空间对应的数组索引的值被标记为’0’，即标记为脏引用，此外RSet也将这个数组下标记录下来，并标记这些引用该地址的指针来自哪些Region的哪些Card。这个RSet其实是一个Hash Table，Key是别的Region的起始地址，Value是一个集合，里面的元素是Card Table的Index。</p>
 <p><strong>由于新生代有多个，那么我们需要在新生代之间记录引用吗？</strong></p>
 <p>这是不必要的，原因在于每次GC时，所有新生代都会被扫描，所以只需要记录老年代和新生代以及老年代之间的引用即可。</p>
-<h2 id="4-GC模式"><a href="#4-GC模式" class="headerlink" title="4. GC模式"></a>4. GC模式</h2><p>G1提供了两种GC模式，<strong><font color="blue">Young GC和Mixed GC</font></strong>，两种都是需要Stop The World的。</p>
-<h3 id="1-Young-GC"><a href="#1-Young-GC" class="headerlink" title="1. Young GC"></a>1. Young GC</h3><p>Young GC：选定<strong>所有年轻代里的Region</strong>。通过控制年轻代的Region个数，即年轻代内存大小，来控制YoungGC的时间开销。</p>
+<h2 id="4-GC模式">4. GC模式<a class="post-anchor" href="#4-GC模式"></a></h2><p>G1提供了两种GC模式，<strong><font color="blue">Young GC和Mixed GC</font></strong>，两种都是需要Stop The World的。</p>
+<h3 id="1-Young-GC">1. Young GC<a class="post-anchor" href="#1-Young-GC"></a></h3><p>Young GC：选定<strong>所有年轻代里的Region</strong>。通过控制年轻代的Region个数，即年轻代内存大小，来控制YoungGC的时间开销。</p>
 <ul>
 <li>Young GC主要是对Eden区进行GC，它在<strong>Eden空间耗尽时会被触发</strong>。</li>
 <li>在这种情况下，Eden空间的数据移动到Survivor空间中，如果Survivor空间不够，Eden空间的部分数据会直接晋升到老年代空间。</li>
 <li>Survivor区的数据移动到新的Survivor区中，也有部分数据晋升到老年代空间中。在回收之后所有之前属于Eden的区块全部变成空白，即不属于任何一个分区（Eden、Survivor、Old）。</li>
 <li>GC完成工作，应用线程继续执行。</li>
 </ul>
-<h3 id="2-Mixed-GC"><a href="#2-Mixed-GC" class="headerlink" title="2. Mixed GC"></a>2. Mixed GC</h3><p>Mixed GC：选定<strong>所有年轻代里的Region</strong>和根据global concurrent marking统计得出收集<strong>收益高的部分老年代Region</strong>。在用户指定的开销目标范围内尽可能选择收益高的老年代Region。</p>
+<h3 id="2-Mixed-GC">2. Mixed GC<a class="post-anchor" href="#2-Mixed-GC"></a></h3><p>Mixed GC：选定<strong>所有年轻代里的Region</strong>和根据global concurrent marking统计得出收集<strong>收益高的部分老年代Region</strong>。在用户指定的开销目标范围内尽可能选择收益高的老年代Region。</p>
 <p>分为<strong>global concurent marking</strong>和<strong>拷贝存活对象</strong>两步。</p>
 <p><strong>global concurent marking：</strong>执行过程类似于CMS，但是不同的是，在G1 GC中，它主要是为Mixed GC提供标记服务的，并不是一次GC过程的一个必须环节。执行过程分为四个步骤：</p>
 <ol>
@@ -233,8 +229,8 @@
 <li><strong>G1OldCSetRegionThresholdPercent</strong>：一次Mixed GC中能被选入CSet的最多old generation region数量。</li>
 </ol>
 <p>常用参数表</p>
-<p><img src="https://i.loli.net/2020/03/12/GypXouMgbr4jKHv.png" alt="image-20200312183937412"></p>
-<h2 id="5-并发标记-—-三色标记算法"><a href="#5-并发标记-—-三色标记算法" class="headerlink" title="5. 并发标记 — 三色标记算法"></a>5. 并发标记 — 三色标记算法</h2><p><strong>三色标记算法</strong>：它是描述追踪式回收器的一种有效的方法，利用它可以推演回收器的正确性。</p>
+<p><a href="https://i.loli.net/2020/03/12/GypXouMgbr4jKHv.png" data-caption="image-20200312183937412" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/GypXouMgbr4jKHv.png" alt="image-20200312183937412"></a></p>
+<h2 id="5-并发标记-—-三色标记算法">5. 并发标记 — 三色标记算法<a class="post-anchor" href="#5-并发标记-—-三色标记算法"></a></h2><p><strong>三色标记算法</strong>：它是描述追踪式回收器的一种有效的方法，利用它可以推演回收器的正确性。</p>
 <p>我们将对象分为三种类型：</p>
 <ul>
 <li>黑色：根对象，或者该对象与它的子对象都被扫描过（对象被标记了，且它的所有field也被标记完了）</li>
@@ -251,9 +247,9 @@
 </li>
 </ol>
 <div align="center">
-    <img src="https://i.loli.net/2020/03/12/BDZsNHQTnyiOehW.png" alt="image-20200312202122270" style="zoom:32%;">
-    <img src="https://i.loli.net/2020/03/12/t92IsVaKZGTpzXE.png" alt="image-20200312202506531" style="zoom:32%;">
-    <img src="https://i.loli.net/2020/03/12/aG1Qoc3q4K5Sn9h.png" alt="image-20200312202622222" style="zoom:32%;">
+    <a href="https://i.loli.net/2020/03/12/BDZsNHQTnyiOehW.png" data-caption="image-20200312202122270" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/BDZsNHQTnyiOehW.png" alt="image-20200312202122270"></a>
+    <a href="https://i.loli.net/2020/03/12/t92IsVaKZGTpzXE.png" data-caption="image-20200312202506531" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/t92IsVaKZGTpzXE.png" alt="image-20200312202506531"></a>
+    <a href="https://i.loli.net/2020/03/12/aG1Qoc3q4K5Sn9h.png" data-caption="image-20200312202622222" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/aG1Qoc3q4K5Sn9h.png" alt="image-20200312202622222"></a>
 </div>
 
 
@@ -263,14 +259,14 @@
 <p>这时候垃圾收集器再标记扫描的时候就会变成图3；</p>
 <p>很显然，此时C是白色，被认为是垃圾需要清理掉，显然这是不合理的。</p>
 <div align="center">
-    <img src="https://i.loli.net/2020/03/12/ph4nO2mVxM7kaXS.png" alt="image-20200312203027083" style="zoom:50%;">
-    <img src="https://i.loli.net/2020/03/12/Q2wzThNJpZfFuBi.png" alt="image-20200312203605603" style="zoom:50%;">
-    <img src="https://i.loli.net/2020/03/12/ulG2tsZr9ya516R.png" alt="image-20200312203532494" style="zoom:50%;">
+    <a href="https://i.loli.net/2020/03/12/ph4nO2mVxM7kaXS.png" data-caption="image-20200312203027083" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/ph4nO2mVxM7kaXS.png" alt="image-20200312203027083"></a>
+    <a href="https://i.loli.net/2020/03/12/Q2wzThNJpZfFuBi.png" data-caption="image-20200312203605603" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/Q2wzThNJpZfFuBi.png" alt="image-20200312203605603"></a>
+    <a href="https://i.loli.net/2020/03/12/ulG2tsZr9ya516R.png" data-caption="image-20200312203532494" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/ulG2tsZr9ya516R.png" alt="image-20200312203532494"></a>
 </div>
 
 
 <p>这时就需要使用的是SATB（Snapshot-At-The-Beginning）的方式，来解决这种问题。</p>
-<h2 id="6-SATB"><a href="#6-SATB" class="headerlink" title="6. SATB"></a>6. SATB</h2><p>SATB全称snapshot-at-the-beginning，由Taiichi Yuasa为增量式标记清除垃圾收集器开发的一个算法，主要应用于垃圾收集的并发标记阶段，</p>
+<h2 id="6-SATB">6. SATB<a class="post-anchor" href="#6-SATB"></a></h2><p>SATB全称snapshot-at-the-beginning，由Taiichi Yuasa为增量式标记清除垃圾收集器开发的一个算法，主要应用于垃圾收集的并发标记阶段，</p>
 <p>它有3个步骤：</p>
 <ol>
 <li>在开始标记的时候生成一个快照图，标记存活对象。</li>
@@ -286,7 +282,7 @@
 <li>通过这种方式我们就找到了在GC过程中新分配的对象，并把这些对象认为是活的对象。</li>
 </ul>
 <p>Region包含了5个指针，分别是bottom、previous TAMS、next TAMS、top和end</p>
-<p><img src="https://i.loli.net/2020/03/12/ARsFuL3jaGbJNle.png" alt="image-20200312213709598"></p>
+<p><a href="https://i.loli.net/2020/03/12/ARsFuL3jaGbJNle.png" data-caption="image-20200312213709598" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/ARsFuL3jaGbJNle.png" alt="image-20200312213709598"></a></p>
 <p>其中previous TAMS、next TAMS是前后两次发生并发标记时的位置，全称<code>top-at-mark-start</code>，</p>
 <p> 1、假设并发标记开始，将该Region当前的top指针赋值给next TAMS，在并发标记标记期间，分配的对象都在[next TAMS, top]之间，SATB能够确保这部分的对象都会被标记，默认都是存活的。</p>
 <p> 2、当并发标记结束时，将next TAMS所在的地址赋值给previous TAMS，SATB给 [bottom, previous TAMS] 之间的对象创建一个快照Bitmap，所有垃圾对象能通过快照被识别出来</p>
@@ -312,7 +308,7 @@
 </ol>
 <p>对于第一种情况，利用post-write barrier，记录所有新增的引用关系，然后根据这些引用关系为根重新扫描一遍。</p>
 <p>对于第二种情况，利用pre-write barrier，将所有即将被删除的引用关系的旧引用记录下来，最后以这些旧引用为根重新扫描一遍。</p>
-<h2 id="7-停顿预测模型"><a href="#7-停顿预测模型" class="headerlink" title="7. 停顿预测模型"></a>7. 停顿预测模型</h2><p>G1收集器突出表现出来的一点是通过一个停顿预测模型根据用户配置的停顿时间来选择CSet的大小，从而达到用户期待的应用程序暂停时间。</p>
+<h2 id="7-停顿预测模型">7. 停顿预测模型<a class="post-anchor" href="#7-停顿预测模型"></a></h2><p>G1收集器突出表现出来的一点是通过一个停顿预测模型根据用户配置的停顿时间来选择CSet的大小，从而达到用户期待的应用程序暂停时间。</p>
 <ul>
 <li>通过-XX:MaxGCPauseMillis参数来设置。这一点有点类似于ParallelScavenge收集器。</li>
 </ul>
@@ -321,7 +317,7 @@
 <li>设置的时间越短意味着每次收集的CSet越小，导致垃圾逐步积累变多，最终不得不退化成SerialOld GC。</li>
 <li>停顿时间设置的过长，那么会导致每次都会产生长时间的停顿，影响了程序对外的响应时间。</li>
 </ul>
-<h2 id="8-G1调优实践"><a href="#8-G1调优实践" class="headerlink" title="8. G1调优实践"></a>8. G1调优实践</h2><p><strong>不断调优暂停时间指标</strong></p>
+<h2 id="8-G1调优实践">8. G1调优实践<a class="post-anchor" href="#8-G1调优实践"></a></h2><p><strong>不断调优暂停时间指标</strong></p>
 <ul>
 <li>通过-XX:MaxGCPauseMillis=x可以设置启动应用程序暂停的时间；</li>
 <li>G1在运行的时候会根据这个参数选择CSet来满足响应时间的设置。</li>
@@ -518,16 +514,14 @@
         
         
         <span>
- <!-- <i>PV:<span id="busuanzi_value_page_pv"></span></i> -->
-  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+  <i>PV：<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV：<span id="busuanzi_value_site_uv"></span></i>
 </span>
         
       </li>
       
       <li>
         <!-- cnzz统计 -->
-        
-        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
         
       </li>
     </ul>
@@ -793,7 +787,7 @@
     
     
     <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
-        src="//music.163.com/outchain/player?type=2&id=29312951&auto=0&height=32"></iframe>
+        src="//music.163.com/outchain/player?type=2&id=29312951&auto=1&height=32"></iframe>
 </div>
 
 <style>

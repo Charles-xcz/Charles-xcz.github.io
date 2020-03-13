@@ -73,10 +73,6 @@
             <span class="post-count">6分钟</span>
         </span>
     </span>
-<span>
-&nbsp; | &nbsp;
-  <i>访问量：<span id="busuanzi_value_page_pv"></span></i>
-</span>
 </div>
 
       
@@ -101,7 +97,7 @@
       
 
       
-      <h2 id="1-创建线程的3种方法"><a href="#1-创建线程的3种方法" class="headerlink" title="1. 创建线程的3种方法"></a>1. 创建线程的3种方法</h2><ul>
+      <h2 id="1-创建线程的3种方法">1. 创建线程的3种方法<a class="post-anchor" href="#1-创建线程的3种方法"></a></h2><ul>
 <li>继承Thread类</li>
 <li>实现Runnable接口</li>
 <li>实现Callable接口</li>
@@ -142,7 +138,7 @@
     &#125;
 &#125;</code></pre>
 
-<h2 id="2-使用线程池优势"><a href="#2-使用线程池优势" class="headerlink" title="2. 使用线程池优势"></a>2. 使用线程池优势</h2><p>​    线程池做的工作主要是控制运行的线程的数量，处理过程中将任务放入队列，然后在线程创建后启动这些任务，如果线程数量超过了最大数量，超出数量的线程排队等候，等其它线程执行完毕，再从队列中取出任务来执行。</p>
+<h2 id="2-使用线程池优势">2. 使用线程池优势<a class="post-anchor" href="#2-使用线程池优势"></a></h2><p>​    线程池做的工作主要是控制运行的线程的数量，处理过程中将任务放入队列，然后在线程创建后启动这些任务，如果线程数量超过了最大数量，超出数量的线程排队等候，等其它线程执行完毕，再从队列中取出任务来执行。</p>
 <p>主要特点为：线程复用，控制最大并发数，管理线程。</p>
 <p><strong>优点</strong></p>
 <ol>
@@ -150,7 +146,7 @@
 <li>提高响应速度。当任务到达时，任务可以不需要的等到线程创建就能立即执行。</li>
 <li>提高线程的可管理性。线程是稀缺资源，如果无限制的创建，不仅会消耗系统资源，还会降低系统的稳定性，使用线程池可以进行统一的分配，调优和监控。</li>
 </ol>
-<h2 id="3-线程池的实现"><a href="#3-线程池的实现" class="headerlink" title="3. 线程池的实现"></a>3. 线程池的实现</h2><p>​    Java中的线程池是通过Executor框架实现的，该框架中用到了Executor，Executors，ExecutorService，ThreadPoolExecutor这几个类。</p>
+<h2 id="3-线程池的实现">3. 线程池的实现<a class="post-anchor" href="#3-线程池的实现"></a></h2><p>​    Java中的线程池是通过Executor框架实现的，该框架中用到了Executor，Executors，ExecutorService，ThreadPoolExecutor这几个类。</p>
 <ul>
 <li><strong>Executors.newFixedThreadPool(int)</strong><ul>
 <li>创建一个定长线程池，可控制线程最大并发数，超出的线程会在阻塞队列中等待。</li>
@@ -201,7 +197,7 @@
 <li>FixedThreadPool和SingleThreadPool：允许的请求队列长度为Integer.MAX_VALUE，可能会堆积大量的请求，从而导致OOM</li>
 <li>CachedThreadPool和ScheduledThreadPool：允许的创建线程数量为Integer.MAX_VALUE，可能会创建大量的线程，从而导致OOM。</li>
 </ol>
-<h2 id="4-线程池七大参数"><a href="#4-线程池七大参数" class="headerlink" title="4. 线程池七大参数"></a>4. 线程池七大参数</h2><ol>
+<h2 id="4-线程池七大参数">4. 线程池七大参数<a class="post-anchor" href="#4-线程池七大参数"></a></h2><ol>
 <li><p><strong>corePoolSize</strong>：线程池中的常驻核心线程数</p>
 <ul>
 <li><p>在创建了线程池后，当有请求任务来之后，就会安排池中的线程去执行请求任务，近似理解为今日当值线程。</p>
@@ -224,18 +220,18 @@
 <li><p><strong>handler</strong>：拒绝策略，表示当队列满了并且工作线程大于等于线程池的最大线程数（maximumPoolSize）时如何来处理。</p>
 </li>
 </ol>
-<h2 id="5-线程池底层原理"><a href="#5-线程池底层原理" class="headerlink" title="5. 线程池底层原理"></a>5. 线程池底层原理</h2><img src="https://i.loli.net/2020/02/29/Xz8uLJGgDAmOCR9.png" alt="image-20200227210501537.png" style="zoom:67%;">
+<h2 id="5-线程池底层原理">5. 线程池底层原理<a class="post-anchor" href="#5-线程池底层原理"></a></h2><a href="https://i.loli.net/2020/02/29/Xz8uLJGgDAmOCR9.png" data-caption="image-20200227210501537.png" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/Xz8uLJGgDAmOCR9.png" alt="image-20200227210501537.png"></a>
 
 <p><strong>处理流程：</strong></p>
-<img src="https://i.loli.net/2020/02/29/mc3LJQT6G4q5yaw.png" alt="image-20200227205230833" style="zoom:67%;">
+<a href="https://i.loli.net/2020/02/29/mc3LJQT6G4q5yaw.png" data-caption="image-20200227205230833" data-fancybox="images"><img src="https://i.loli.net/2020/02/29/mc3LJQT6G4q5yaw.png" alt="image-20200227205230833"></a>
 
-<h2 id="6-拒绝策略"><a href="#6-拒绝策略" class="headerlink" title="6. 拒绝策略"></a>6. 拒绝策略</h2><ol>
+<h2 id="6-拒绝策略">6. 拒绝策略<a class="post-anchor" href="#6-拒绝策略"></a></h2><ol>
 <li><strong>AbortPolicy（默认）</strong>：直接抛出RejectedExecutionException异常阻止系统正常运行。</li>
 <li><strong>CallerRunsPolicy</strong>：“调用者运行“一种调节机制，该策略既不会抛弃任务，也不会抛出异常，而是将某些任务回退到调用者，从而降低新的任务流量。</li>
 <li><strong>DiscardoldestPolicy</strong>：抛弃队列中等待最久的任务，然后把当前任务加入队列中尝试再次提交当前任务。</li>
 <li><strong>DiscardPolicy</strong>：直接丢弃任务，不予任何处理也不抛出异常。如果允许任务丢失，这是最好的一种方案。</li>
 </ol>
-<h2 id="7-手写线程池"><a href="#7-手写线程池" class="headerlink" title="7. 手写线程池"></a>7. 手写线程池</h2><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyThreadPoolDemo</span> </span>&#123;
+<h2 id="7-手写线程池">7. 手写线程池<a class="post-anchor" href="#7-手写线程池"></a></h2><pre><code class="hljs java"><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">MyThreadPoolDemo</span> </span>&#123;
     <span class="hljs-function"><span class="hljs-keyword">public</span> <span class="hljs-keyword">static</span> <span class="hljs-keyword">void</span> <span class="hljs-title">main</span><span class="hljs-params">(String[] args)</span> </span>&#123;
         ExecutorService threadPool = <span class="hljs-keyword">new</span> ThreadPoolExecutor(
                 <span class="hljs-number">2</span>,
@@ -259,7 +255,7 @@
     &#125;
 &#125;</code></pre>
 
-<h2 id="8-线程数量考虑"><a href="#8-线程数量考虑" class="headerlink" title="8. 线程数量考虑"></a>8. 线程数量考虑</h2><p><strong>CPU密集型</strong>：</p>
+<h2 id="8-线程数量考虑">8. 线程数量考虑<a class="post-anchor" href="#8-线程数量考虑"></a></h2><p><strong>CPU密集型</strong>：</p>
 <ul>
 <li>CPU密集的意思是该任务需要大量的运算，而没有阻塞，CPU一直全速运行。</li>
 <li>CPU密集任务只有在真正的多核CPU上才可能得到加速（通过多线程），而在单核CPU上，无论你开几个模拟的多线程该任务都不可能得到加速，因为CPU总的运算能力就那些。</li>
@@ -468,16 +464,14 @@
         
         
         <span>
- <!-- <i>PV:<span id="busuanzi_value_page_pv"></span></i> -->
-  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+  <i>PV：<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV：<span id="busuanzi_value_site_uv"></span></i>
 </span>
         
       </li>
       
       <li>
         <!-- cnzz统计 -->
-        
-        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
         
       </li>
     </ul>
@@ -743,7 +737,7 @@
     
     
     <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
-        src="//music.163.com/outchain/player?type=2&id=29312951&auto=0&height=32"></iframe>
+        src="//music.163.com/outchain/player?type=2&id=29312951&auto=1&height=32"></iframe>
 </div>
 
 <style>

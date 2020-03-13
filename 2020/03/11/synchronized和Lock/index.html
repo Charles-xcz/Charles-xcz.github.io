@@ -73,10 +73,6 @@
             <span class="post-count">4分钟</span>
         </span>
     </span>
-<span>
-&nbsp; | &nbsp;
-  <i>访问量：<span id="busuanzi_value_page_pv"></span></i>
-</span>
 </div>
 
       
@@ -101,18 +97,18 @@
       
 
       
-      <h2 id="1-公平锁与非公平锁"><a href="#1-公平锁与非公平锁" class="headerlink" title="1. 公平锁与非公平锁"></a>1. 公平锁与非公平锁</h2><blockquote>
+      <h2 id="1-公平锁与非公平锁">1. 公平锁与非公平锁<a class="post-anchor" href="#1-公平锁与非公平锁"></a></h2><blockquote>
 <p>公平锁：是指多个线程按照申请锁的顺序来获取锁，FIFO。</p>
 <p>非公平锁：是指多个线程获取锁的顺序并不是按照申请锁的顺序，有可能后申请的线程比先申请的线程优先获取锁，在高并发的情况下，有可能会造成优先级反转或者饥饿现象</p>
 </blockquote>
 <pre><code class="hljs java">Lock lock = <span class="hljs-keyword">new</span> ReentrantLock();		<span class="hljs-comment">//默认为非公平锁 等同new ReentrantLock(false);</span>
 Lock lock = <span class="hljs-keyword">new</span> ReentrantLock(<span class="hljs-keyword">true</span>);	<span class="hljs-comment">//公平锁</span></code></pre>
 
-<h2 id="2-可重入锁"><a href="#2-可重入锁" class="headerlink" title="2. 可重入锁"></a>2. 可重入锁</h2><p>​    指的是同一线程外层函数获得锁之后，内层递归函数仍然能获取该锁的代码，同一个线程在外层方法获取锁的时候，在进入内层方法会自动获取锁。</p>
+<h2 id="2-可重入锁">2. 可重入锁<a class="post-anchor" href="#2-可重入锁"></a></h2><p>​    指的是同一线程外层函数获得锁之后，内层递归函数仍然能获取该锁的代码，同一个线程在外层方法获取锁的时候，在进入内层方法会自动获取锁。</p>
 <p>​    即：<strong>线程可以进入任何一个他已经拥有锁的同步代码块。</strong></p>
 <p>​    可重入锁最大的作用是<strong>避免死锁</strong></p>
 <p>​    ReentrantLock和Synchronized是典型的可重入锁</p>
-<h2 id="3-自旋锁"><a href="#3-自旋锁" class="headerlink" title="3. 自旋锁"></a>3. 自旋锁</h2><p>​    是指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去试获取锁。</p>
+<h2 id="3-自旋锁">3. 自旋锁<a class="post-anchor" href="#3-自旋锁"></a></h2><p>​    是指尝试获取锁的线程不会立即阻塞，而是采用循环的方式去试获取锁。</p>
 <p>​    这样的好处是减少线程上下文切换的消耗。</p>
 <p>​    缺点是循环会消耗CPU。</p>
 <p>例如前面博客<a href="https://charles-xcz.github.io/2020/03/11/CAS/">《并发编程之—— CAS》</a>介绍到的CAS的实现就是自旋锁。</p>
@@ -125,7 +121,7 @@ Lock lock = <span class="hljs-keyword">new</span> ReentrantLock(<span class="hlj
     <span class="hljs-keyword">return</span> var5;
 &#125;</code></pre>
 
-<h2 id="4-独占锁-共享锁"><a href="#4-独占锁-共享锁" class="headerlink" title="4. 独占锁/共享锁"></a>4. 独占锁/共享锁</h2><blockquote>
+<h2 id="4-独占锁-共享锁">4. 独占锁/共享锁<a class="post-anchor" href="#4-独占锁-共享锁"></a></h2><blockquote>
 <p>独占锁：该锁一次只能被一个进程持有。对ReentrantLock和Synchronized而言都是独占锁。</p>
 <p>共享锁：指该锁可被多个线程持有。</p>
 </blockquote>
@@ -141,7 +137,7 @@ lock.readLock().lock();
 ..........
 lock.readLock().unlock();</code></pre>
 
-<h2 id="5-synchronized和Lock区别"><a href="#5-synchronized和Lock区别" class="headerlink" title="5. synchronized和Lock区别"></a>5. synchronized和Lock区别</h2><ol>
+<h2 id="5-synchronized和Lock区别">5. synchronized和Lock区别<a class="post-anchor" href="#5-synchronized和Lock区别"></a></h2><ol>
 <li><p>原始构成不同</p>
 <ul>
 <li><p>synchronized是关键字，属于JVM层面</p>
@@ -445,16 +441,14 @@ lock.readLock().unlock();</code></pre>
         
         
         <span>
- <!-- <i>PV:<span id="busuanzi_value_page_pv"></span></i> -->
-  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+  <i>PV：<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV：<span id="busuanzi_value_site_uv"></span></i>
 </span>
         
       </li>
       
       <li>
         <!-- cnzz统计 -->
-        
-        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
         
       </li>
     </ul>
@@ -720,7 +714,7 @@ lock.readLock().unlock();</code></pre>
     
     
     <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
-        src="//music.163.com/outchain/player?type=2&id=29312951&auto=0&height=32"></iframe>
+        src="//music.163.com/outchain/player?type=2&id=29312951&auto=1&height=32"></iframe>
 </div>
 
 <style>

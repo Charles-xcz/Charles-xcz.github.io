@@ -73,10 +73,6 @@
             <span class="post-count">8分钟</span>
         </span>
     </span>
-<span>
-&nbsp; | &nbsp;
-  <i>访问量：<span id="busuanzi_value_page_pv"></span></i>
-</span>
 </div>
 
       
@@ -101,7 +97,7 @@
       
 
       
-      <h2 id="1-介绍"><a href="#1-介绍" class="headerlink" title="1. 介绍"></a>1. 介绍</h2><p>GC垃圾收集器是GC算法的实现。</p>
+      <h2 id="1-介绍">1. 介绍<a class="post-anchor" href="#1-介绍"></a></h2><p>GC垃圾收集器是GC算法的实现。</p>
 <p>主要分为四种：</p>
 <ul>
 <li><p>Serial：串行垃圾收集器（又分为Serial和Serial Old）</p>
@@ -120,8 +116,8 @@
 <p>查看服务器的使用的垃圾回收器：-XX:PrintCommandLineFlags</p>
 <p>Java中的<strong>7种</strong>GC垃圾收集器：开启方式如：-XX:+UseParallelGC</p>
 <p>UseSerialGC、UseSerialOldGC、UseParallelGC、UserParallelOldGC、UseParNewGC、UseConcMarkSweepGC、UseG1GC</p>
-<p><img src="https://i.loli.net/2020/03/06/KwCYNaklmgDIcTo.png" alt="image-20200306151703270"></p>
-<h2 id="2-详情"><a href="#2-详情" class="headerlink" title="2. 详情"></a>2. 详情</h2><p><strong>部分参数：</strong></p>
+<p><a href="https://i.loli.net/2020/03/06/KwCYNaklmgDIcTo.png" data-caption="image-20200306151703270" data-fancybox="images"><img src="https://i.loli.net/2020/03/06/KwCYNaklmgDIcTo.png" alt="image-20200306151703270"></a></p>
+<h2 id="2-详情">2. 详情<a class="post-anchor" href="#2-详情"></a></h2><p><strong>部分参数：</strong></p>
 <ul>
 <li><p>DefNew——Default New Generation </p>
 </li>
@@ -134,16 +130,16 @@
 <li><p>ParOldGen——Parallel Old Generation</p>
 </li>
 </ul>
-<h3 id="1-Serial"><a href="#1-Serial" class="headerlink" title="1. Serial"></a>1. Serial</h3><p>​    串行垃圾收集器是最古老，最稳定以及效率最高的收集器，只使用一个线程去回收但其在进行垃圾收集过程中可能会产生较长的停顿（Stop-The-World 状态）。虽然在收集垃圾的过程中需要暂停所有其他的工作线程，但它简单高效，对于限定单个cpu环境来说，没有线程交互的开销可以获得最高的单线程垃圾收集效率。因此，Serial垃圾收集器依然是Java虚拟机运行在Client模式下默认的新生代垃圾收集器。</p>
+<h3 id="1-Serial">1. Serial<a class="post-anchor" href="#1-Serial"></a></h3><p>​    串行垃圾收集器是最古老，最稳定以及效率最高的收集器，只使用一个线程去回收但其在进行垃圾收集过程中可能会产生较长的停顿（Stop-The-World 状态）。虽然在收集垃圾的过程中需要暂停所有其他的工作线程，但它简单高效，对于限定单个cpu环境来说，没有线程交互的开销可以获得最高的单线程垃圾收集效率。因此，Serial垃圾收集器依然是Java虚拟机运行在Client模式下默认的新生代垃圾收集器。</p>
 <p><strong>开启参数：-XX:+UseSerialGC</strong></p>
 <p>开启后会使用<strong>Serial（Young区）+Serial Old（Old区）</strong>的收集器组合。</p>
 <p>新生代、老年代都会使用串行垃圾收集器，新生代使用<strong>复制算法</strong>，老年代使用<strong>标记-整理算法</strong>。</p>
-<h3 id="2-ParNew"><a href="#2-ParNew" class="headerlink" title="2. ParNew"></a>2. ParNew</h3><p>​    ParNew收集器其实就是Serial收集器新生代的并行多线程版本，最常见的应用场景是配合老年代的CMS GC工作，其余的行为和Serial收集器完全一样，ParNew垃圾收集器在垃圾收集过程中同样也要暂停所有其他的工作线程。它是很多java虚拟机运行在Server模式下新生代的默认垃圾收集器。</p>
+<h3 id="2-ParNew">2. ParNew<a class="post-anchor" href="#2-ParNew"></a></h3><p>​    ParNew收集器其实就是Serial收集器新生代的并行多线程版本，最常见的应用场景是配合老年代的CMS GC工作，其余的行为和Serial收集器完全一样，ParNew垃圾收集器在垃圾收集过程中同样也要暂停所有其他的工作线程。它是很多java虚拟机运行在Server模式下新生代的默认垃圾收集器。</p>
 <p>开启参数：<strong>-XX:+UseParNewGC</strong>    启用ParNew收集器，只影响新生代的收集，不影响老年代。</p>
 <p>开启上述参数后，会使用：<strong>ParNew（Young区用）+Serial Old</strong>的收集器组合。新生代使用<strong>复制算法</strong>，老年代采用<strong>标记-整理</strong>算法。</p>
 <p>但是，ParNew+Tenured这样的搭配，Java8已经不再推荐。deprecated</p>
 <p>注：<strong>-XX:ParallelGCThreads</strong>，修改限制线程数量，默认开启和CPU数量相同的线程的数。</p>
-<h3 id="3-Parallel-Scavenge"><a href="#3-Parallel-Scavenge" class="headerlink" title="3. Parallel Scavenge"></a>3. Parallel Scavenge</h3><p>​    Parallel Scavenge收集器类似ParNew也是一个新生代垃圾收集器，使用复制算法，也是一个并行的多线程的垃圾收集器，俗称吞吐量优先收集器。</p>
+<h3 id="3-Parallel-Scavenge">3. Parallel Scavenge<a class="post-anchor" href="#3-Parallel-Scavenge"></a></h3><p>​    Parallel Scavenge收集器类似ParNew也是一个新生代垃圾收集器，使用复制算法，也是一个并行的多线程的垃圾收集器，俗称吞吐量优先收集器。</p>
 <p>它关注的重点是：</p>
 <ul>
 <li><p><strong>可控制的吞吐量</strong>（Thoughput=运行用户代码时间/（运行用户代码时间+垃圾收集时间））。高吞吐量意味着高效利用CPU时间，它多用于后台运算而不需要太多交互的任务。</p>
@@ -154,14 +150,14 @@
 </ul>
 <p>开启参数：<strong>-XX:+UseParallelGC或-XX:+UseParallerOldGC</strong>（二者可互相激活） 默认情况下Java8的配置。</p>
 <p>开启上述参数后，会使用 <strong>Parallel Scavenge+UserParallelOldGC</strong>的收集器组合。新生代使用<strong>复制算法</strong>，老年代采用<strong>标记-整理</strong>算法。</p>
-<h3 id="4-Serial-Old"><a href="#4-Serial-Old" class="headerlink" title="4. Serial Old"></a>4. Serial Old</h3><p>单线程的标记-整理算法，主要运行在Client默认的Java虚拟机的老年代垃圾收集器。</p>
+<h3 id="4-Serial-Old">4. Serial Old<a class="post-anchor" href="#4-Serial-Old"></a></h3><p>单线程的标记-整理算法，主要运行在Client默认的Java虚拟机的老年代垃圾收集器。</p>
 <p>在Server模式下，主要有两个用途：</p>
 <ol>
 <li>在JDK1.5之前版本中与Parallel Scavenge收集器搭配使用。</li>
 <li>作为老年代中使用CMS收集器的后备垃圾收集器。</li>
 </ol>
-<h3 id="5-ParallelOld"><a href="#5-ParallelOld" class="headerlink" title="5. ParallelOld"></a>5. ParallelOld</h3><p>​    ParallelOldGC在JDK1.6才开始出现，在1.6之前，新生代使用Parallel Scavenge收集器只能搭配老年代的Serial Old收集器。只能保证新生代的吞吐量优先，无法保证整体的吞吐量。</p>
-<h3 id="6-CMS"><a href="#6-CMS" class="headerlink" title="6. CMS"></a>6. CMS</h3><p>​    并发标记清除GC（Concurrent Mark Sweep）是一种以获取最短回收停顿时间为目标的收集器。适合应用在互联网或者B/S系统的服务器上，这类应用尤其重视服务器响应速度，希望系统停顿时间最短。</p>
+<h3 id="5-ParallelOld">5. ParallelOld<a class="post-anchor" href="#5-ParallelOld"></a></h3><p>​    ParallelOldGC在JDK1.6才开始出现，在1.6之前，新生代使用Parallel Scavenge收集器只能搭配老年代的Serial Old收集器。只能保证新生代的吞吐量优先，无法保证整体的吞吐量。</p>
+<h3 id="6-CMS">6. CMS<a class="post-anchor" href="#6-CMS"></a></h3><p>​    并发标记清除GC（Concurrent Mark Sweep）是一种以获取最短回收停顿时间为目标的收集器。适合应用在互联网或者B/S系统的服务器上，这类应用尤其重视服务器响应速度，希望系统停顿时间最短。</p>
 <p>CMS非常适合堆内存大、CPU核数多的服务器应用，也是G1出现之前大型应用的首选收集器。</p>
 <p>并发收集<strong>低停顿</strong>，并发指与用户线程并发执行。</p>
 <p>开启参数：<strong>-XX:+UseConcMarkSweepGC</strong>         开启该参数后会自动将-XX:+UseParNewGC打开。</p>
@@ -184,7 +180,7 @@
 <li>由于并发标记时，用户线程依然运行，因此在正式清理前，再做修正。</li>
 </ul>
 <p>在CMS中，为了在并发标记阶段结束后，可以快速找到哪些card有引用更新，因此将<strong>老年代内存分为很多个Card</strong>，再使用Card Table维护每个card是否在并发标记阶段有引用变化，如果变化了，我们就说这个Card是Dirty的，这样可以提高重新标记阶段的速度。</p>
-<p><img src="https://i.loli.net/2020/03/12/gIsHUyc2NPwFb3C.png" alt="50145-20180717152605855-734360183"></p>
+<p><a href="https://i.loli.net/2020/03/12/gIsHUyc2NPwFb3C.png" data-caption="50145-20180717152605855-734360183" data-fancybox="images"><img src="https://i.loli.net/2020/03/12/gIsHUyc2NPwFb3C.png" alt="50145-20180717152605855-734360183"></a></p>
 <p>如果引用了发生了变化，则标记1。标记时，采用了bit位的方式标记，大大节省了空间，如byte=3的二进制位0000 0011,从右到左，第1位可以表示dirtyCard，第2位可以表示有引用年轻代，这样在Young gc时，也可以通过Card Table快速找到需要扫描的老年代card，无需扫描整个老年代。（很多博文上说一个Card管理512Bytes的heap）。</p>
 </li>
 <li><p>并发清除（CMS concurrent sweep）</p>
@@ -207,7 +203,7 @@
 <p>标记清除算法无法整理空间碎片，老年代空间会随着应用时长被逐步耗尽，最后将不得不通过担保机制对堆内存进行压<br>|缩。CMS也提供了参数<strong>-XX:CMSFulIGCsBeForeCompaction</strong>（默认0，即每次都进行内存整理）来指定多少次CMS收集之后，进行一次压缩的Full GC。</p>
 </li>
 </ul>
-<h2 id="3-垃圾收集器的选择"><a href="#3-垃圾收集器的选择" class="headerlink" title="3. 垃圾收集器的选择"></a>3. 垃圾收集器的选择</h2><ul>
+<h2 id="3-垃圾收集器的选择">3. 垃圾收集器的选择<a class="post-anchor" href="#3-垃圾收集器的选择"></a></h2><ul>
 <li><p>单CPU或小内存，单机程序</p>
 <p>-XX:+UseSerialGC</p>
 </li>
@@ -453,16 +449,14 @@
         
         
         <span>
- <!-- <i>PV:<span id="busuanzi_value_page_pv"></span></i> -->
-  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+  <i>PV：<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV：<span id="busuanzi_value_site_uv"></span></i>
 </span>
         
       </li>
       
       <li>
         <!-- cnzz统计 -->
-        
-        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
         
       </li>
     </ul>
@@ -728,7 +722,7 @@
     
     
     <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
-        src="//music.163.com/outchain/player?type=2&id=29312951&auto=0&height=32"></iframe>
+        src="//music.163.com/outchain/player?type=2&id=29312951&auto=1&height=32"></iframe>
 </div>
 
 <style>

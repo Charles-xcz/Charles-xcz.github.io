@@ -73,10 +73,6 @@
             <span class="post-count">5分钟</span>
         </span>
     </span>
-<span>
-&nbsp; | &nbsp;
-  <i>访问量：<span id="busuanzi_value_page_pv"></span></i>
-</span>
 </div>
 
       
@@ -101,11 +97,11 @@
       
 
       
-      <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><blockquote>
+      <h2 id="引言">引言<a class="post-anchor" href="#引言"></a></h2><blockquote>
 <p>CAS：Compare-And-Swap 比较并交换，它是一条<strong>CPU并发原语</strong></p>
 </blockquote>
 <p>它的功能是判断内存某个位置的值是否为预期值，如果是则更改为新的值，这个过程是原子的。</p>
-<h2 id="1-CAS的底层原理"><a href="#1-CAS的底层原理" class="headerlink" title="1. CAS的底层原理"></a>1. CAS的底层原理</h2><p>原子整型的原子自增就是通过CAS的原理实现的。</p>
+<h2 id="1-CAS的底层原理">1. CAS的底层原理<a class="post-anchor" href="#1-CAS的底层原理"></a></h2><p>原子整型的原子自增就是通过CAS的原理实现的。</p>
 <pre><code class="hljs java">AtomicInteger atomicInteger=<span class="hljs-keyword">new</span> AtomicInteger(<span class="hljs-number">5</span>);
 atomicInteger.getAndIncrement;</code></pre>
 
@@ -169,7 +165,7 @@ atomicInteger.getAndIncrement;</code></pre>
 <li>线程A重新获取value值，因为变量value被volatile修饰，所以其它线程对它的修改，线程A总是能够看到，线程A继续执行compareAndSwaplnt进行比较替换，直到成功。</li>
 </ol>
 <p>即：<strong>比较当前工作内存的值和主内存中的值，如果相同则执行规定操作，否则继续比较直到主内存和工作内存中的值一致为止。</strong></p>
-<h2 id="2-CAS缺点"><a href="#2-CAS缺点" class="headerlink" title="2. CAS缺点"></a>2. CAS缺点</h2><ol>
+<h2 id="2-CAS缺点">2. CAS缺点<a class="post-anchor" href="#2-CAS缺点"></a></h2><ol>
 <li><p>由于通过do while循环实现，可能导致循环时间长，cpu开销大。</p>
 </li>
 <li><p>只能保证一个共享变量的原子操作。</p>
@@ -178,7 +174,7 @@ atomicInteger.getAndIncrement;</code></pre>
 <li><p>引出来ABA问题</p>
 </li>
 </ol>
-<h2 id="3-ABA问题"><a href="#3-ABA问题" class="headerlink" title="3. ABA问题"></a>3. ABA问题</h2><p>​    CAS算法实现一个重要前提需要取出内存中某时刻的数据并在当下时刻比较并替换，那么在这个时间差类会导致数据的变化。</p>
+<h2 id="3-ABA问题">3. ABA问题<a class="post-anchor" href="#3-ABA问题"></a></h2><p>​    CAS算法实现一个重要前提需要取出内存中某时刻的数据并在当下时刻比较并替换，那么在这个时间差类会导致数据的变化。</p>
 <p>​    比如说一个线程1从内存位置V中取出A，这时候另一个线程2也从内存中取出A，并且线程2进行了一些操作将值变成了B，然后线程2又将V位置的数据变成A，这时候线程1进行CAS操作发现内存中仍然是A，然后线程1操作成功。</p>
 <p>​    尽管这个过程线程1的CAS操作成功，但内存V位置的值中间产生了变化，有时这种问题会造成影响，这就叫做ABA问题。</p>
 <p><strong>解决ABA问题</strong></p>
@@ -376,16 +372,14 @@ AtomicStampedReference&lt;T&gt;	<span class="hljs-comment">//带版本号的原�
         
         
         <span>
- <!-- <i>PV:<span id="busuanzi_value_page_pv"></span></i> -->
-  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+  <i>PV：<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV：<span id="busuanzi_value_site_uv"></span></i>
 </span>
         
       </li>
       
       <li>
         <!-- cnzz统计 -->
-        
-        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
         
       </li>
     </ul>
@@ -651,7 +645,7 @@ AtomicStampedReference&lt;T&gt;	<span class="hljs-comment">//带版本号的原�
     
     
     <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
-        src="//music.163.com/outchain/player?type=2&id=29312951&auto=0&height=32"></iframe>
+        src="//music.163.com/outchain/player?type=2&id=29312951&auto=1&height=32"></iframe>
 </div>
 
 <style>

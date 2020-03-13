@@ -27,10 +27,10 @@
     
       
       
-        &lt;h2 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h2&gt;&lt;p&gt;以前收集器的特点：&lt;/p&gt;
+        &lt;h2 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;以前收集器的特点：&lt;/p&gt;
 &lt;ul&gt;
 &lt;li&gt;年轻代和老年代是各自独立且连续的内存块；&lt;/li&gt;
-&lt;li&gt;年轻代收集使用单Eden+S0+S
+&lt;li&gt;年轻代收集使用单Eden+S0+S1进行复制算法；&lt;/
       
     
     </summary>
@@ -56,10 +56,10 @@
     
       
       
-        &lt;h2 id=&quot;1-介绍&quot;&gt;&lt;a href=&quot;#1-介绍&quot; class=&quot;headerlink&quot; title=&quot;1. 介绍&quot;&gt;&lt;/a&gt;1. 介绍&lt;/h2&gt;&lt;p&gt;GC垃圾收集器是GC算法的实现。&lt;/p&gt;
+        &lt;h2 id=&quot;1-介绍&quot;&gt;1. 介绍&lt;a class=&quot;post-anchor&quot; href=&quot;#1-介绍&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;GC垃圾收集器是GC算法的实现。&lt;/p&gt;
 &lt;p&gt;主要分为四种：&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;p&gt;Serial：串行垃圾收
+&lt;li&gt;&lt;p&gt;Serial：串行垃圾收集器（又分为Serial和
       
     
     </summary>
@@ -85,10 +85,10 @@
     
       
       
-        &lt;h2 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h2&gt;&lt;p&gt;什么是垃圾，简单来说就是内存中已经不在被使用的空间就是垃圾。&lt;/p&gt;
+        &lt;h2 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;什么是垃圾，简单来说就是内存中已经不在被使用的空间就是垃圾。&lt;/p&gt;
 &lt;p&gt;如何判断一个对象可以被回收？&lt;/p&gt;
 &lt;ul&gt;
-&lt;li&gt;引用计数
+&lt;li&gt;引用计数法（JVM中不使用这
       
     
     </summary>
@@ -114,7 +114,7 @@
     
       
       
-        &lt;h2 id=&quot;1-阻塞线程的几个工具类&quot;&gt;&lt;a href=&quot;#1-阻塞线程的几个工具类&quot; class=&quot;headerlink&quot; title=&quot;1. 阻塞线程的几个工具类&quot;&gt;&lt;/a&gt;1. 阻塞线程的几个工具类&lt;/h2&gt;&lt;h3 id=&quot;1-1-CountDownLatch&quot;&gt;&lt;a 
+        &lt;h2 id=&quot;1-阻塞线程的几个工具类&quot;&gt;1. 阻塞线程的几个工具类&lt;a class=&quot;post-anchor&quot; href=&quot;#1-阻塞线程的几个工具类&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3 id=&quot;1-1-CountDownLatch&quot;&gt;1.1 CountDownLatch&lt;a cla
       
     
     </summary>
@@ -142,9 +142,10 @@
     
       
       
-        &lt;h2 id=&quot;1-创建线程的3种方法&quot;&gt;&lt;a href=&quot;#1-创建线程的3种方法&quot; class=&quot;headerlink&quot; title=&quot;1. 创建线程的3种方法&quot;&gt;&lt;/a&gt;1. 创建线程的3种方法&lt;/h2&gt;&lt;ul&gt;
+        &lt;h2 id=&quot;1-创建线程的3种方法&quot;&gt;1. 创建线程的3种方法&lt;a class=&quot;post-anchor&quot; href=&quot;#1-创建线程的3种方法&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
 &lt;li&gt;继承Thread类&lt;/li&gt;
-&lt;li&gt;实现Runna
+&lt;li&gt;实现Runnable接口&lt;/li&gt;
+&lt;li&gt;实现Cal
       
     
     </summary>
@@ -172,7 +173,7 @@
     
       
       
-        &lt;h2 id=&quot;1-阻塞线程的几个工具类&quot;&gt;&lt;a href=&quot;#1-阻塞线程的几个工具类&quot; class=&quot;headerlink&quot; title=&quot;1. 阻塞线程的几个工具类&quot;&gt;&lt;/a&gt;1. 阻塞线程的几个工具类&lt;/h2&gt;&lt;h3 id=&quot;1-1-CountDownLatch&quot;&gt;&lt;a 
+        &lt;h2 id=&quot;1-阻塞线程的几个工具类&quot;&gt;1. 阻塞线程的几个工具类&lt;a class=&quot;post-anchor&quot; href=&quot;#1-阻塞线程的几个工具类&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;h3 id=&quot;1-1-CountDownLatch&quot;&gt;1.1 CountDownLatch&lt;a cla
       
     
     </summary>
@@ -200,8 +201,9 @@
     
       
       
-        &lt;h2 id=&quot;1-公平锁与非公平锁&quot;&gt;&lt;a href=&quot;#1-公平锁与非公平锁&quot; class=&quot;headerlink&quot; title=&quot;1. 公平锁与非公平锁&quot;&gt;&lt;/a&gt;1. 公平锁与非公平锁&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;公平锁：是指多个线程按照申请锁的顺序来获取锁，
+        &lt;h2 id=&quot;1-公平锁与非公平锁&quot;&gt;1. 公平锁与非公平锁&lt;a class=&quot;post-anchor&quot; href=&quot;#1-公平锁与非公平锁&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;公平锁：是指多个线程按照申请锁的顺序来获取锁，FIFO。&lt;/p&gt;
+&lt;p&gt;非公平锁：是
       
     
     </summary>
@@ -229,8 +231,9 @@
     
       
       
-        &lt;h2 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;CAS：Compare-And-Swap 比较并交换，它是一条&lt;strong&gt;CPU并发原语&lt;/strong&gt;&lt;/
+        &lt;h2 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;CAS：Compare-And-Swap 比较并交换，它是一条&lt;strong&gt;CPU并发原语&lt;/strong&gt;&lt;/p&gt;
+&lt;/block
       
     
     </summary>
@@ -258,7 +261,8 @@
     
       
       
-        &lt;h2 id=&quot;一-方法区-Method-Area&quot;&gt;&lt;a href=&quot;#一-方法区-Method-Area&quot; class=&quot;headerlink&quot; title=&quot;一. 方法区 Method Area&quot;&gt;&lt;/a&gt;一. 方法区 Method Area&lt;/h2&gt;&lt;p&gt;属于供各线程共享
+        &lt;h2 id=&quot;一-方法区-Method-Area&quot;&gt;一. 方法区 Method Area&lt;a class=&quot;post-anchor&quot; href=&quot;#一-方法区-Method-Area&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;属于供各线程共享的运行时内存区域。&lt;/p&gt;
+&lt;p&gt;它&lt;strong&gt;
       
     
     </summary>
@@ -307,8 +311,8 @@
     
       
       
-        &lt;h2 id=&quot;1-volatile特征&quot;&gt;&lt;a href=&quot;#1-volatile特征&quot; class=&quot;headerlink&quot; title=&quot;1.  volatile特征&quot;&gt;&lt;/a&gt;1.  volatile特征&lt;/h2&gt;&lt;blockquote&gt;
-&lt;p&gt;&lt;strong&gt;volat
+        &lt;h2 id=&quot;1-volatile特征&quot;&gt;1.  volatile特征&lt;a class=&quot;post-anchor&quot; href=&quot;#1-volatile特征&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;blockquote&gt;
+&lt;p&gt;&lt;strong&gt;volatile&lt;/strong&gt;是Java虚拟机提供
       
     
     </summary>
@@ -336,7 +340,7 @@
     
       
       
-        &lt;h2 id=&quot;1-定义&quot;&gt;&lt;a href=&quot;#1-定义&quot; class=&quot;headerlink&quot; title=&quot;1. 定义&quot;&gt;&lt;/a&gt;1. 定义&lt;/h2&gt;&lt;p&gt;红黑树是满足下列条件的&lt;strong&gt;二叉查找树&lt;/strong&gt;：&lt;br&gt;    每个节点都带有红色或黑色。节点的颜色
+        &lt;h2 id=&quot;1-定义&quot;&gt;1. 定义&lt;a class=&quot;post-anchor&quot; href=&quot;#1-定义&quot;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;p&gt;红黑树是满足下列条件的&lt;strong&gt;二叉查找树&lt;/strong&gt;：&lt;br&gt;    每个节点都带有红色或黑色。节点的颜色由以下规则确定：&lt;br&gt; 
       
     
     </summary>
@@ -388,8 +392,8 @@
     
       
       
-        &lt;h3 id=&quot;引言&quot;&gt;&lt;a href=&quot;#引言&quot; class=&quot;headerlink&quot; title=&quot;引言&quot;&gt;&lt;/a&gt;引言&lt;/h3&gt;&lt;p&gt;​    场景：在字符串：“fffffab cfe defe” 中查找字符串 “ff”。&lt;/p&gt;
-&lt;p&gt;​    被查找的字符串称之为：主串
+        &lt;h3 id=&quot;引言&quot;&gt;引言&lt;a class=&quot;post-anchor&quot; href=&quot;#引言&quot;&gt;&lt;/a&gt;&lt;/h3&gt;&lt;p&gt;​    场景：在字符串：“fffffab cfe defe” 中查找字符串 “ff”。&lt;/p&gt;
+&lt;p&gt;​    被查找的字符串称之为：主串或目标串T ;&lt;/p
       
     
     </summary>

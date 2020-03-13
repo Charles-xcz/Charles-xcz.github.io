@@ -73,10 +73,6 @@
             <span class="post-count">4分钟</span>
         </span>
     </span>
-<span>
-&nbsp; | &nbsp;
-  <i>访问量：<span id="busuanzi_value_page_pv"></span></i>
-</span>
 </div>
 
       
@@ -103,25 +99,25 @@
       
       <p>​    <strong>距离向量路由选择是通过对Bellman-Ford算法进行适当修改，找到任意两结点之间的最短路径。</strong></p>
 <p>​    <strong>先介绍一下Bellman-Ford算法：</strong></p>
-<h3 id="1-Bellman-Ford算法"><a href="#1-Bellman-Ford算法" class="headerlink" title="1 Bellman-Ford算法"></a>1 Bellman-Ford算法</h3><p>​    这个算法基于这样一个事实，如果结点 i 的所有邻站都知道到结点的最短距离，那么求结点 i 和结点 j 之间的最短距离就可以用结点 i 到每个邻站之间的距离分别加上该邻站到结点j的最短距离，然后再从得数中选择最小的一个。</p>
-<p><img src="https://img-blog.csdnimg.cn/20191106214851612.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTc5NzUyMg==,size_16,color_FFFFFF,t_70" alt="1-1"></p>
+<h3 id="1-Bellman-Ford算法">1 Bellman-Ford算法<a class="post-anchor" href="#1-Bellman-Ford算法"></a></h3><p>​    这个算法基于这样一个事实，如果结点 i 的所有邻站都知道到结点的最短距离，那么求结点 i 和结点 j 之间的最短距离就可以用结点 i 到每个邻站之间的距离分别加上该邻站到结点j的最短距离，然后再从得数中选择最小的一个。</p>
+<p><a href="https://img-blog.csdnimg.cn/20191106214851612.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTc5NzUyMg==,size_16,color_FFFFFF,t_70" data-caption="1-1" data-fancybox="images"><img src="https://img-blog.csdnimg.cn/20191106214851612.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTc5NzUyMg==,size_16,color_FFFFFF,t_70" alt="1-1"></a></p>
 <p>用以下步骤为每个结点创建一个最短距离表 :</p>
 <p>1) 结点和它自己之间的最短距离和代价被初始化为0。</p>
 <p>2) 一个结点和任何其他结点之间的最短距离被设置为无穷大。一个结点和其他任何结点之间的代价应当给定(如果两个节点之间没有直接连接，可设置为无穷大)。</p>
 <p>3) 然后循环执行 算法D<sub>ij</sub> = min{(c<sub>i1</sub>+D<sub>1j</sub>),(c<sub>i2</sub>+D<sub>2j</sub>),……..(c<sub>iN</sub>+D<sub>Nj</sub>)}</p>
-<h3 id="2-距离向量路由选择算法"><a href="#2-距离向量路由选择算法" class="headerlink" title="2 距离向量路由选择算法"></a>2 距离向量路由选择算法</h3><p>1) 在距离向量路由选择中，代价通常就是跳数（即在到达终点之前通过了多少个网络）。因此任意两个邻站之间的代价被设置为1。</p>
+<h3 id="2-距离向量路由选择算法">2 距离向量路由选择算法<a class="post-anchor" href="#2-距离向量路由选择算法"></a></h3><p>1) 在距离向量路由选择中，代价通常就是跳数（即在到达终点之前通过了多少个网络）。因此任意两个邻站之间的代价被设置为1。</p>
 <p>2) 每当路由器从它的邻站那里接收到一些信息时，它就要异步地更新自己的路由表。换言之，每个路由器只执行了整个Bellman-Ford算法中的一部分。这个处理过程是分布式的。</p>
 <p>3) 在路由器更新了自己的路由表之后，应当将结果发送给它的所有邻站，以便这些邻站也能更新它们的路由表。</p>
 <p>4) 每个路由器至少应当保存每条路由的三个信息：目的网络、代价和下一跳。我们称完整的路由表为Table，表中的第i行为Table<sub>i</sub>第i行的三个列分别为Table<sub>i</sub>.dest，Table<sub>i</sub>.cost和Table<sub>i</sub>.next。</p>
 <p>5) 我们把来自邻站的一条路由信息称为一个R（记录），它只包含了两个信息：R.dest和R.cost。在收到的记录中不包含下一跳信息，因为下一跳就是发送方的源地址。</p>
-<h3 id="3-计数到无穷大"><a href="#3-计数到无穷大" class="headerlink" title="3 计数到无穷大"></a>3 计数到无穷大</h3><p>​    距离向量路由的缺点是：好消息传得快，坏消息传得慢。要想让路由选择协议能够正常工作，如果一条链路中断了（代价变为无穷大），那么其他所有路由器都应当立刻获知这一情况，但是在距离向量路由选择中，这是要花费一些时间的。这个问题就称为计数到无穷大（count to infinity）。需要经过多次更新才能使所有的路由器都把这条中断链路的代价记录为无穷大。</p>
-<h4 id="二结点循环问题"><a href="#二结点循环问题" class="headerlink" title="二结点循环问题:"></a>二结点循环问题:</h4><p> <img src="https://img-blog.csdnimg.cn/20191106214939519.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTc5NzUyMg==,size_16,color_FFFFFF,t_70" alt="img"> </p>
+<h3 id="3-计数到无穷大">3 计数到无穷大<a class="post-anchor" href="#3-计数到无穷大"></a></h3><p>​    距离向量路由的缺点是：好消息传得快，坏消息传得慢。要想让路由选择协议能够正常工作，如果一条链路中断了（代价变为无穷大），那么其他所有路由器都应当立刻获知这一情况，但是在距离向量路由选择中，这是要花费一些时间的。这个问题就称为计数到无穷大（count to infinity）。需要经过多次更新才能使所有的路由器都把这条中断链路的代价记录为无穷大。</p>
+<h4 id="二结点循环问题">二结点循环问题:<a class="post-anchor" href="#二结点循环问题"></a></h4><p> <a href="https://img-blog.csdnimg.cn/20191106214939519.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTc5NzUyMg==,size_16,color_FFFFFF,t_70" data-caption="img" data-fancybox="images"><img src="https://img-blog.csdnimg.cn/20191106214939519.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTc5NzUyMg==,size_16,color_FFFFFF,t_70" alt="img"></a> </p>
 <p>为了解决这种不稳定性的几种方法：</p>
 <p>1) <strong>定义无穷大</strong>：距离向量协议一般把16定义为无穷大，即16跳为不可达，但是这也意味着距离向量不能用于大系统。在各个方向上，网络的大小都不能超过15跳。</p>
 <p>2) <strong>分割范围</strong>：如果结点B根据其路由表认为到达X的最佳路由要经过A，那么它就不需要再把到X的路由通告给A了，因为这个信息就是从A来的（A已经知道了）。从结点A得到信息，修改后再发回给A，这就是产生混乱的根源。所以，结点B在发送路由表给A之前要删除路由表中下一跳为A的路由信息。在这种情况下，结点A保留到X的距离为无穷大。在此之后，当结点A将其路由表发送给B时，结点B也就更正了它的路由表。系统在第一次更新后就变稳定了，因为结点A和B都知道了X是不可达的。</p>
 <p>3) <strong>分割范围和毒性逆转</strong>：使用分割范围策略有一个缺点。通常，距离向量协议使用一个计时器，若长时间没有关于某个路由的消息，就要从路由表中删除这个路由。在前面描述的场景中，当结点B在它给A的通告中删除了到X的路由时，结点A并不能猜出这是由于分割范围策略(因为信息的来源是A)，还是因为B最近一直都没有收到有关X的任何消息。分割范围策略可以与毒性逆转（poison reverse）策略组合起来使用。结点B可以仍然通知关于X的数值，但如果信息源是A，就把距离换成为无穷大(16)作为一种警告：“不要使用这个数值，我所知道的关于这条路由的信息来自于你。”</p>
-<h4 id="三结点不稳定性"><a href="#三结点不稳定性" class="headerlink" title="三结点不稳定性"></a>三结点不稳定性</h4><p>​    分割范围和毒性逆转可以用于避免二结点的不稳定性，但如果是三个结点之间，稳定性仍然无法保证。</p>
-<p><img src="https://img-blog.csdnimg.cn/20191106215007170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTc5NzUyMg==,size_16,color_FFFFFF,t_70" alt="1-3"></p>
+<h4 id="三结点不稳定性">三结点不稳定性<a class="post-anchor" href="#三结点不稳定性"></a></h4><p>​    分割范围和毒性逆转可以用于避免二结点的不稳定性，但如果是三个结点之间，稳定性仍然无法保证。</p>
+<p><a href="https://img-blog.csdnimg.cn/20191106215007170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTc5NzUyMg==,size_16,color_FFFFFF,t_70" data-caption="1-3" data-fancybox="images"><img src="https://img-blog.csdnimg.cn/20191106215007170.png?x-oss-process=image/watermark,type_ZmFuZ3poZW5naGVpdGk,shadow_10,text_aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3dlaXhpbl8zOTc5NzUyMg==,size_16,color_FFFFFF,t_70" alt="1-3"></a></p>
 
       
       <!-- reward -->
@@ -311,16 +307,14 @@
         
         
         <span>
- <!-- <i>PV:<span id="busuanzi_value_page_pv"></span></i> -->
-  <i>UV:<span id="busuanzi_value_site_uv"></span></i>
+  <i>PV：<span id="busuanzi_value_page_pv"></span></i>
+  <i>UV：<span id="busuanzi_value_site_uv"></span></i>
 </span>
         
       </li>
       
       <li>
         <!-- cnzz统计 -->
-        
-        <script type="text/javascript" src='https://s9.cnzz.com/z_stat.php?id=1278069914&amp;web_id=1278069914'></script>
         
       </li>
     </ul>
@@ -586,7 +580,7 @@
     
     
     <iframe frameborder="no" border="1" marginwidth="0" marginheight="0" width="200" height="52"
-        src="//music.163.com/outchain/player?type=2&id=29312951&auto=0&height=32"></iframe>
+        src="//music.163.com/outchain/player?type=2&id=29312951&auto=1&height=32"></iframe>
 </div>
 
 <style>
