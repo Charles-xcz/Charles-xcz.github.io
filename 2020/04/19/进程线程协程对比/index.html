@@ -109,7 +109,6 @@
 <h3 id="1-3-进程通信"><a href="#1-3-进程通信" class="headerlink" title="1.3 进程通信"></a>1.3 进程通信</h3><h4 id="1）为什么要进程通信"><a href="#1）为什么要进程通信" class="headerlink" title="1）为什么要进程通信?"></a>1）为什么要进程通信?</h4><p>1、数据传输<br>一个进程需要将它的数据发送给另一个进程;<br>2、资源共享<br>多个进程之间共享同样的资源;<br>3、通知事件<br>一个进程需要向另一个或一组进程发送消息，通知它们发生了某种事件;<br>4、进程控制<br>有些进程希望完全控制另一个进程的执行(如Debug进程)，该控制进程希望能够拦截另一个进程的所有操作，并能够及时知道它的状态改变。<br>基于以上几个原因，所以就有了进程间通信的概念，那么进程间通信的原理是什仫呢？目前有哪几种进程间通信的机制？他们是如何实现进程间通信的呢？</p>
 <h4 id="2）进程间通信的原理"><a href="#2）进程间通信的原理" class="headerlink" title="2）进程间通信的原理"></a>2）进程间通信的原理</h4><p>每个进程各自有不同的用户地址空间,任何一个进程的全局变量在另一个进程中都看不到，所以进程之间要交换数据必须通过内核,在内核中开辟一块缓冲区,进程1把数据从用户空间拷到内核缓冲区,进程2再从内核缓冲区把数据读走,内核提供的这种机制称为<strong>进程间通信机制</strong>。</p>
 <p><img src="https://i.loli.net/2020/04/19/FngAqNQI8HbSc6k.png" alt></p>
-<p><img src="%E8%BF%9B%E7%A8%8B%E9%80%9A%E4%BF%A1.assets/image-20200403111540651.png" alt="image-20200403111540651"></p>
 <h4 id="3）进程通信的几种方式"><a href="#3）进程通信的几种方式" class="headerlink" title="3）进程通信的几种方式"></a>3）进程通信的几种方式</h4><h5 id="1、管道（Pipe）"><a href="#1、管道（Pipe）" class="headerlink" title="1、管道（Pipe）"></a>1、管道（Pipe）</h5><p>管道又名匿名管道，这是一种最基本的IPC机制，由pipe函数创建：</p>
 <p>调用pipe函数时在内核中开辟一块缓冲区用于通信,它有一个读端，一个写端：pipefd[0]指向管道的读端，pipefd[1]指向管道的写端。所以管道在用户程序看起来就像一个打开的文件,通过read(pipefd[0])或者write(pipefd[1])向这个文件读写数据，其实是在读写内核缓冲区。</p>
 <p><strong>使用管道通信的过程：</strong></p>
@@ -391,6 +390,15 @@
   
   
   <nav class="article-nav">
+    
+      <a href="/2020/04/19/JVM学习(6)——JVM参数和常见OOM异常/" class="article-nav-link">
+        <strong class="article-nav-caption">上一篇</strong>
+        <div class="article-nav-title">
+          
+            JVM学习(6)——常见JVM参数和内存异常
+          
+        </div>
+      </a>
     
     
       <a href="/2020/03/13/设计模式—代理模式/" class="article-nav-link">

@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://charles-xcz.github.io/"/>
-  <updated>2020-04-19T03:36:32.867Z</updated>
+  <updated>2020-04-19T03:51:01.396Z</updated>
   <id>http://charles-xcz.github.io/</id>
   
   <author>
@@ -17,11 +17,35 @@
   <generator uri="https://hexo.io/">Hexo</generator>
   
   <entry>
+    <title>JVM学习(6)——常见JVM参数和内存异常</title>
+    <link href="http://charles-xcz.github.io/2020/04/19/JVM%E5%AD%A6%E4%B9%A0(6)%E2%80%94%E2%80%94JVM%E5%8F%82%E6%95%B0%E5%92%8C%E5%B8%B8%E8%A7%81OOM%E5%BC%82%E5%B8%B8/"/>
+    <id>http://charles-xcz.github.io/2020/04/19/JVM%E5%AD%A6%E4%B9%A0(6)%E2%80%94%E2%80%94JVM%E5%8F%82%E6%95%B0%E5%92%8C%E5%B8%B8%E8%A7%81OOM%E5%BC%82%E5%B8%B8/</id>
+    <published>2020-04-19T03:50:00.000Z</published>
+    <updated>2020-04-19T03:51:01.396Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;1-JVM参数&quot;&gt;&lt;a href=&quot;#1-JVM参数&quot; class=&quot;headerlink&quot; title=&quot;1. JVM参数&quot;&gt;&lt;/a&gt;1. JVM参数&lt;/h2&gt;&lt;h3 id=&quot;1-参数类型&quot;&gt;&lt;a href=&quot;#1-参数类型&quot; class=&quot;headerlink
+      
+    
+    </summary>
+    
+    
+      <category term="java" scheme="http://Charles-xcz.github.io/categories/java/"/>
+    
+    
+      <category term="JVM" scheme="http://Charles-xcz.github.io/tags/JVM/"/>
+    
+  </entry>
+  
+  <entry>
     <title>进程与线程及其通信方式</title>
     <link href="http://charles-xcz.github.io/2020/04/19/%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E5%8D%8F%E7%A8%8B%E5%AF%B9%E6%AF%94/"/>
     <id>http://charles-xcz.github.io/2020/04/19/%E8%BF%9B%E7%A8%8B%E7%BA%BF%E7%A8%8B%E5%8D%8F%E7%A8%8B%E5%AF%B9%E6%AF%94/</id>
     <published>2020-04-19T03:34:28.214Z</published>
-    <updated>2020-04-19T03:36:32.867Z</updated>
+    <updated>2020-04-19T03:40:08.137Z</updated>
     
     <summary type="html">
     
@@ -213,11 +237,11 @@
   </entry>
   
   <entry>
-    <title>synchronized和Lock</title>
+    <title>synchronized和Lock的一些对比</title>
     <link href="http://charles-xcz.github.io/2020/03/11/synchronized%E5%92%8CLock/"/>
     <id>http://charles-xcz.github.io/2020/03/11/synchronized%E5%92%8CLock/</id>
     <published>2020-03-11T13:29:33.825Z</published>
-    <updated>2020-03-11T13:32:13.944Z</updated>
+    <updated>2020-04-19T03:41:31.054Z</updated>
     
     <summary type="html">
     

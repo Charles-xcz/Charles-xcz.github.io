@@ -6,7 +6,7 @@
     
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
   <title>
-    并发编程之—— CAS |  Charles
+    JVM学习(6)——常见JVM参数和内存异常 |  Charles
   </title>
   <meta name="generator" content="hexo-theme-yilia-plus">
   
@@ -28,7 +28,7 @@
   <div id="app">
     <main class="content">
       <section class="outer">
-  <article id="post-并发编程之—— CAS" class="article article-type-post" itemscope
+  <article id="post-JVM学习(6)——JVM参数和常见OOM异常" class="article article-type-post" itemscope
   itemprop="blogPost" data-scroll-reveal>
 
   <div class="article-inner">
@@ -36,7 +36,7 @@
     <header class="article-header">
        
 <h1 class="article-title sea-center" style="border-left:0" itemprop="name">
-  并发编程之—— CAS
+  JVM学习(6)——常见JVM参数和内存异常
 </h1>
   
 
@@ -45,12 +45,12 @@
 
     
     <div class="article-meta">
-      <a href="/2020/03/11/并发编程之—— CAS/" class="article-date">
-  <time datetime="2020-03-11T09:57:55.055Z" itemprop="datePublished">2020-03-11</time>
+      <a href="/2020/04/19/JVM学习(6)——JVM参数和常见OOM异常/" class="article-date">
+  <time datetime="2020-04-19T03:50:00.000Z" itemprop="datePublished">2020-04-19</time>
 </a>
       
   <div class="article-category">
-    <a class="article-category-link" href="/categories/java/">java</a> / <a class="article-category-link" href="/categories/java/多线程/">多线程</a>
+    <a class="article-category-link" href="/categories/java/">java</a>
   </div>
 
       
@@ -60,7 +60,7 @@
         <span class="post-meta-item-icon">
             <i class="ri-quill-pen-line"></i>
             <span class="post-meta-item-text"> 字数统计:</span>
-            <span class="post-count">1.4k字</span>
+            <span class="post-count">1.3k字</span>
         </span>
     </span>
 
@@ -97,88 +97,179 @@
       
 
       
-      <h2 id="引言"><a href="#引言" class="headerlink" title="引言"></a>引言</h2><blockquote>
-<p>CAS：Compare-And-Swap 比较并交换，它是一条<strong>CPU并发原语</strong></p>
+      <h2 id="1-JVM参数"><a href="#1-JVM参数" class="headerlink" title="1. JVM参数"></a>1. JVM参数</h2><h3 id="1-参数类型"><a href="#1-参数类型" class="headerlink" title="1. 参数类型"></a>1. 参数类型</h3><ol>
+<li><p>标配参数</p>
+<p>-version -help -showversion</p>
+</li>
+<li><p>x参数</p>
+<ul>
+<li>-Xint：解释执行</li>
+<li>-Xcomp：第一次使用就编译成本地代码</li>
+<li>-Xmixed：混合模式（默认）</li>
+</ul>
+</li>
+<li><p><font color="blue"><strong>xx参数</strong></font></p>
+<ul>
+<li><p>Boolaen类型</p>
+<ul>
+<li><p>-XX:+/- <options>   表示开启或关闭某个属性值</options></p>
+</li>
+<li><p>例：<strong>-XX: +PrintGCDetails</strong>开启打印GC收集细节</p>
+<p>​        <strong>-XX:+UseSerialGC</strong> 开启串行垃圾回收器</p>
+</li>
+</ul>
+</li>
+<li><p>KV设值参数</p>
+<ul>
+<li><p>-XX:属性key=属性值value</p>
+</li>
+<li><p>例：<strong>-XX:MataspaceSize=128m</strong></p>
+<p>​        <strong>-XX:MaxTenuringThreshold=15</strong></p>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+<blockquote>
+<p><strong><font color="red">注意</font></strong>：-Xms和-Xmx参数是xx参数，-XX:InitialHeapSize和-XX:MaxHeapSize的简化</p>
 </blockquote>
-<p>它的功能是判断内存某个位置的值是否为预期值，如果是则更改为新的值，这个过程是原子的。</p>
-<h2 id="1-CAS的底层原理"><a href="#1-CAS的底层原理" class="headerlink" title="1. CAS的底层原理"></a>1. CAS的底层原理</h2><p>原子整型的原子自增就是通过CAS的原理实现的。</p>
-<pre class=" language-java"><code class="language-java">AtomicInteger atomicInteger<span class="token operator">=</span><span class="token keyword">new</span> <span class="token class-name">AtomicInteger</span><span class="token punctuation">(</span><span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-atomicInteger<span class="token punctuation">.</span>getAndIncrement<span class="token punctuation">;</span></code></pre>
-<p>下面通过AtomicInteger类的源码例子来了解CAS是什么：</p>
-<pre class=" language-java"><code class="language-java"><span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">AtomicInteger</span> <span class="token keyword">extends</span> <span class="token class-name">Number</span> <span class="token keyword">implements</span> <span class="token class-name">java<span class="token punctuation">.</span>io<span class="token punctuation">.</span>Serializable</span> <span class="token punctuation">{</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">long</span> serialVersionUID <span class="token operator">=</span> 6214790243416807050L<span class="token punctuation">;</span>
-
-    <span class="token comment" spellcheck="true">// setup to use Unsafe.compareAndSwapInt for updates</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> Unsafe unsafe <span class="token operator">=</span> Unsafe<span class="token punctuation">.</span><span class="token function">getUnsafe</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token keyword">private</span> <span class="token keyword">static</span> <span class="token keyword">final</span> <span class="token keyword">long</span> valueOffset<span class="token punctuation">;</span>
-
-    <span class="token keyword">static</span> <span class="token punctuation">{</span>
-        <span class="token keyword">try</span> <span class="token punctuation">{</span>
-            valueOffset <span class="token operator">=</span> unsafe<span class="token punctuation">.</span><span class="token function">objectFieldOffset</span>
-                <span class="token punctuation">(</span>AtomicInteger<span class="token punctuation">.</span><span class="token keyword">class</span><span class="token punctuation">.</span><span class="token function">getDeclaredField</span><span class="token punctuation">(</span><span class="token string">"value"</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Exception</span> ex<span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span>ex<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-
-    <span class="token keyword">private</span> <span class="token keyword">volatile</span> <span class="token keyword">int</span> value<span class="token punctuation">;</span>
-
-    <span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span><span class="token punctuation">.</span>
-
-<span class="token comment" spellcheck="true">/**
- * Atomically increments by one the current value.
- *
- * @return the previous value
- */</span>
-<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">getAndIncrement</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">return</span> unsafe<span class="token punctuation">.</span><span class="token function">getAndAddInt</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">,</span> valueOffset<span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></code></pre>
-<p>可以看到AtomicInteger类中引入了一个Unsafe类，CAS是通过Unsafe类实现的。    </p>
-<p><strong>先了解一下Unsafe类</strong></p>
-<ol>
-<li><font color="blue"><strong>Unsafe</strong></font>是CAS的核心类，由于Java方法无法直接访问底层系统，需要通过本地（native）方法来访问，Unsafe相当于一个后门，基于该类可以直接操作特定内存的数据。Unsafe类存在于sun.misc包中，其内部方法操作可以像C的指针一样直接操作内存，因为Java中CAS操作的执行依赖于Unsafe类的方法。</li>
+<h3 id="2-查看参数"><a href="#2-查看参数" class="headerlink" title="2. 查看参数"></a>2. 查看参数</h3><ol>
+<li><p>使用jps+jinfo</p>
+<p>在命令行运行 <strong>jps -l</strong> 查看运行中的进程编号</p>
+</li>
 </ol>
-<p>​    <font color="red"><strong>注意：</strong></font>Unsafe类中的所有方法都是native修饰的，也就是Unsafe类中的方法都直接调用操作系统层资源执行相应任务。</p>
+<p>​            然后运行命令 <strong>jinfo -flag  &lt;配置项&gt;  &lt;进程编号&gt;</strong>  查看该进程该配置的信息。</p>
+<p>​            <strong>jinfo -flags &lt;进程编号&gt;</strong>  查看该进程所有属性配置</p>
 <ol start="2">
-<li>变量valueOffset，表示该变量值在内存中的偏移地址，因为Unsafe类就是根据内存偏移地址获取数据的。</li>
-<li>变量value用volatile修饰，保证了多线程之间的内存可见性。</li>
+<li><p>通过JVM参数查看</p>
+<p>java -XX:+PrintFlagsInitial 查看所有初始的参数</p>
+<p>java -XX:+PrintFlagsFinal -version 查看当前当前参数 =是未被修改的参数，:=代表被修改后的参数</p>
+<p><img src="https://i.loli.net/2020/03/03/ZtDd4sCQAi5noxy.png" alt="image-20200303112216820"></p>
+<p> -XX:PrintCommandLineFlags 方便产看使用的垃圾回收器类型</p>
+<p><img src="https://i.loli.net/2020/03/03/EM5fWoxdcCaPqA4.png" alt="image-20200303124717694"></p>
+</li>
 </ol>
-<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">//Unsafe类中的getAndAddInt方法</span>
-<span class="token keyword">public</span> <span class="token keyword">final</span> <span class="token keyword">int</span> <span class="token function">getAndAddInt</span><span class="token punctuation">(</span>Object var1<span class="token punctuation">,</span> <span class="token keyword">long</span> var2<span class="token punctuation">,</span> <span class="token keyword">int</span> var4<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">int</span> var5<span class="token punctuation">;</span>
-    <span class="token keyword">do</span> <span class="token punctuation">{</span>
-        var5 <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">getIntVolatile</span><span class="token punctuation">(</span>var1<span class="token punctuation">,</span> var2<span class="token punctuation">)</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span> <span class="token keyword">while</span><span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">compareAndSwapInt</span><span class="token punctuation">(</span>var1<span class="token punctuation">,</span> var2<span class="token punctuation">,</span> var5<span class="token punctuation">,</span> var5 <span class="token operator">+</span> var4<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-
-    <span class="token keyword">return</span> var5<span class="token punctuation">;</span>
+<h3 id="3-常用参数"><a href="#3-常用参数" class="headerlink" title="3. 常用参数"></a>3. 常用参数</h3><p><strong>-Xms</strong></p>
+<ul>
+<li>初始内存大小，默认为物理内存的1/64，等价于 -XX:initialHeapSize</li>
+</ul>
+<p><strong>-Xmx</strong></p>
+<ul>
+<li>最大分配内存，默认为物理内存的1/4，等价于-XX:MaxHeapSize</li>
+</ul>
+<p><strong>-Xss</strong></p>
+<ul>
+<li>设置单个线程的大小，一般默认为512k~1024k，等价于-XX:ThreadStackSize</li>
+</ul>
+<p><strong>-Xmn</strong></p>
+<ul>
+<li>设置年轻代的大小，一般不调节</li>
+</ul>
+<p><strong>-XX:MetaspaceSize</strong></p>
+<ul>
+<li>设置元空间大小<ul>
+<li>元空间的本质和永久代类似，都是对JVM 规范中方法区的实现。</li>
+<li>不过元空间与永久代最大的区别在于，元空间并不在虚拟机中，而是使用本地内存。</li>
+<li>因此，默认情况下，元空间的大小仅受本地内存限制。</li>
+</ul>
+</li>
+</ul>
+<p><strong>-XX:+PrintGCDetails</strong></p>
+<ul>
+<li>打印GC详细信息</li>
+</ul>
+<p><strong>-XX:SurvivorRatio</strong></p>
+<ul>
+<li>配置新生代中Eden和S0/S1空间的比例</li>
+<li>默认为8:1:1，若设 -XX:SurvirorRatio=4，即Eden:S0:S1=4:1:1</li>
+</ul>
+<p><strong>-XX:NewRatio</strong></p>
+<ul>
+<li>配置老年代和新生代的空间比例，默认为2:1</li>
+</ul>
+<p><strong>-XX:MaxTenuringThreshold</strong></p>
+<ul>
+<li>设置垃圾的最大年龄，默认15</li>
+</ul>
+<h2 id="2-内存错误"><a href="#2-内存错误" class="headerlink" title="2. 内存错误"></a>2. 内存错误</h2><ol>
+<li><p><strong>java.lang.StackOverflowError</strong></p>
+<p>栈空间溢出：方法的递归调用深度超出栈空间的内存。</p>
+</li>
+<li><p>java.lang.OutOfMemoryError: <strong>java heap space</strong></p>
+<p>堆空间溢出：创建了对象占用超出了堆空间(新生代空间)限制。</p>
+</li>
+<li><p>java.lang.OutOfMemoryError: <strong>GC overhead limit exceeded</strong></p>
+<p>GC回收时间过长时会抛出OutOfMemroyError</p>
+<ul>
+<li>时间长的定义是，超过98%的时间用来做GC并且回收了不到2%的堆内存。</li>
+<li>连续多次GC都只回收了不到2%的极端信况下才会抛出该错误。</li>
+</ul>
+<p>如果不抛出GC overhead limit 错误会发生什么荐况呢？</p>
+<ul>
+<li>那就是GC清理的这么点内存很快会再次被填满，迫使GC再次执行。</li>
+<li>这样就形成恶性循环，CPU占用一直是100%，而GC却没有任何成果。</li>
+</ul>
+</li>
+</ol>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * -Xmx5m -Xms5m -XX:+PrintGCDetails
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">gcOverhead</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">int</span> i <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>
+    List<span class="token operator">&lt;</span>String<span class="token operator">></span> list <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">ArrayList</span><span class="token operator">&lt;</span><span class="token operator">></span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">try</span> <span class="token punctuation">{</span>
+        <span class="token keyword">while</span> <span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            list<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span>String<span class="token punctuation">.</span><span class="token function">valueOf</span><span class="token punctuation">(</span><span class="token operator">++</span>i<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">intern</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
+    <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span><span class="token class-name">Throwable</span> e<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        e<span class="token punctuation">.</span><span class="token function">printStackTrace</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token keyword">throw</span> e<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></code></pre>
-<p>​    CAS并发原语在JAVA语言中就是<strong>sun.misc.Unsafe</strong>类中的各个方法实现的。</p>
-<p>​    调用UnSafe类中的CAS方法，JVM会帮我们实现出CAS汇编指令。这是一种完全依赖于硬件的功能，通过它实现了原子操作。</p>
-<p>​    再次强调，由于CAS是一种系统原语，原语属于操作系统用语范畴，是由若干条指令组成的，用于完成某个功能的一个过程，并且原语的执行必须是连续的，在执行过程中不允许被中断，也就是说CAS是一条CPU的原子指令，不会造成所谓的数据不一致问题。</p>
-<p>​    假设线程A和线程B两个线程同时执行getAndAddlnt操作实现过程（分别跑在不同CPU上）：</p>
+<ol start="4">
+<li><p>java.lang.OutOfMemoryError: <strong>Direct buffer memory</strong></p>
+<p>导致原因：</p>
+<p>写NIO程序时经常使ByteBuffer来读或者写入数据，这是一种基于通道（Channel）与缓冲区（Buffer）的I/O方式，</p>
+<p>它可以使Native函数库直接分配堆外内存，然后通过一个存储在Java堆里面的DirectByteBuffer对象作为这块内存的引用进行操作。</p>
+<p>这样能在一些场景中显著提高性能，因为避免了在Java堆和 Native堆中来回复制数据。</p>
+<ul>
+<li><p>ByteBuffer.allocate(capability)  是分配JVM堆内存，属GC管辖范围，由于需要拷贝，所以速度相对较慢。</p>
+</li>
+<li><p>ByteBuffer.allocteDirect(capability)  是分配OS本地内存，不属于GC管辖范围，由于不需要内存拷贝所以速度相对较快。</p>
+</li>
+</ul>
+<p>但如果不断分配本地内存，堆内存很少使用，都么JVM就不需要执行GC，DirectByteBuffer对象们就不会被回收，这时候堆内存充足，但本地内存可能已经使用光了，再次尝试分配本地内存就会出0utOfMemoryError，那程序就直接崩溃了。</p>
+</li>
+</ol>
+<pre class=" language-java"><code class="language-java"><span class="token comment" spellcheck="true">/**
+ * -XX:MaxDirectMemorySize=5m
+ * 结果抛出 Exception in thread "main" java.lang.OutOfMemoryError: Direct buffer memory
+ */</span>
+<span class="token keyword">public</span> <span class="token keyword">class</span> <span class="token class-name">DirectBufferMemoryDemo</span> <span class="token punctuation">{</span>
+    <span class="token keyword">public</span> <span class="token keyword">static</span> <span class="token keyword">void</span> <span class="token function">main</span><span class="token punctuation">(</span>String<span class="token punctuation">[</span><span class="token punctuation">]</span> args<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        System<span class="token punctuation">.</span>out<span class="token punctuation">.</span><span class="token function">println</span><span class="token punctuation">(</span><span class="token string">"配置的maxDirectMemory:"</span> <span class="token operator">+</span> <span class="token punctuation">(</span>sun<span class="token punctuation">.</span>misc<span class="token punctuation">.</span>VM<span class="token punctuation">.</span><span class="token function">maxDirectMemory</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">/</span> <span class="token punctuation">(</span><span class="token keyword">double</span><span class="token punctuation">)</span> <span class="token number">1024</span> <span class="token operator">/</span> <span class="token number">1024</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">"MB"</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ByteBuffer bb <span class="token operator">=</span> ByteBuffer<span class="token punctuation">.</span><span class="token function">allocateDirect</span><span class="token punctuation">(</span><span class="token number">6</span> <span class="token operator">*</span> <span class="token number">1024</span> <span class="token operator">*</span> <span class="token number">1024</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></code></pre>
+<ol start="5">
+<li><p>java.lang.OutOfMemoryError: <strong>unable to create new native thread</strong></p>
+<p>高并发请求服务器时，经常出现如下景常：java.Lang.OutOfMemoryError:unable to create new native thread</p>
+<p>该native thread异常与对应的平台有关</p>
+<p>导致原因：</p>
 <ol>
-<li>Atomiclnteger里面的value原始值为3，即主内存中Atomiclnteger的value为3，根据JMM模型，线程A和线程B各自持有一份值为3的value的副本分别到各自的工作内存。</li>
-<li>线程A通过getIntVolatile(var1,var2)拿到value值3，这时线程A被挂起。</li>
-<li>线程B也通过getIntVolatile(var1,var2)方法获取到value值3，此时刚好线程B没有被挂起并执行compareAndSwaplnt方法比较内存值也为3，成功修改内存值为4，线程B完成收工，一切OK。</li>
-<li>这时线程A恢复，执行compareAndSwaplnt方法比较，发现自己手里的值数字3和主内存的值数字4不一致，说明该值己经被其它线程抢先一步修改过了，那A线程本次修改失败，只能重新读取重新来一遍了。</li>
-<li>线程A重新获取value值，因为变量value被volatile修饰，所以其它线程对它的修改，线程A总是能够看到，线程A继续执行compareAndSwaplnt进行比较替换，直到成功。</li>
+<li>你的应用创建了太多线程了，一个应用进程创建多个线程，超过系统承载极限。</li>
+<li>你的服务器并不允许你的应用程科序创建这么多进程，Linux系统默认充许单个进程可以创建的线程数是1024个，你的应用创建超过这个数量，就会报unable to create new native thread异常。</li>
 </ol>
-<p>即：<strong>比较当前工作内存的值和主内存中的值，如果相同则执行规定操作，否则继续比较直到主内存和工作内存中的值一致为止。</strong></p>
-<h2 id="2-CAS缺点"><a href="#2-CAS缺点" class="headerlink" title="2. CAS缺点"></a>2. CAS缺点</h2><ol>
-<li><p>由于通过do while循环实现，可能导致循环时间长，cpu开销大。</p>
+<p>解决办法：</p>
+<ol>
+<li>想办法降低你应用程序创建线程的数量，分析应用是否真的需要创建这么多线程，如果不是，改代码将线程数降到最低。</li>
+<li>对于有的应用，确实需要创建很多线程，远超过Linux系统的默认的1024个线程的限制，可以通过修改linux服务器配置，扩大Linux默认限制。</li>
+</ol>
 </li>
-<li><p>只能保证一个共享变量的原子操作。</p>
-<p>当对一个共享变量执行操作时，我们可以使用循环CAS的方式来保证原子操作，但是<br>对多个共享变量操作时，循环CAS就无法保证操作的原子性，这个时候就要使用锁来保证原子性。</p>
-</li>
-<li><p>引出来ABA问题</p>
+<li><p>java.lang.OutOfMemoryError: Mataspace</p>
 </li>
 </ol>
-<h2 id="3-ABA问题"><a href="#3-ABA问题" class="headerlink" title="3. ABA问题"></a>3. ABA问题</h2><p>​    CAS算法实现一个重要前提需要取出内存中某时刻的数据并在当下时刻比较并替换，那么在这个时间差类会导致数据的变化。</p>
-<p>​    比如说一个线程1从内存位置V中取出A，这时候另一个线程2也从内存中取出A，并且线程2进行了一些操作将值变成了B，然后线程2又将V位置的数据变成A，这时候线程1进行CAS操作发现内存中仍然是A，然后线程1操作成功。</p>
-<p>​    尽管这个过程线程1的CAS操作成功，但内存V位置的值中间产生了变化，有时这种问题会造成影响，这就叫做ABA问题。</p>
-<p><strong>解决ABA问题</strong></p>
-<p>​    新增一种机制，<strong>版本号</strong>（类似于时间戳）</p>
-<p><strong>原子引用</strong>：AtomicInteger，只是对基本类型进行原子操作，要想对对象进行原子操作，可使用原子引用类型。</p>
-<pre class=" language-java"><code class="language-java">AtomicReference<span class="token operator">&lt;</span>T<span class="token operator">></span>            <span class="token comment" spellcheck="true">//不带版本号 AtomicReference&lt;Integer> 等同于 AtomicInteger</span>
-AtomicStampedReference<span class="token operator">&lt;</span>T<span class="token operator">></span>    <span class="token comment" spellcheck="true">//带版本号的原子引用，可以解决ABA问题</span></code></pre>
 
       
       <!-- reward -->
@@ -248,14 +339,14 @@ AtomicStampedReference<span class="token operator">&lt;</span>T<span class="toke
     <a class="modal-close" href="javascript:;"><i class="ri-close-circle-line"></i></a>
     <p>扫一扫，分享到微信</p>
     <div class="wx-qrcode">
-      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://Charles-xcz.github.io/2020/03/11/并发编程之—— CAS/" alt="微信分享二维码">
+      <img src="//api.qrserver.com/v1/create-qr-code/?size=150x150&data=http://Charles-xcz.github.io/2020/04/19/JVM学习(6)——JVM参数和常见OOM异常/" alt="微信分享二维码">
     </div>
 </div>
 
 <div id="share-mask"></div>
       
       
-  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/CAS/">CAS</a></li><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/多线程/">多线程</a></li></ul>
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/JVM/">JVM</a></li></ul>
 
 
     </footer>
@@ -266,19 +357,10 @@ AtomicStampedReference<span class="token operator">&lt;</span>T<span class="toke
   
   <nav class="article-nav">
     
-      <a href="/2020/03/11/synchronized和Lock/" class="article-nav-link">
-        <strong class="article-nav-caption">上一篇</strong>
-        <div class="article-nav-title">
-          
-            synchronized和Lock的一些对比
-          
-        </div>
-      </a>
     
-    
-      <a href="/2020/03/09/JVM学习(2)——JVM内存以及GC算法/" class="article-nav-link">
+      <a href="/2020/04/19/进程线程协程对比/" class="article-nav-link">
         <strong class="article-nav-caption">下一篇</strong>
-        <div class="article-nav-title">JVM学习(2)——JVM的内存以及GC算法</div>
+        <div class="article-nav-title">进程与线程及其通信方式</div>
       </a>
     
   </nav>
