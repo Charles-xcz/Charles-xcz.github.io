@@ -6,7 +6,7 @@
   <link href="/atom.xml" rel="self"/>
   
   <link href="http://charles-xcz.github.io/"/>
-  <updated>2020-04-19T03:51:01.396Z</updated>
+  <updated>2020-04-19T04:28:47.748Z</updated>
   <id>http://charles-xcz.github.io/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Redis学习</title>
+    <link href="http://charles-xcz.github.io/2020/04/19/Redis%E5%AD%A6%E4%B9%A0/"/>
+    <id>http://charles-xcz.github.io/2020/04/19/Redis%E5%AD%A6%E4%B9%A0/</id>
+    <published>2020-04-19T04:28:58.514Z</published>
+    <updated>2020-04-19T04:28:47.748Z</updated>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h2 id=&quot;1-NoSQL数据库概述&quot;&gt;&lt;a href=&quot;#1-NoSQL数据库概述&quot; class=&quot;headerlink&quot; title=&quot;1. NoSQL数据库概述&quot;&gt;&lt;/a&gt;1. NoSQL数据库概述&lt;/h2&gt;&lt;p&gt;NoSQL（NoSQL=Not Only SQL），意即
+      
+    
+    </summary>
+    
+    
+      <category term="Redis" scheme="http://Charles-xcz.github.io/categories/Redis/"/>
+    
+    
+      <category term="Redis" scheme="http://Charles-xcz.github.io/tags/Redis/"/>
+    
+  </entry>
   
   <entry>
     <title>JVM学习(6)——常见JVM参数和内存异常</title>
