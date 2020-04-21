@@ -1582,7 +1582,7 @@ maxmemory-policy noeviction  //默认：旧缓存永不过期，如果存满，�
 <h2 id="1-GC-Roots"><a href="#1-GC-Roots" class="headerlink" title="1. GC Roots"></a>1. GC Roots</h2><p>​    所谓GC Roots就是用来Tracing GC的根集合，是一组必须活跃的引用。</p>
 <p>​    基本思路就是通过一系列名为 GC Roots 的对象作为起始点，从这个被称为GC Roots的对象开始向下搜索，如果一个对象到GC Roots没有任何引用链相连时，则说明此对象不可用。</p>
 <p>​    也即给定一个集合的引用作为根出发，通过引用关系遍历对象图，能被遍历到的（可到达的）对象就被判定为存活，没有被遍历到的就自然被判定为死亡。</p>
-<img src="../../../../../charles/Desktop/%25E9%259D%25A2%25E8%25AF%2595%25E5%2587%2586%25E5%25A4%2587/upload/image-20200303095959288.png" alt="image-20200303095959288" style="zoom:67%;">
+<img src="https://i.loli.net/2020/04/21/r987vyYnXcm5dDu.png" alt="image-20200303095959288" style="zoom:67%;">
 
 <p>哪些对象可以作为GC Roots</p>
 <ol>
@@ -2689,7 +2689,7 @@ AtomicStampedReference<span class="token operator">&lt;</span>T<span class="toke
 <p>​    可以看出，效率上来说，复制算法最优，但是却浪费了太多内存，而为了尽量兼顾上面所提到的三个指标，标记/整理算法相对来说更平滑一些，但效率上依然不尽如人意，它比复制算法多了一个标记的阶段，又比标记/清除多了一个整理内存的过程。</p>
 <blockquote>
 <p>JVM中对GC算法的具体实现体现于不同的GC垃圾收集器。</p>
-<p>可参见参见<a href="https://charles-xcz.github.io/2020/03/13/JVM学习(4)——GC垃圾收集器/">《JVM学习(1)——GC垃圾收集器》</a>、<a href="https://charles-xcz.github.io/2020/03/13/JVM学习(5)——G1垃圾收集器/">《JVM学习(5)——G1垃圾收集器》</a></p>
+<p>可参见参见<a href="https://charles-xcz.github.io/2020/03/13/JVM学习(4)——GC垃圾收集器/">《JVM学习(4)——GC垃圾收集器》</a>、<a href="https://charles-xcz.github.io/2020/03/13/JVM学习(5)——G1垃圾收集器/">《JVM学习(5)——G1垃圾收集器》</a></p>
 </blockquote>
 ]]></content>
       <categories>
