@@ -95,7 +95,7 @@
     <link href="http://charles-xcz.github.io/2020/03/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/"/>
     <id>http://charles-xcz.github.io/2020/03/13/%E8%AE%BE%E8%AE%A1%E6%A8%A1%E5%BC%8F%E2%80%94%E4%BB%A3%E7%90%86%E6%A8%A1%E5%BC%8F/</id>
     <published>2020-03-13T10:28:40.000Z</published>
-    <updated>2020-03-13T23:52:24.886Z</updated>
+    <updated>2020-04-21T06:46:23.296Z</updated>
     
     <summary type="html">
     
@@ -393,32 +393,6 @@
       <category term="多线程" scheme="http://Charles-xcz.github.io/tags/%E5%A4%9A%E7%BA%BF%E7%A8%8B/"/>
     
       <category term="volatile" scheme="http://Charles-xcz.github.io/tags/volatile/"/>
-    
-  </entry>
-  
-  <entry>
-    <title>什么是红黑树？</title>
-    <link href="http://charles-xcz.github.io/2019/12/10/%E8%81%8A%E8%81%8A%E7%BA%A2%E9%BB%91%E6%A0%91/"/>
-    <id>http://charles-xcz.github.io/2019/12/10/%E8%81%8A%E8%81%8A%E7%BA%A2%E9%BB%91%E6%A0%91/</id>
-    <published>2019-12-10T01:56:48.000Z</published>
-    <updated>2020-03-01T13:55:51.936Z</updated>
-    
-    <summary type="html">
-    
-      
-      
-        &lt;h2 id=&quot;1-定义&quot;&gt;&lt;a href=&quot;#1-定义&quot; class=&quot;headerlink&quot; title=&quot;1. 定义&quot;&gt;&lt;/a&gt;1. 定义&lt;/h2&gt;&lt;p&gt;红黑树是满足下列条件的&lt;strong&gt;二叉查找树&lt;/strong&gt;：&lt;br&gt;    每个节点都带有红色或黑色。节点的颜色
-      
-    
-    </summary>
-    
-    
-      <category term="数据结构与算法" scheme="http://Charles-xcz.github.io/categories/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E4%B8%8E%E7%AE%97%E6%B3%95/"/>
-    
-    
-      <category term="红黑树" scheme="http://Charles-xcz.github.io/tags/%E7%BA%A2%E9%BB%91%E6%A0%91/"/>
-    
-      <category term="数据结构" scheme="http://Charles-xcz.github.io/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/"/>
     
   </entry>
   
